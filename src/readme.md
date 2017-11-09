@@ -1,0 +1,23 @@
+### Overview of Simulator Reqs
+
+- Process/Sys.PCB
+    - Multiple Child/parent relationships
+- Critical Section Resolution
+- Shared Memory/Message Passing
+- Process Scheduling 
+    - 3 Different queues implemented and compared
+    - Multilevel queue scheduling
+    - Deadlock Avoidance Algorithm
+- Memory management
+    - main memory
+    - storage
+    - caches
+    - registers
+    - Paging
+    - Optional : Virtual Memory with paging
+- I/O : 2 Types:
+    - External Events
+    - Caused by Sys.CPU/processes being executed
+- Multi-threading
+    - concurrent execution of at least 4 threads
+    - Must be implemented using real threading
