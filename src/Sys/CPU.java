@@ -1,12 +1,10 @@
 package Sys;
 
-import java.util.ArrayList;
-
 /**
  * @author Capitan on 11/7/17
  * @project OS_Simulator
  */
-public class CPU {
+public class CPU implements Runnable{
 
     private long clock;
     private int memory;
@@ -16,14 +14,16 @@ public class CPU {
     // May not be necessary...
     //private int modeBit; // 0 for kernel, 1 for user
 
-    private static final int baseMemory = 4096;
-    private static final int baseCores = 1;
+    private static final int BASE_MEMORY = 4096;
+    private static final int BASE_CORES = 1;
+
+
 
     private final InterruptHandler interruptHandler;
 
 
     public CPU() {
-        this(baseMemory, baseCores, 1);
+        this(BASE_MEMORY, BASE_CORES, 1);
     }
 
     public CPU(int memory, int numCores, int cpuId) {
@@ -48,5 +48,13 @@ public class CPU {
 
 
     }
+
+    /**
+     * To work with the Runnable interface
+     */
+    public void run() {
+
+    }
+
 
 }

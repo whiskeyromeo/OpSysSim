@@ -27,6 +27,7 @@ public class Simulator {
         PCB secondProcess = new PCB(kernel.getNewPid(), -1);
 
         System.out.println("Process " + secondProcess.getPid()  +  " arrival : " + secondProcess.getArrivalTime());
+
         PCB firstChild = firstProcess._fork();
 
         System.out.format("First child : %d, parent: %d, arrival : %d, currentStatus : %s",
