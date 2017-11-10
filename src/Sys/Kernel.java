@@ -6,26 +6,35 @@ package Sys;
  */
 public class Kernel {
 
-    private CPU cpu;
-    private int processCounter;     // Should be used to assign the pid for each process --> Maybe should be volatile to be threadsafe?
+    private CPU cpu;          // Each Kernel should have at least one CPU
 
+    private volatile static int processCounter = 1;     // Should be used to assign the pid for each process --> Maybe should be volatile to be threadsafe?
+    private volatile static int systemClock = 0;  // needs to be static....but I do not think this the right way to do this
 
-    public Kernel(int id) {
+    public Kernel() {
         this.cpu = new CPU();
-        this.processCounter = 0;
     }
 
 
-    public int getProcessCounter() {
-        return this.processCounter;
+    // ******** GETTERS *********
+    public static int getSystemClock() { return systemClock; }
+
+
+    //******* SETTERS ********
+    public static void advanceClock() {
+        systemClock++;
     }
 
-    public void setProcessCounter() {
-        this.processCounter++;
+
+    /**
+     * Generates pids for new processes
+     * @return pid of new process
+     */
+    public static int getNewPid() {
+         int new_pid = processCounter;
+         processCounter++;
+         return new_pid;
     }
-
-
-
 
 
 
