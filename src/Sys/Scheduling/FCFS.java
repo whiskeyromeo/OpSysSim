@@ -6,41 +6,33 @@ import java.util.ArrayList;
 
 /**
  * @project OS_Simulator
+ *
+ * Instantiates the FCFS scheduler as a singleton
+ * TODO : FIX THIS --> BROKE IT GOOD
  */
-public class FCFS {
+public class FCFS extends Scheduler {
 
-    private volatile static ArrayList<PCB> queue = new ArrayList<>();
+    private ArrayList<PCB> queue = new ArrayList<>();
 
-    private static FCFS fcfsScheduler;
-    private FCFS() {}
-
-    public static FCFS getInstance() {
-        if(fcfsScheduler == null) {
-            fcfsScheduler = new FCFS();
-        }
-        return fcfsScheduler;
-    }
+    public FCFS() {}
 
 
-    // Just in case we need to get the whole queue
-    public static ArrayList<PCB> getQueue() {
+//     Add a process to the queue
+
+
+    public ArrayList<PCB> getQueue() {
         return queue;
     }
 
-    // Add a process to the queue
-    public static void addToQueue(PCB process) {
-        queue.add(process);
+    public void addToQueue(PCB process) {
+        process.setNextBurst(process.getRemainingBurst());
+        this.queue.add(process);
     }
 
-    // Should return null if no other processes in queue
-    public static PCB getNextFromQueue() {
-        PCB next;
-        if(queue.size() > 0) {
-            next = queue.get(0);
-            queue.remove(0);
-            return next;
-        } else {
-            return null;
-        }
+    public PCB getNextFromQueue() {
+        return getNextFromQueue(queue);
+
     }
+
+
 }

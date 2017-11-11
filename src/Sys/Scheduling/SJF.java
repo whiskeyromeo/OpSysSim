@@ -8,36 +8,18 @@ import java.util.ArrayList;
 
 /**
  * @project OS_Simulator
+ *
+ *  Instantiates the SJF scheduler as a singleton
+ *
  */
-public class SJF {
+public class SJF extends Scheduler{
 
-    private volatile static ArrayList<PCB> queue = new ArrayList<>();
+    private  ArrayList<PCB> queue = new ArrayList<>();
 
-    private static SJF sjfScheduler;
+    public SJF() {}
 
-    private SJF() {}
-
-    public static SJF getInstance() {
-        if(sjfScheduler == null) {
-            sjfScheduler = new SJF();
-        }
-        return sjfScheduler;
-    }
-
-    /**
-     * Get the next process from the queue
-     * @return the next process to be executed
-     */
-    public PCB getNextFromQueue() {
-        PCB next;
-        if(queue.size() > 0) {
-            next = queue.get(0);
-            queue.remove(0);
-            next.setCurrentState(ProcessState.STATE.RUN);
-            return next;
-        } else {
-            return null;
-        }
+    public ArrayList<PCB> getQueue() {
+        return queue;
     }
 
     /**
@@ -45,14 +27,18 @@ public class SJF {
      * Non-Preemptive SJF algorithm ...simpler this way
      * @param process
      */
+
     public void addToQueue(PCB process){
         int i;
+        // Set the nest burst here to remain consistent across schedulers
+        process.setNextBurst(process.getRemainingBurst());
+
         if(queue.size() == 0) {
             queue.add(process);
             return;
         }
         for(PCB p : queue) {
-            if(p.getBurstAmount() > process.getBurstAmount()) {
+            if(p.getNextBurst() > process.getNextBurst()) {
                i = queue.indexOf(p);
                queue.set(i, process);
                return;
@@ -63,6 +49,18 @@ public class SJF {
 
     }
 
+    @Override
+    public void run() {
+        while(!queue.isEmpty()) {
+
+        }
+    }
+
+    public PCB getNextFromQueue() {
+        return getNextFromQueue(queue);
+    }
+
+
     /**
      * This will preempt a process --> maybe should not be used here
      * but instead used in the interrupt handler? or CPU?
@@ -70,11 +68,12 @@ public class SJF {
      */
     public void preemptProcess(PCB process) {
         // Should preempt the current process
-        int burst = process.getBurstAmount();
+        int burst = process.getRemainingBurst();
         int arrivalTime = process.getArrivalTime();
         int currentTime = Kernel.getSystemClock();
         int timeRemaining = (burst - (currentTime - arrivalTime));
-        process.setBurstAmount(timeRemaining);
+        process.setRemainingBurst(timeRemaining);
+        process.setNextBurst(timeRemaining);
         process.setCurrentState(ProcessState.STATE.READY);
     }
 

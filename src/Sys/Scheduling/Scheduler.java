@@ -2,6 +2,7 @@ package Sys.Scheduling;
 
 import Sys.PCB;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 public abstract class Scheduler {
 
     private ArrayList<PCB> queue = new ArrayList<>();
+    private Stats stats = new Stats();
 
 
     public class Stats {
@@ -36,10 +38,12 @@ public abstract class Scheduler {
         public void addProcess() {
             processCount++;
         }
-
+        public void removeProcess() { processCount--; }
     }
 
-    public PCB getNextFromQueue() {
+    public Stats getStats() { return this.stats; }
+
+    public PCB getNextFromQueue(ArrayList<PCB> queue) {
         PCB next;
         if(queue.size() > 0) {
             next = queue.get(0);
@@ -49,4 +53,7 @@ public abstract class Scheduler {
             return null;
         }
     }
+
+    public void run() { }
+
 }

@@ -1,5 +1,7 @@
 import Sys.Kernel;
 import Sys.PCB;
+import Sys.Scheduling.FCFS;
+import Sys.Scheduling.Scheduler;
 
 /**
  * @author Capitan on 11/7/17
@@ -26,7 +28,23 @@ public class Simulator {
 
         PCB secondProcess = new PCB(kernel.getNewPid(), -1);
 
+        FCFS fcfsScheduler = new FCFS();
+        FCFS fcfsScheduler2 = new FCFS();
+
+        fcfsScheduler.addToQueue(secondProcess);
+        fcfsScheduler2.addToQueue(secondProcess);
+        fcfsScheduler2.addToQueue(firstProcess);
+
+        int val = fcfsScheduler.getQueue().size();
+        int val2 = fcfsScheduler2.getQueue().size();
+
+        PCB p = fcfsScheduler.getNextFromQueue();
+        System.out.println("p : " + p.getPid());
+
+        //Scheduler.Stats stats = fcfsScheduler.getStats();
+
         System.out.println("Process " + secondProcess.getPid()  +  " arrival : " + secondProcess.getArrivalTime());
+        System.out.format("queue 1 size : %d\n queue 2 size : %d\n", val, val2);
 
         PCB firstChild = firstProcess._fork();
 
