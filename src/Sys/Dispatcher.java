@@ -25,8 +25,18 @@ public class Dispatcher {
         return dispatcher;
     }
 
+    /**
+     * Process should retrieve the next process to execute from
+     * the short term scheduler and set it to RUN on the CPU
+     * @return
+     */
     public PCB getNextProcessToExecute() {
-        return processScheduler.getNextProcess();
+        PCB process;
+        process = processScheduler.getNextProcess();
+        if(process != null) {
+            process.setCurrentState(ProcessState.STATE.RUN);
+        }
+        return process;
     }
 
     public void addProcessToReadyQueue(PCB process) {
@@ -35,6 +45,9 @@ public class Dispatcher {
         processScheduler.scheduleProcess(process);
     }
 
+    public void endProcess(PCB process) {
+
+    }
 
 
 

@@ -6,7 +6,7 @@ import Sys.ProcessState.STATE;
 import java.util.ArrayList;
 
 /**
- * @author Will Russell on 11/7/17
+ *
  * @project OS_Simulator
  */
 public class PCB {
@@ -20,11 +20,11 @@ public class PCB {
     private int priorityNum;        // associated value for priority scheduling
     private int arrivalTime;        // arrival time of the process
     private int waitTime;           // current wait time of the process
-    private int initialBurst; // burst amount from the program --> should not be updated
+    private int initialBurst;        // burst amount from the program --> should not be updated
     private int remainingBurst;        // burst amount from the program file
-    private int nextBurst;        //
+    private int nextBurst;          // amount of the next burst
     private int memRequired;        // amount of memory required from the program file
-    private int memAllocated;
+    private int memAllocated;       // amount of memory currently allocated
     private boolean privelege;      // true = access kernel resources, false = no access to kernel resources
     private boolean ioBound;      //  is process
 
@@ -35,8 +35,8 @@ public class PCB {
     public PCB(int id, int parentId) {
         this.pid = id;                                  // id of the process
         this.ppid = parentId;                           // parent id if exists, otherwise -1
-        this.registers = new ArrayList<Register>();
-        this.instructions = new ArrayList<String>();    // The set of instructions for the process -> remove instruction from head upon completed execution
+        this.registers = new ArrayList<Register>();     // The set of registers allocated to the process
+        this.instructions = new ArrayList<String>();    // The set of instructions for the process parsed from a file
         this.children = new ArrayList<PCB>();           // children of the process
         this.arrivalTime = Kernel.getSystemClock();
         this.currentState = STATE.NEW;
@@ -93,6 +93,11 @@ public class PCB {
     public boolean getPrivelege() { return this.privelege; }
     public boolean isIoBound() { return ioBound; }
 
+    public ArrayList<String> getInstructions() { return instructions; }
+    public ArrayList<PCB> getChildren() { return children; }
+    public ArrayList<Register> getRegisters() { return registers; }
+
+
     // ******* SETTERS *******
     public void setCurrentState(STATE newState) { this.currentState = newState; }
     public void setPriorityNum(int priority) { this.priorityNum = priority; }
@@ -104,12 +109,41 @@ public class PCB {
     public void setIoBound(boolean status) { this.ioBound = true; }
     public void setInitialBurst(int burst) { this.initialBurst = burst; }
 
+    /**
+     * Initialize a PCB with the relevant information
+     * @param burst --> The original burst allocation from the file
+     * @param commands --> An ArrayList of the String commands from a file
+     * @param instructionIndex --> The index of the next instruction to execute in the ArrayList
+     * @param memNeeded --> memory required by the process
+     */
     public void initializeBlock(int burst, ArrayList<String> commands, int instructionIndex, int memNeeded ) {
         this.initialBurst = burst;
         this.remainingBurst = burst;
         this.instructions = commands;
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
+    }
+
+    /**
+     * This should
+     * @return true if all resources are available to the process
+     * and it can be moved to a READY queue
+     * TODO: Finish implementing --> Have no way to currently determine if resources exist
+     */
+    public boolean hasAllResourcesAvailable() {
+        return true;
+    }
+
+    /**
+     * Prints out some details about the PCB
+     */
+    public void printPCBInfo() {
+        System.out.format("PID : " + this.pid +
+                "\nPPID : " + this.ppid +
+                "\nInitial Burst : " + this.initialBurst +
+                "\nRemaining Burst : " + this.remainingBurst +
+                "\nCurrent Instruction : " + this.instructions.get(this.programCounter)
+        );
     }
 
 

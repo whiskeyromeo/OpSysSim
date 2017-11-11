@@ -8,8 +8,8 @@ public class Kernel {
 
     private CPU cpu;          // Each Kernel should have at least one CPU
 
-    private volatile static int processCounter = 1;     // Should be used to assign the pid for each process --> Maybe should be volatile to be threadsafe?
-    private volatile static int systemClock = 0;  // needs to be static....but I do not think this the right way to do this
+    private volatile static int processCounter = 1;     // Should be used to assign the pid for each process
+    private volatile static int systemClock = 0;  // Basic system clock idea -->increment
 
     public Kernel() {
         this.cpu = new CPU();
