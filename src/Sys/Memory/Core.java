@@ -1,4 +1,6 @@
-package Sys;
+package Sys.Memory;
+
+import Sys.InterruptHandler;
 
 import java.util.Random;
 

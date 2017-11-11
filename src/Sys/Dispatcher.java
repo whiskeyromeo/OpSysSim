@@ -5,5 +5,7 @@ package Sys;
  * @project OS_Simulator
  */
 public class Dispatcher {
+    // Should get the next process to execute from the scheduler
+
 
 }

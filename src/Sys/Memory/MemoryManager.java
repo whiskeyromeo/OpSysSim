@@ -1,4 +1,4 @@
-package Sys;
+package Sys.Memory;
 
 import java.security.InvalidParameterException;
 
@@ -21,7 +21,7 @@ public class MemoryManager {
             memory += amount;
         }
 
-        public static int getmemory() {
+        public static int getCurrentMemory() {
             return memory;
         }
 

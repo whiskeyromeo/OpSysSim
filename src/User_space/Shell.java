@@ -12,5 +12,16 @@ public class Shell {
     // Commands that the shell needs to be able to take in
     private final String COMMANDS[] = {"PROC","MEM","LOAD", "EXE", "RESET", "EXIT"};
 
+    private static final String PROG_EXTENSION = ".prgm";
+    private static final String JOB_EXTENSION = ".job";
+
+    public Shell() {
+
+    }
+
+
+    public void loadProgram(String fileName) {
+
+    }
 
 }
