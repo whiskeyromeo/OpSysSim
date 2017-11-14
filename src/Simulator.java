@@ -3,6 +3,9 @@ import Sys.PCB;
 import Sys.ProcessState;
 import Sys.Scheduling.FCFS;
 import Sys.Scheduling.Scheduler;
+import User_space.GUI;
+import java.awt.*;
+import javax.swing.*;
 
 /**
  * @author Capitan on 11/7/17
@@ -14,8 +17,13 @@ public class Simulator {
     static Kernel kernel = new Kernel();
 
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args)
+    {
+        GUI gui = new GUI();
+        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gui.setSize(600, 200);
+        gui.setVisible(true);
+        gui.setTitle("Processes Table");
         runBaseTests();
 
     }
