@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /**
  * @project OS_Simulator
  *
- * Instantiates the FCFS scheduler as a singleton
+ * Instantiates the FCFS scheduler
  * TODO : FIX THIS --> BROKE IT GOOD
  */
 public class FCFS extends Scheduler {
@@ -15,7 +15,6 @@ public class FCFS extends Scheduler {
     private ArrayList<PCB> queue = new ArrayList<>();
 
     public FCFS() {}
-
 
 //     Add a process to the queue
 

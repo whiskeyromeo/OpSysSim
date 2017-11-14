@@ -8,11 +8,14 @@ public class Cache {
     // Should be larger than the registers
     // Should be set by the OS(kernel)
 
+    private String address;
     private int size;
     private int block_size;
 
     // This should be equivalent to a cache in memory
-    public Cache() { }
+    public Cache(int size) {
+        this.size = size;
+    }
 
     public int getSize() { return this.size; }
     public int getBlock_size() { return this.block_size; }

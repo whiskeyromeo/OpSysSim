@@ -7,23 +7,23 @@ public class Register {
     // Should be the smallest element of memory larger than an address
     // Should be defined by the CPU;
 
-    private final int REGISTER_SIZE = 4;    // 32 bit architecture
+    public static final int REGISTER_SIZE = 4;    // 32 bit architecture
 
-    private int address;
-    private int data;
+    private String address;
+    private String data;
 
     // This should be equivalent to a register in memory
-    public Register(int address) {
+    public Register(String address) {
         this.address = address;
     }
 
 
-    public void setData(int data) { this.data = data; }
-    public void setAddress(int address) { this.address = address; }
+    public void setData(String data) { this.data = data; }
+    public void setAddress(String address) { this.address = address; }
 
     public int size() { return REGISTER_SIZE; }
-    public int getData() { return this.data; }
-    public int getAddress() {
+    public String getData() { return this.data; }
+    public String getAddress() {
         return this.address;
     }
 

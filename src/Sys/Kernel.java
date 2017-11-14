@@ -1,5 +1,7 @@
 package Sys;
 
+import Sys.Memory.MemoryManager;
+
 /**
  * @author Will Russell on 11/8/17
  * @project OS_Simulator
@@ -11,8 +13,11 @@ public class Kernel {
     private volatile static int processCounter = 1;     // Should be used to assign the pid for each process
     private volatile static int systemClock = 0;  // Basic system clock idea -->increment
 
+    MemoryManager memoryManager;
+
     public Kernel() {
         this.cpu = new CPU();
+        this.memoryManager = MemoryManager.getInstance();
     }
 
 
