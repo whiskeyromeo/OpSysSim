@@ -33,11 +33,7 @@ public class MainMemory {
         return memoryFree;
     }
 
-    public void allocateMemory(int amount) throws InvalidParameterException {
-        if(amount > memoryFree) {
-            throw new InvalidParameterException("Cannot allocate more memory than exists");
-        }
-    }
+
 
 
 

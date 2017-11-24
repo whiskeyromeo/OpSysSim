@@ -13,7 +13,7 @@ public class Dispatcher {
     // Should get the next process to execute from the scheduler
 
     private static Dispatcher dispatcher;
-    private static MultiLevel processScheduler = new MultiLevel();
+    private static MultiLevel processScheduler = MultiLevel.getInstance();
 
 
     protected Dispatcher() {}
@@ -39,10 +39,9 @@ public class Dispatcher {
         return process;
     }
 
-    public void addProcessToReadyQueue(PCB process) {
-        // Switch the process to the READY state
-        process.setCurrentState(ProcessState.STATE.READY);
-        processScheduler.scheduleProcess(process);
+
+    public void addProcessToWaitingQueue(PCB process) {
+
     }
 
     public void endProcess(PCB process) {

@@ -2,12 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ddcb21a-9f6a-4f26-82d1-7df06c68d5c3" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Sys/InterruptHandler.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Program_Files/Browser.prgm" afterPath="$PROJECT_DIR$/src/Program_Files/Browser.prgm" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Program_Files/TestJob.job" afterPath="$PROJECT_DIR$/src/Program_Files/TestJob.job" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Simulator.java" afterPath="$PROJECT_DIR$/src/Simulator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/CPU.java" afterPath="$PROJECT_DIR$/src/Sys/CPU.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Dispatcher.java" afterPath="$PROJECT_DIR$/src/Sys/Dispatcher.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Kernel.java" afterPath="$PROJECT_DIR$/src/Sys/Kernel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Memory/Cache.java" afterPath="$PROJECT_DIR$/src/Sys/Memory/Cache.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Memory/MainMemory.java" afterPath="$PROJECT_DIR$/src/Sys/Memory/MainMemory.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java" afterPath="$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Memory/Register.java" afterPath="$PROJECT_DIR$/src/Sys/Memory/Register.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/PCB.java" afterPath="$PROJECT_DIR$/src/Sys/PCB.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/ProcessState.java" afterPath="$PROJECT_DIR$/src/Sys/ProcessState.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java" afterPath="$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java" afterPath="$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java" afterPath="$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java" afterPath="$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys/Scheduling/SJF.java" afterPath="$PROJECT_DIR$/src/Sys/Scheduling/SJF.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,46 +30,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.43234837">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="SJF.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/SJF.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="296">
-                  <caret line="47" column="27" lean-forward="true" selection-start-line="47" selection-start-column="27" selection-end-line="47" selection-end-column="27" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Kernel.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="Kernel.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/Sys/Kernel.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="240">
-                  <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Shell.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/User_space/Shell.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="300">
-                  <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="RoundRobin.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="150">
-                  <caret line="10" column="40" lean-forward="false" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
+                <state relative-caret-position="510">
+                  <caret line="34" column="24" lean-forward="true" selection-start-line="34" selection-start-column="24" selection-end-line="34" selection-end-column="24" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -65,34 +45,12 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Dispatcher.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Dispatcher.java">
+          <file leaf-file-name="IOBurst.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/Sys/IOBurst.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="82">
-                  <caret line="23" column="9" lean-forward="true" selection-start-line="23" selection-start-column="9" selection-end-line="23" selection-end-column="9" />
+                <state relative-caret-position="180">
+                  <caret line="12" column="4" lean-forward="false" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
                   <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Register.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Register.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="135">
-                  <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="FCFS.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="240">
-                  <caret line="16" column="20" lean-forward="false" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -100,8 +58,24 @@
           <file leaf-file-name="PCB.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/Sys/PCB.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1741">
-                  <caret line="144" column="16" lean-forward="false" selection-start-line="144" selection-start-column="16" selection-end-line="144" selection-end-column="16" />
+                <state relative-caret-position="250">
+                  <caret line="133" column="30" lean-forward="false" selection-start-line="133" selection-start-column="30" selection-end-line="133" selection-end-column="30" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                    <element signature="e#3964#3965#0" expanded="true" />
+                    <element signature="e#4001#4002#0" expanded="true" />
+                    <element signature="e#5430#5431#0" expanded="true" />
+                    <element signature="e#5462#5463#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="FileParser.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/User_space/FileParser.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="120">
+                  <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -109,11 +83,33 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="LongTerm.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java">
+          <file leaf-file-name="CPU.java" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/Sys/CPU.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="450">
-                  <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+                <state relative-caret-position="1522">
+                  <caret line="140" column="8" lean-forward="false" selection-start-line="140" selection-start-column="8" selection-end-line="140" selection-end-column="8" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="IODevice.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/Sys/IODevice.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="270">
+                  <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="MemoryManager.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="80">
+                  <caret line="20" column="34" lean-forward="false" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -124,101 +120,48 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="MainMemory.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MainMemory.java">
+        <leaf>
+          <file leaf-file-name="SJF.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/SJF.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="0">
-                  <caret line="20" column="6" lean-forward="false" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
+                <state relative-caret-position="990">
+                  <caret line="70" column="19" lean-forward="false" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
                   <folding>
                     <element signature="imports" expanded="true" />
+                    <element signature="e#1169#1170#0" expanded="true" />
+                    <element signature="e#1198#1199#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Secondary.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Secondary.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="195">
-                  <caret line="13" column="14" lean-forward="false" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="CPU.java" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/Sys/CPU.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="15">
-                  <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Scheduler.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/Scheduler.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="299">
-                  <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="28" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="MultiLevel.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="654">
-                  <caret line="50" column="68" lean-forward="true" selection-start-line="50" selection-start-column="68" selection-end-line="50" selection-end-column="68" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="MemoryManager.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="493">
-                  <caret line="43" column="19" lean-forward="true" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#1107#1108#0" expanded="true" />
-                    <element signature="e#1137#1138#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="Cache.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Cache.java">
+          <file leaf-file-name="RoundRobin.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="150">
-                  <caret line="10" column="27" lean-forward="false" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
-                  <folding>
-                    <element signature="e#319#320#0" expanded="true" />
-                    <element signature="e#351#352#0" expanded="true" />
-                  </folding>
+                  <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+                  <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="IODevice.java" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/Sys/IODevice.java">
+          <file leaf-file-name="Simulator.java" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/Simulator.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="120">
-                  <caret line="10" column="23" lean-forward="false" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+                <state relative-caret-position="282">
+                  <caret line="64" column="29" lean-forward="false" selection-start-line="64" selection-start-column="29" selection-end-line="64" selection-end-column="29" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="MultiLevel.java" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="45">
+                  <caret line="24" column="36" lean-forward="false" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
                   <folding>
                     <element signature="imports" expanded="true" />
-                    <element signature="e#252#253#0" expanded="true" />
-                    <element signature="e#309#310#0" expanded="true" />
-                    <element signature="e#448#449#0" expanded="true" />
-                    <element signature="e#494#495#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -251,24 +194,15 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/Main.java" />
-        <option value="$PROJECT_DIR$/src/readme.md" />
-        <option value="$PROJECT_DIR$/src/Kernel_space/CPU.java" />
-        <option value="$PROJECT_DIR$/src/System/CPU.java" />
-        <option value="$PROJECT_DIR$/src/Kernel_space/InterruptHandler.java" />
-        <option value="$PROJECT_DIR$/src/System/InterruptHandler.java" />
         <option value="$PROJECT_DIR$/src/Kernel_space/Kernel.java" />
         <option value="$PROJECT_DIR$/src/Kernel_space/Process.java" />
         <option value="$PROJECT_DIR$/src/Kernel_space/PCB.java" />
         <option value="$PROJECT_DIR$/src/Sys/Core.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/Sys/InterruptHandler.java" />
-        <option value="$PROJECT_DIR$/src/Sys/ProcessState.java" />
         <option value="$PROJECT_DIR$/src/Sys/Cache.java" />
         <option value="$PROJECT_DIR$/src/Sys/Register.java" />
         <option value="$PROJECT_DIR$/src/Program_Files/prgm1.txt" />
         <option value="$PROJECT_DIR$/src/Program_Files/TestJob.txt" />
-        <option value="$PROJECT_DIR$/src/Program_Files/Browser.prgm" />
         <option value="$PROJECT_DIR$/src/User_space/Shell.java" />
         <option value="$PROJECT_DIR$/src/Sys/Scheduler.java" />
         <option value="$PROJECT_DIR$/src/Sys/MultiLevelScheduler.java" />
@@ -283,25 +217,34 @@
         <option value="$PROJECT_DIR$/src/Sys/Schedulers/MultiLevelFeedback.java" />
         <option value="$PROJECT_DIR$/src/Sys/Scheduling/MultiLevelFeedback.java" />
         <option value="$PROJECT_DIR$/src/Sys/Scheduling/Scheduler.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Scheduling/SJF.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java" />
-        <option value="$PROJECT_DIR$/src/Sys/IODevice.java" />
         <option value="$PROJECT_DIR$/src/Sys/Scheduling/ExecutionQueue.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Memory/MainMemory.java" />
         <option value="$PROJECT_DIR$/src/Sys/Memory/Secondary.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Dispatcher.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java" />
-        <option value="$PROJECT_DIR$/src/Sys/PCB.java" />
-        <option value="$PROJECT_DIR$/src/Sys/CPU.java" />
         <option value="$PROJECT_DIR$/src/User_space/GUI.java" />
-        <option value="$PROJECT_DIR$/src/Simulator.java" />
         <option value="$PROJECT_DIR$/.idea/workspace.xml" />
-        <option value="$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java" />
         <option value="$PROJECT_DIR$/src/Sys/Memory/Register.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Kernel.java" />
-        <option value="$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Memory/MainMemory.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Queue.java" />
+        <option value="$PROJECT_DIR$/src/Sys/InterruptHandler.java" />
         <option value="$PROJECT_DIR$/src/Sys/Memory/Cache.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Dispatcher.java" />
+        <option value="$PROJECT_DIR$/src/Program_Files/TestJob.job" />
+        <option value="$PROJECT_DIR$/src/Program_Files/Browser.prgm" />
+        <option value="$PROJECT_DIR$/src/User_space/FileParser.java" />
+        <option value="$PROJECT_DIR$/src/Sys/ProcessState.java" />
+        <option value="$PROJECT_DIR$/src/Sys/IOBurst.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Mutex.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Scheduling/WaitingQueue.java" />
+        <option value="$PROJECT_DIR$/src/Sys/IODevice.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Kernel.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Scheduling/SJF.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java" />
+        <option value="$PROJECT_DIR$/src/Simulator.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java" />
+        <option value="$PROJECT_DIR$/src/Sys/PCB.java" />
+        <option value="$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java" />
+        <option value="$PROJECT_DIR$/src/Sys/CPU.java" />
       </list>
     </option>
   </component>
@@ -313,8 +256,8 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1344" />
-    <option name="height" value="789" />
+    <option name="width" value="1440" />
+    <option name="height" value="833" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -334,6 +277,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -345,6 +290,12 @@
               <item name="OS_Simulator" type="b2602c69:ProjectViewProjectNode" />
               <item name="OS_Simulator" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="OS_Simulator" type="b2602c69:ProjectViewProjectNode" />
+              <item name="OS_Simulator" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Program_Files" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="OS_Simulator" type="b2602c69:ProjectViewProjectNode" />
@@ -376,10 +327,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
-      <pane id="AndroidView" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -842,30 +791,36 @@
       <workItem from="1510627713014" duration="6000" />
       <workItem from="1510627746852" duration="196000" />
       <workItem from="1510666809919" duration="695000" />
-      <workItem from="1510675357333" duration="3493000" />
+      <workItem from="1510675357333" duration="3643000" />
+      <workItem from="1510688002143" duration="699000" />
+      <workItem from="1511205889182" duration="2876000" />
+      <workItem from="1511366112998" duration="6267000" />
+      <workItem from="1511461167784" duration="2594000" />
+      <workItem from="1511464629696" duration="17473000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60688000" />
+    <option name="totallyTimeSpent" value="90747000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1344" height="789" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="833" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285151" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276316" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.325887" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15550596" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14513889" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -879,9 +834,8 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32871014" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32871014" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276316" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -901,50 +855,11 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Sys/InterruptHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="2" lean-forward="false" selection-start-line="7" selection-start-column="2" selection-end-line="7" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Core.java" />
-    <entry file="file://$PROJECT_DIR$/src/Sys/PCB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Dispatcher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/ProcessState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="12" lean-forward="true" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Sys/IODevice.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#252#253#0" expanded="true" />
-            <element signature="e#309#310#0" expanded="true" />
-            <element signature="e#448#449#0" expanded="true" />
-            <element signature="e#494#495#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -954,8 +869,6 @@
           <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1107#1108#0" expanded="true" />
-            <element signature="e#1137#1138#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -972,7 +885,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -980,29 +895,19 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
           <caret line="38" column="0" lean-forward="true" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/InterruptHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/InterruptHandler.java" />
     <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Core.java" />
     <entry file="file://$PROJECT_DIR$/src/Sys/IODevice.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="3" lean-forward="true" selection-start-line="5" selection-start-column="3" selection-end-line="5" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#252#253#0" expanded="true" />
-            <element signature="e#309#310#0" expanded="true" />
-            <element signature="e#448#449#0" expanded="true" />
-            <element signature="e#494#495#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1012,6 +917,10 @@
           <caret line="8" column="23" lean-forward="false" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3964#3965#0" expanded="true" />
+            <element signature="e#4001#4002#0" expanded="true" />
+            <element signature="e#5430#5431#0" expanded="true" />
+            <element signature="e#5462#5463#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1040,87 +949,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Kernel_space/Process.java" />
     <entry file="file://$PROJECT_DIR$/src/Kernel_space/ProcessSchedulingManager.java" />
-    <entry file="file://$PROJECT_DIR$/src/Sys/ProcessState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="38" lean-forward="false" selection-start-line="7" selection-start-column="38" selection-end-line="7" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/InterruptHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Program_Files/TestJob.job">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Program_Files/Browser.prgm">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/User_space/Shell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Sys/MultiLevelScheduler.java" />
     <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/ExecutionQueue.java" />
     <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Core.java" />
-    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MainMemory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="20" column="6" lean-forward="false" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Secondary.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="14" lean-forward="false" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/IODevice.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="10" column="23" lean-forward="false" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#252#253#0" expanded="true" />
-            <element signature="e#309#310#0" expanded="true" />
-            <element signature="e#448#449#0" expanded="true" />
-            <element signature="e#494#495#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
@@ -1132,17 +963,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-17935">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Simulator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="56" column="8" lean-forward="false" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="8" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1151,21 +971,21 @@
         <state relative-caret-position="135">
           <caret line="9" column="13" lean-forward="false" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java">
+    <entry file="file://$PROJECT_DIR$/src/User_space/Shell.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="20" lean-forward="false" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="270">
+          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/InterruptHandler.java" />
+    <entry file="file://$PROJECT_DIR$/src/Sys/Queue.java" />
     <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Register.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
@@ -1174,71 +994,92 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Dispatcher.java">
+    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Secondary.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="82">
-          <caret line="23" column="9" lean-forward="true" selection-start-line="23" selection-start-column="9" selection-end-line="23" selection-end-column="9" />
+        <state relative-caret-position="195">
+          <caret line="13" column="14" lean-forward="false" selection-start-line="13" selection-start-column="14" selection-end-line="13" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java">
+    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MainMemory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="40" lean-forward="false" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
+        <state relative-caret-position="495">
+          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/SJF.java">
+    <entry file="file://$PROJECT_DIR$/src/Program_Files/TestJob.job">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="47" column="27" lean-forward="true" selection-start-line="47" selection-start-column="27" selection-end-line="47" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="165">
+          <caret line="11" column="12" lean-forward="true" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/PCB.java">
+    <entry file="file://$PROJECT_DIR$/src/Program_Files/Browser.prgm">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1741">
-          <caret line="144" column="16" lean-forward="false" selection-start-line="144" selection-start-column="16" selection-end-line="144" selection-end-column="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="60">
+          <caret line="4" column="3" lean-forward="true" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Dispatcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/ProcessState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="44" lean-forward="false" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Sys/Memory/Cache.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="27" lean-forward="false" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
-          <folding>
-            <element signature="e#319#320#0" expanded="true" />
-            <element signature="e#351#352#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="210">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java">
+    <entry file="file://$PROJECT_DIR$/src/Sys/Mutex.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="43" column="19" lean-forward="true" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1107#1108#0" expanded="true" />
-            <element signature="e#1137#1138#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="345">
+          <caret line="23" column="24" lean-forward="false" selection-start-line="23" selection-start-column="24" selection-end-line="23" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java">
+    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/WaitingQueue.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="50" column="68" lean-forward="true" selection-start-line="50" selection-start-column="68" selection-end-line="50" selection-end-column="68" />
+        <state relative-caret-position="180">
+          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/IODevice.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Kernel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="34" column="24" lean-forward="true" selection-start-line="34" selection-start-column="24" selection-end-line="34" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1247,8 +1088,116 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/Scheduler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="20" selection-end-line="26" selection-end-column="28" />
+        <state relative-caret-position="178">
+          <caret line="20" column="31" lean-forward="false" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/FCFS.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#439#440#0" expanded="true" />
+            <element signature="e#478#479#0" expanded="true" />
+            <element signature="e#594#595#0" expanded="true" />
+            <element signature="e#623#624#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/SJF.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="990">
+          <caret line="70" column="19" lean-forward="false" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1169#1170#0" expanded="true" />
+            <element signature="e#1198#1199#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/IOBurst.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="4" lean-forward="false" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/PCB.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="133" column="30" lean-forward="false" selection-start-line="133" selection-start-column="30" selection-end-line="133" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3964#3965#0" expanded="true" />
+            <element signature="e#4001#4002#0" expanded="true" />
+            <element signature="e#5430#5431#0" expanded="true" />
+            <element signature="e#5462#5463#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/User_space/FileParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/RoundRobin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/LongTerm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="30" column="30" lean-forward="false" selection-start-line="30" selection-start-column="30" selection-end-line="30" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1821#1822#0" expanded="true" />
+            <element signature="e#1856#1857#0" expanded="true" />
+            <element signature="e#1895#1896#0" expanded="true" />
+            <element signature="e#1931#1932#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Simulator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="64" column="29" lean-forward="false" selection-start-line="64" selection-start-column="29" selection-end-line="64" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Scheduling/MultiLevel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="24" column="36" lean-forward="false" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys/Memory/MemoryManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="20" column="34" lean-forward="false" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1257,17 +1206,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Sys/CPU.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys/Kernel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="1522">
+          <caret line="140" column="8" lean-forward="false" selection-start-line="140" selection-start-column="8" selection-end-line="140" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -1,6 +1,7 @@
 package Sys;
 
 import Sys.Memory.MemoryManager;
+import Sys.Scheduling.MultiLevel;
 
 /**
  * @author Will Russell on 11/8/17
@@ -8,26 +9,19 @@ import Sys.Memory.MemoryManager;
  */
 public class Kernel {
 
-    private CPU cpu;          // Each Kernel should have at least one CPU
-
+    private CPU cpu; // Each Kernel should have at least one CPU
+    private static final int BASE_CORES = 1; // The number of cores to use in the system
     private volatile static int processCounter = 1;     // Should be used to assign the pid for each process
-    private volatile static int systemClock = 0;  // Basic system clock idea -->increment
+    private MemoryManager memoryManager;
+    private MultiLevel scheduler;
+    private static int systemClock;
 
-    MemoryManager memoryManager;
 
     public Kernel() {
-        this.cpu = new CPU();
-        this.memoryManager = MemoryManager.getInstance();
-    }
-
-
-    // ******** GETTERS *********
-    public static int getSystemClock() { return systemClock; }
-
-
-    //******* SETTERS ********
-    public static void advanceClock() {
-        systemClock++;
+        this.cpu = new CPU(1); // TODO: starting with 1 cpu to test
+        memoryManager = MemoryManager.getInstance();
+        scheduler = scheduler.getInstance();
+        systemClock = 0;
     }
 
 
@@ -41,6 +35,9 @@ public class Kernel {
          return new_pid;
     }
 
+    public static void advanceClock() { systemClock++; }
 
-
+    public static int getSystemClock() {
+        return systemClock;
+    }
 }

@@ -18,12 +18,7 @@ public class SJF extends Scheduler{
 
     public SJF() {}
 
-    public ArrayList<PCB> getQueue() {
-        return queue;
-    }
-
     /**
-     * TODO: May need to fix this --> methinks the logic is a bit fecked
      * Non-Preemptive SJF algorithm ...simpler this way
      * @param process
      */
@@ -31,14 +26,14 @@ public class SJF extends Scheduler{
     public void addToQueue(PCB process){
         int i;
         // Set the nest burst here to remain consistent across schedulers
-        process.setNextBurst(process.getRemainingBurst());
+//        process.setBurstTime(process.getRemainingBurst());
 
         if(queue.size() == 0) {
             queue.add(process);
             return;
         }
         for(PCB p : queue) {
-            if(p.getNextBurst() > process.getNextBurst()) {
+            if(p.getBurstTime() > process.getBurstTime()) {
                i = queue.indexOf(p);
                queue.set(i, process);
                return;
@@ -49,16 +44,18 @@ public class SJF extends Scheduler{
 
     }
 
-    @Override
-    public void run() {
-        while(!queue.isEmpty()) {
-
-        }
-    }
-
     public PCB getNextFromQueue() {
         return getNextFromQueue(queue);
     }
+
+    public ArrayList<PCB> getQueue() {
+        return queue;
+    }
+
+    public void resetQueue() {
+        queue.clear();
+    }
+
 
 
     /**
@@ -66,16 +63,16 @@ public class SJF extends Scheduler{
      * but instead used in the interrupt handler? or CPU?
      * @param process
      */
-    public void preemptProcess(PCB process) {
-        // Should preempt the current process
-        int burst = process.getRemainingBurst();
-        int arrivalTime = process.getArrivalTime();
-        int currentTime = Kernel.getSystemClock();
-        int timeRemaining = (burst - (currentTime - arrivalTime));
-        process.setRemainingBurst(timeRemaining);
-        process.setNextBurst(timeRemaining);
-        process.setCurrentState(ProcessState.STATE.READY);
-    }
+//    public void preemptProcess(PCB process) {
+//        // Should preempt the current process
+//        int burst = process.getRemainingBurst();
+//        int arrivalTime = process.getArrivalTime();
+//        int currentTime = Kernel.getSystemClock();
+//        int timeRemaining = (burst - (currentTime - arrivalTime));
+//        process.setRemainingBurst(timeRemaining);
+//        process.setNextBurst(timeRemaining);
+//        process.setCurrentState(ProcessState.STATE.READY);
+//    }
 
 
 }

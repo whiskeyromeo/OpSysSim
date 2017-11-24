@@ -2,6 +2,7 @@ package Sys;
 
 import Sys.Memory.Register;
 import Sys.ProcessState.STATE;
+import Sys.Scheduling.MultiLevel;
 
 import java.util.ArrayList;
 
@@ -9,24 +10,19 @@ import java.util.ArrayList;
  *
  * @project OS_Simulator
  */
-public class PCB {
+public class PCB implements Cloneable {
 
     Dispatcher dispatcher = Dispatcher.getInstance();
+    MultiLevel multiLevelScheduler = MultiLevel.getInstance();
 
     private STATE currentState;
     private int pid;                // unique process identifier for each process
     private int ppid;               // parent process id
     private int programCounter;     // should point to the location of the next process to be executed in the program file
-    private int priorityNum;        // associated value for priority scheduling
     private int arrivalTime;        // arrival time of the process
+    private int burstTime;
     private int waitTime;           // current wait time of the process
-    private int initialBurst;        // burst amount from the program --> should not be updated
-    private int remainingBurst;        // burst amount from the program file
-    private int nextBurst;          // amount of the next burst
     private int memRequired;        // amount of memory required from the program file
-    private int memAllocated;       // amount of memory currently allocated
-    private boolean privelege;      // true = access kernel resources, false = no access to kernel resources
-    private boolean ioBound;      //  is process
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
     private ArrayList<PCB> children; // list of children of the process
@@ -40,12 +36,24 @@ public class PCB {
         this.children = new ArrayList<PCB>();           // children of the process
         this.arrivalTime = Kernel.getSystemClock();
         this.currentState = STATE.NEW;
-        this.privelege = false;
         this.waitTime = 0;
-        this.priorityNum = 0;                           // priority number of the process
-        this.memAllocated = 0;
+        this.burstTime = 0;
+
         this.programCounter = 0;                        // program counter --> points to next process to be executed in program file
 
+    }
+
+    public PCB(int id, int parentId, ArrayList<Register> registers, ArrayList<String> instructions, int cycles, STATE state, int pc) {
+        this.pid = id;
+        this.ppid = parentId;
+        this.registers = registers;
+        this.instructions = instructions;
+        this.children = new ArrayList<PCB>();
+        this.arrivalTime = Kernel.getSystemClock();
+        this.currentState = state;
+        this.waitTime = 0;
+        this.programCounter = pc;
+        this.burstTime = cycles;
     }
 
     /**
@@ -56,9 +64,11 @@ public class PCB {
         if(this.currentState != STATE.RUN) {
             throw new IllegalArgumentException("The process must be RUNNING to be forked");
         }
-        PCB child = new PCB(Kernel.getNewPid(), this.pid);
+        // Copy the parent's information into the child
+        PCB child = new PCB(Kernel.getNewPid(), this.pid, this.registers, this.instructions, this.burstTime, STATE.RUN, this.programCounter);
         this.children.add(child);
-        dispatcher.addProcessToReadyQueue(this);
+        this.setCurrentState(STATE.READY);
+        multiLevelScheduler.scheduleProcess(this);
         return child;
     }
 
@@ -84,64 +94,60 @@ public class PCB {
     public int getArrivalTime() { return this.arrivalTime; }
     public int getPid() { return this.pid; }
     public int getPpid() { return this.ppid; }
-    public int getPriorityNum() { return this.priorityNum; }
-    public int getWaitTime() { return this.waitTime; }
-    public int getRemainingBurst() { return this.remainingBurst; }
-    public int getNextBurst() { return this.nextBurst; }
     public int getMemRequired() { return this.memRequired; }
-    public int getMemAllocated() { return this.memAllocated; }
-    public boolean getPrivelege() { return this.privelege; }
-    public boolean isIoBound() { return ioBound; }
+    public int getProgramCounter() { return this.programCounter; }
+
+
+    // TODO: REMOVE WHEN CPU IS FUNCTIONAL
+    public int getBurstTime() {
+        return this.burstTime;
+    }
 
     public ArrayList<String> getInstructions() { return instructions; }
     public ArrayList<PCB> getChildren() { return children; }
     public ArrayList<Register> getRegisters() { return registers; }
 
-
     // ******* SETTERS *******
     public void setCurrentState(STATE newState) { this.currentState = newState; }
-    public void setPriorityNum(int priority) { this.priorityNum = priority; }
-    public void setWaitTime(int wait) { this.waitTime = wait; }
-    public void setRemainingBurst(int burst) { this.remainingBurst = burst; }
-    public void setNextBurst(int burst) { this.nextBurst = burst; }
+    public void setArrivalTime( int arrival) { this.arrivalTime = arrival; }
     public void setMemRequired(int mem) { this.memRequired = mem; }
-    public void setPrivelege(boolean status) { this.privelege = status; }
-    public void setIoBound(boolean status) { this.ioBound = true; }
-    public void setInitialBurst(int burst) { this.initialBurst = burst; }
+    public void setProgramCounter(int pc) { this.programCounter = pc; }
+    public void setBurstTime(int burstTime) { this.burstTime = burstTime; }
 
     /**
      * Initialize a PCB with the relevant information
-     * @param burst --> The original burst allocation from the file
      * @param commands --> An ArrayList of the String commands from a file
      * @param instructionIndex --> The index of the next instruction to execute in the ArrayList
      * @param memNeeded --> memory required by the process
      */
-    public void initializeBlock(int burst, ArrayList<String> commands, int instructionIndex, int memNeeded ) {
-        this.initialBurst = burst;
-        this.remainingBurst = burst;
+    public void initializeBlock(ArrayList<String> commands, int instructionIndex, int memNeeded ) {
         this.instructions = commands;
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
     }
 
-    /**
-     * This should
-     * @return true if all resources are available to the process
-     * and it can be moved to a READY queue
-     * TODO: Finish implementing --> Have no way to currently determine if resources exist
-     */
-    public boolean hasAllResourcesAvailable() {
-        return true;
+    public void exit() {
+        this.currentState = STATE.EXIT;
+        this.burstTime = 0;
+        this.memRequired = 0;
+        this.programCounter = 0;
+        this.registers = null;
     }
+
+    /**
+     * Method to decrement burst time
+     */
+    public void decrementBurstTime() {
+        this.burstTime--;
+    }
+
 
     /**
      * Prints out some details about the PCB
      */
     public void printPCBInfo() {
-        System.out.format("PID : " + this.pid +
+        System.out.println("PID : " + this.pid +
                 "\nPPID : " + this.ppid +
-                "\nInitial Burst : " + this.initialBurst +
-                "\nRemaining Burst : " + this.remainingBurst +
                 "\nCurrent Instruction : " + this.instructions.get(this.programCounter)
         );
     }

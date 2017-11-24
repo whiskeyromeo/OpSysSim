@@ -6,22 +6,17 @@ package Sys.Memory;
 public class Cache {
 
     // Should be larger than the registers
-    // Should be set by the OS(kernel)
+    // Should be created with the CPU
 
-    private String address;
-    private int size;
-    private int block_size;
+    int [][] cache;
+    boolean[][] mod;
+    boolean[] valid;
+    boolean changed;
 
-    // This should be equivalent to a cache in memory
-    public Cache(int size) {
-        this.size = size;
+
+    public Cache(int cache_size) {
+        cache = new int[cache_size][MemoryManager.PAGE_SIZE];
+        mod = new boolean[cache_size][MemoryManager.PAGE_SIZE];
+        valid = new boolean[cache_size];
     }
-
-    public int getSize() { return this.size; }
-    public int getBlock_size() { return this.block_size; }
-
-    public void setSize(int size) { this.size = size; }
-    public void setBlock_size(int block_size) { this.block_size = block_size; }
-
-
 }

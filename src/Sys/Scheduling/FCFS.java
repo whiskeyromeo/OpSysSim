@@ -24,13 +24,16 @@ public class FCFS extends Scheduler {
     }
 
     public void addToQueue(PCB process) {
-        process.setNextBurst(process.getRemainingBurst());
         this.queue.add(process);
     }
 
     public PCB getNextFromQueue() {
         return getNextFromQueue(queue);
 
+    }
+
+    public void resetQueue() {
+        queue.clear();
     }
 
 

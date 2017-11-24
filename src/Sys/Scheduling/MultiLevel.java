@@ -21,21 +21,29 @@ public class MultiLevel {
     boolean runBackground;
 
     // Set the time quantum to determine which scheduler should be called upon
-    public final int SJF_QUANTUM = 10;      // If a process has a burst time of < 10 --> sjf
-    public final int RR_QUANTUM = 80;       // If a process has a burst time of < 40 --> rrobin
+    public final int SJF_QUANTUM = 20;      // If a process has a burst time of < 10 --> sjf
+    public final int RR_QUANTUM = 120;       // If a process has a burst time of < 40 --> rrobin
                                             // Otherwise --> FCFS
 
+    private static MultiLevel multilevel;
 
-    public MultiLevel () {
+    protected MultiLevel () {
         sjfScheduler = new SJF();
         roundRobinScheduler = new RoundRobin();
         fcfsScheduler = new FCFS();
-        runBackground = true;
+        runBackground = false;
+    }
+
+    public static MultiLevel getInstance() {
+        if(multilevel == null) {
+            multilevel = new MultiLevel();
+        }
+        return multilevel;
     }
 
     /**
-     * This implements Multilevel scheduling with priorities based on burst time
-     * and whether a process is ioBound or not --> IO bound processes should either end up
+     * TODO : CONSIDER CONVERTING THIS BACK TO BEING BASED ON BURST SIZE
+     * This implements Multilevel scheduling with priorities based on memory size
      * in SJF or Round Robin queues
      * @param process
      * @throws IllegalArgumentException
@@ -44,11 +52,12 @@ public class MultiLevel {
         if(process.getCurrentState() != ProcessState.STATE.READY)
             throw new IllegalArgumentException("Process must be in READY state");
 
-        int remainingBurst = process.getRemainingBurst();
 
-        if(remainingBurst < SJF_QUANTUM) {
+        int remainingBurst = process.getMemRequired();
+
+        if(remainingBurst <= SJF_QUANTUM) {
             sjfScheduler.addToQueue(process);
-        } else if(remainingBurst < RR_QUANTUM || process.isIoBound()) {
+        } else if(remainingBurst <= RR_QUANTUM) {
             roundRobinScheduler.addToQueue(process);
         } else {
             fcfsScheduler.addToQueue(process);
@@ -61,17 +70,27 @@ public class MultiLevel {
      */
     public PCB getNextProcess() {
         if(sjfScheduler.getQueue().size() > 0 && !runBackground ) {
+            System.out.println("Retrieving from SJF");
             return sjfScheduler.getNextFromQueue();
         }
         if(roundRobinScheduler.getQueue().size() > 0 && !runBackground ) {
+            System.out.println("Retrieving from RoundRobin");
             return roundRobinScheduler.getNextFromQueue();
         }
         if(fcfsScheduler.getQueue().size() > 0) {
+            System.out.println("Retrieving from FCFS");
             return fcfsScheduler.getNextFromQueue();
         }
         return null;
     }
 
+    public int getReadyCount() {
+        int readyProcesses = 0;
+        readyProcesses += sjfScheduler.getQueue().size();
+        readyProcesses += roundRobinScheduler.getQueue().size();
+        readyProcesses += fcfsScheduler.getQueue().size();
+        return readyProcesses;
+    }
 
 
 
