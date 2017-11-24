@@ -84,6 +84,9 @@ public class MultiLevel {
         return null;
     }
 
+    /**
+     * @return A count of all the processes currently in the ready queues
+     */
     public int getReadyCount() {
         int readyProcesses = 0;
         readyProcesses += sjfScheduler.getQueue().size();
@@ -91,6 +94,8 @@ public class MultiLevel {
         readyProcesses += fcfsScheduler.getQueue().size();
         return readyProcesses;
     }
+
+
 
 
 

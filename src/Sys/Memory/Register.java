@@ -11,15 +11,21 @@ public class Register {
 
     private String address;
     private String data;
+    private boolean isOccupied;
 
     // This should be equivalent to a register in memory
     public Register(String address) {
         this.address = address;
+        this.isOccupied = false;
     }
 
 
     public void setData(String data) { this.data = data; }
     public void setAddress(String address) { this.address = address; }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
+    }
 
     public int size() { return REGISTER_SIZE; }
     public String getData() { return this.data; }
@@ -27,5 +33,8 @@ public class Register {
         return this.address;
     }
 
+    public boolean isOccupied() {
+        return isOccupied;
+    }
 }
 

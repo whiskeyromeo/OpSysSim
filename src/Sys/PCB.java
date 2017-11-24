@@ -23,6 +23,9 @@ public class PCB implements Cloneable {
     private int burstTime;
     private int waitTime;           // current wait time of the process
     private int memRequired;        // amount of memory required from the program file
+    private int memAllocated;       // amount of memory currently allocated to the process
+    private int ioRequests;
+    private int estimatedRunTime;
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
     private ArrayList<PCB> children; // list of children of the process
@@ -31,16 +34,17 @@ public class PCB implements Cloneable {
     public PCB(int id, int parentId) {
         this.pid = id;                                  // id of the process
         this.ppid = parentId;                           // parent id if exists, otherwise -1
-        this.registers = new ArrayList<Register>();     // The set of registers allocated to the process
-        this.instructions = new ArrayList<String>();    // The set of instructions for the process parsed from a file
-        this.children = new ArrayList<PCB>();           // children of the process
+        this.registers = new ArrayList<>();     // The set of registers allocated to the process
+        this.instructions = new ArrayList<>();    // The set of instructions for the process parsed from a file
+        this.children = new ArrayList<>();           // children of the process
         this.arrivalTime = Kernel.getSystemClock();
         this.currentState = STATE.NEW;
         this.waitTime = 0;
         this.burstTime = 0;
-
-        this.programCounter = 0;                        // program counter --> points to next process to be executed in program file
-
+        this.memAllocated = 0;
+        this.ioRequests = 0;
+        this.programCounter = 0; // program counter --> points to next process to be executed in program file
+        this.estimatedRunTime = 0;
     }
 
     public PCB(int id, int parentId, ArrayList<Register> registers, ArrayList<String> instructions, int cycles, STATE state, int pc) {
@@ -54,7 +58,10 @@ public class PCB implements Cloneable {
         this.waitTime = 0;
         this.programCounter = pc;
         this.burstTime = cycles;
+        this.ioRequests = 0;
     }
+
+
 
     /**
      * forks a process --> returns the parent to the ReadyQueue
@@ -96,7 +103,7 @@ public class PCB implements Cloneable {
     public int getPpid() { return this.ppid; }
     public int getMemRequired() { return this.memRequired; }
     public int getProgramCounter() { return this.programCounter; }
-
+    public int getMemAllocated() { return this.memAllocated; }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
@@ -113,17 +120,18 @@ public class PCB implements Cloneable {
     public void setMemRequired(int mem) { this.memRequired = mem; }
     public void setProgramCounter(int pc) { this.programCounter = pc; }
     public void setBurstTime(int burstTime) { this.burstTime = burstTime; }
-
+    public void setMemAllocated(int mem) { this.memAllocated = mem; }
     /**
      * Initialize a PCB with the relevant information
      * @param commands --> An ArrayList of the String commands from a file
      * @param instructionIndex --> The index of the next instruction to execute in the ArrayList
      * @param memNeeded --> memory required by the process
      */
-    public void initializeBlock(ArrayList<String> commands, int instructionIndex, int memNeeded ) {
+    public void initializeBlock(ArrayList<String> commands, int instructionIndex, int memNeeded, int estCycles ) {
         this.instructions = commands;
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
+        this.estimatedRunTime = estCycles;
     }
 
     public void exit() {

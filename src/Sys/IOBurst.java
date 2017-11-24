@@ -12,7 +12,7 @@ public class IOBurst {
 
     public static int generateIO() {
         Random random = new Random();
-        return random.nextInt(LOWER_BOUND + (UPPER_BOUND-LOWER_BOUND)+1);
+        return LOWER_BOUND + random.nextInt( (UPPER_BOUND-LOWER_BOUND)+1);
     }
 
 

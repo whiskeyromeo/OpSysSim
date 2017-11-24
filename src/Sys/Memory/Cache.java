@@ -19,4 +19,6 @@ public class Cache {
         mod = new boolean[cache_size][MemoryManager.PAGE_SIZE];
         valid = new boolean[cache_size];
     }
+
+
 }

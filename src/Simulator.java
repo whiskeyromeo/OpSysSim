@@ -12,6 +12,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.*;
 
 /**
@@ -36,12 +38,31 @@ public class Simulator {
 
     }
 
+    /**
+     * Hacky method to get the estimated number of cycles for printing later
+     * @param commands
+     * @return
+     */
+    public static int calculateEstimatedCycles(ArrayList<String> commands) {
+        int cyclesNeeded = 0;
+        for(String command: commands) {
+            String val = command.replaceAll("[^0-9]","");
+            if(val.length() > 0) {
+                cyclesNeeded += Integer.valueOf(val);
+            }
+            if(command.matches("I/O")) {
+                cyclesNeeded += 50; // Assume the max
+            }
 
+        }
+        return cyclesNeeded;
+    }
 
     public static PCB makeFakeProcess(int mem) {
         PCB process = new PCB(kernel.getNewPid(), -1);
         ArrayList<String> commands = new ArrayList<>(Arrays.asList("CALCULATE 20", "YIELD", "I/O", "CALCULATE 10", "OUT", "CALCULATE 20"));
-        process.initializeBlock(commands, 0, mem);
+        int cycles = calculateEstimatedCycles(commands);
+        process.initializeBlock(commands, 0, mem, cycles);
         return process;
     }
 
@@ -53,6 +74,7 @@ public class Simulator {
             mem = r.nextInt(300);
             PCB process = makeFakeProcess(mem);
             longTermScheduler.addToWaitingQueue(process);
+
         }
         for(int i=0; i < numProcesses; i++){
             longTermScheduler.scheduleWaitingProcess();
@@ -62,9 +84,9 @@ public class Simulator {
 
 
     public static void testCPU() {
-        populateReadyQueues(4);
-        CPU cpu = new CPU(1);
-        cpu.run();
+        populateReadyQueues(1);
+        //CPU cpu = new CPU(1);
+        //cpu.run();
 
     }
 

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class CPU implements Runnable {
 
 
-    public static final int REGISTER_COUNT = 32;
+    public static final int REGISTER_COUNT = 64;
     public static final int CPU_COUNT = 4;
     public static final int CACHE_SIZE = 120;
 
@@ -38,6 +38,27 @@ public class CPU implements Runnable {
         this.cpuID = cpuId;
         this.clock = 0;
     }
+
+
+    public Register[] instantiateRegisters() {
+        Register[] registers = new Register[REGISTER_COUNT];
+        for(int i = 0; i  < REGISTER_COUNT; i++) {
+            registers[i] = new Register("NULL");
+        }
+        return registers;
+    }
+
+
+    public void addInstructionsToRegisters() {
+        ArrayList<String> instructions = this.activeProcess.getInstructions();
+        for(int i = 0; i < REGISTER_COUNT; i++) {
+            this.registerSet[i].setOccupied(true);
+            this.registerSet[i].setData(instructions.get(i));
+        }
+
+    }
+
+
 
     public void setActiveProcess() {
         this.activeProcess = dispatcher.getNextProcessToExecute();
@@ -63,7 +84,6 @@ public class CPU implements Runnable {
             System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
             execute();
         }
-
     }
 
     public void execute() {
@@ -76,6 +96,7 @@ public class CPU implements Runnable {
 
         instructionSet = this.activeProcess.getInstructions();
         programCounter = this.activeProcess.getProgramCounter();
+
 
         while( programCounter < instructionSet.size() ) {
 
@@ -98,7 +119,7 @@ public class CPU implements Runnable {
                         signalInterrupt = true;
                         break;
                     case "YIELD":
-                        System.out.format("YIELD for pid : %d", activeProcess.getPid());
+                        System.out.format("YIELD for pid : %d\n", activeProcess.getPid());
 //                        signalInterrupt = true;
                         break;
                     case "OUT":
@@ -134,11 +155,6 @@ public class CPU implements Runnable {
         memoryManager.deallocateMemory(this.activeProcess.getMemRequired());
         this.activeProcess.exit();
 
-
-    }
-
-    public void writeLog() {
-        
     }
 
 
