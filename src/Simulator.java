@@ -49,18 +49,37 @@ public class Simulator {
             String val = command.replaceAll("[^0-9]","");
             if(val.length() > 0) {
                 cyclesNeeded += Integer.valueOf(val);
-            }
-            if(command.matches("I/O")) {
+            } else if(command.matches("I/O")) {
                 cyclesNeeded += 50; // Assume the max
+            } else {
+                cyclesNeeded += 1; // Assume all other commands take 1 cycle
             }
 
         }
         return cyclesNeeded;
     }
 
-    public static PCB makeFakeProcess(int mem) {
+    public static ArrayList<String> generateFakeProcessString(int length) {
+        int chosen, randCalcVal;
+        String[] commands = {"CALCULATE", "YIELD","I/O", "OUT"};
+        ArrayList<String> commandList = new ArrayList<>();
+        Random r = new Random();
+        for(int i = 0; i < length; i++) {
+            chosen = r.nextInt(4);
+            if(chosen == 0) {
+                randCalcVal = r.nextInt(200) + 1;
+                commandList.add(commands[chosen] + " " + String.valueOf(randCalcVal));
+            } else {
+                commandList.add(commands[chosen]);
+            }
+        }
+        return commandList;
+
+    }
+
+    public static PCB makeFakeProcess(int mem, int processLen) {
         PCB process = new PCB(kernel.getNewPid(), -1);
-        ArrayList<String> commands = new ArrayList<>(Arrays.asList("CALCULATE 20", "YIELD", "I/O", "CALCULATE 10", "OUT", "CALCULATE 20"));
+        ArrayList<String> commands = generateFakeProcessString(processLen);
         int cycles = calculateEstimatedCycles(commands);
         process.initializeBlock(commands, 0, mem, cycles);
         return process;
@@ -69,12 +88,17 @@ public class Simulator {
     public static void populateReadyQueues(int numProcesses) {
         LongTerm longTermScheduler = LongTerm.getInstance();
         Random r = new Random();
-        int mem;
+        int mem, procLen;
         for(int i=0; i < numProcesses; i++){
             mem = r.nextInt(300);
-            PCB process = makeFakeProcess(mem);
+            procLen = r.nextInt(14) + 1;
+            PCB process = makeFakeProcess(mem,procLen);
+//            System.out.format("Process : ");
+//            for(String command : process.getInstructions()) {
+//                System.out.format(" %s , ", command);
+//            }
+            System.out.format("\n");
             longTermScheduler.addToWaitingQueue(process);
-
         }
         for(int i=0; i < numProcesses; i++){
             longTermScheduler.scheduleWaitingProcess();
@@ -84,10 +108,29 @@ public class Simulator {
 
 
     public static void testCPU() {
-        populateReadyQueues(1);
-        //CPU cpu = new CPU(1);
-        //cpu.run();
+        populateReadyQueues(10);
+//        MultiLevel multiLevel = MultiLevel.getInstance();
+//        PCB next = multiLevel.getNextProcess();
+//        retrieveProcessInfo(next);
+//        next = multiLevel.getNextProcess();
+//        retrieveProcessInfo(next);
+        CPU cpu = new CPU(1);
+        cpu.run();
 
+    }
+
+    public static void retrieveProcessInfo(PCB process) {
+        System.out.format("next id : %d\n", process.getPid());
+        System.out.format("estimated : %d\n", process.getEstimatedRunTime());
+        printInstructionSet(process);
+    }
+
+    public static void printInstructionSet(PCB process) {
+        System.out.format("instructions : ");
+        for(String instruction : process.getInstructions()) {
+            System.out.format("%s ,", instruction);
+        }
+        System.out.format("\n");
     }
 
 
@@ -98,10 +141,10 @@ public class Simulator {
 
 
         System.out.println("----TESTING PROCESS CREATION");
-        PCB firstProcess = makeFakeProcess(30);
+        PCB firstProcess = makeFakeProcess(30, 8);
         System.out.println("Process " + firstProcess.getPid()  +  " arrival : " + firstProcess.getArrivalTime());
         kernel.advanceClock();
-        PCB secondProcess = makeFakeProcess(220);
+        PCB secondProcess = makeFakeProcess(220, 8);
         System.out.println("Process " + secondProcess.getPid()  +  " arrival : " + secondProcess.getArrivalTime());
 
 

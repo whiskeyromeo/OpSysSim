@@ -33,7 +33,7 @@ public class SJF extends Scheduler{
             return;
         }
         for(PCB p : queue) {
-            if(p.getBurstTime() > process.getBurstTime()) {
+            if(p.getNextBurst() > process.getNextBurst()) {
                i = queue.indexOf(p);
                queue.set(i, process);
                return;

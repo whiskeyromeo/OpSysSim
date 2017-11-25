@@ -20,6 +20,17 @@ public class Register {
     }
 
 
+    public static Register[] instantiateRegisterSet(int num_registers) {
+        Register[] registers = new Register[num_registers];
+        for(int i = 0; i  < num_registers; i++) {
+            registers[i] = new Register("NULL");
+        }
+        return registers;
+    }
+
+
+
+
     public void setData(String data) { this.data = data; }
     public void setAddress(String address) { this.address = address; }
 

@@ -21,8 +21,9 @@ public class MultiLevel {
     boolean runBackground;
 
     // Set the time quantum to determine which scheduler should be called upon
-    public final int SJF_QUANTUM = 20;      // If a process has a burst time of < 10 --> sjf
-    public final int RR_QUANTUM = 120;       // If a process has a burst time of < 40 --> rrobin
+    public final int SJF_QUANTUM = 30;      // If a process has a burst time of < 10 --> sjf
+    public final int RR_SCHED_QUANTUM = 250;       // If a process has a burst time of < 40 --> rrobin
+    public final int RR_TIME_QUANTUM = 30;
                                             // Otherwise --> FCFS
 
     private static MultiLevel multilevel;
@@ -52,14 +53,21 @@ public class MultiLevel {
         if(process.getCurrentState() != ProcessState.STATE.READY)
             throw new IllegalArgumentException("Process must be in READY state");
 
+        int estimatedRunTime = process.getEstimatedRunTime();
 
-        int remainingBurst = process.getMemRequired();
+        System.out.format("process id : %d, ", process.getPid());
 
-        if(remainingBurst <= SJF_QUANTUM) {
+        if(estimatedRunTime <= SJF_QUANTUM) {
+            process.setNextBurst(process.getEstimatedRunTime());
+            System.out.format("---->MultiLevel SJF---> est Run time : %d\n", process.getNextBurst());
             sjfScheduler.addToQueue(process);
-        } else if(remainingBurst <= RR_QUANTUM) {
+        } else if(estimatedRunTime <= RR_SCHED_QUANTUM) {
+            process.setNextBurst(RR_TIME_QUANTUM);
+            System.out.format("---->MultiLevel RR---> est Run time : %d\n", process.getNextBurst());
             roundRobinScheduler.addToQueue(process);
         } else {
+            process.setNextBurst(process.getEstimatedRunTime());
+            System.out.format("---->MultiLevel FCFS---> est Run time : %d\n", process.getNextBurst());
             fcfsScheduler.addToQueue(process);
         }
     }
@@ -94,6 +102,7 @@ public class MultiLevel {
         readyProcesses += fcfsScheduler.getQueue().size();
         return readyProcesses;
     }
+
 
 
 

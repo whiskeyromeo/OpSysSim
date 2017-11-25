@@ -26,6 +26,8 @@ public class PCB implements Cloneable {
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
     private int estimatedRunTime;
+    private int nextBurst;
+
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
     private ArrayList<PCB> children; // list of children of the process
@@ -47,7 +49,7 @@ public class PCB implements Cloneable {
         this.estimatedRunTime = 0;
     }
 
-    public PCB(int id, int parentId, ArrayList<Register> registers, ArrayList<String> instructions, int cycles, STATE state, int pc) {
+    public PCB(int id, int parentId, ArrayList<Register> registers, ArrayList<String> instructions, int cycles, STATE state, int pc, int parentRunTime, int nextBurst) {
         this.pid = id;
         this.ppid = parentId;
         this.registers = registers;
@@ -59,6 +61,9 @@ public class PCB implements Cloneable {
         this.programCounter = pc;
         this.burstTime = cycles;
         this.ioRequests = 0;
+        this.estimatedRunTime = parentRunTime;
+        this.nextBurst = nextBurst;
+
     }
 
 
@@ -72,7 +77,18 @@ public class PCB implements Cloneable {
             throw new IllegalArgumentException("The process must be RUNNING to be forked");
         }
         // Copy the parent's information into the child
-        PCB child = new PCB(Kernel.getNewPid(), this.pid, this.registers, this.instructions, this.burstTime, STATE.RUN, this.programCounter);
+        PCB child = new PCB(
+                Kernel.getNewPid(),
+                this.pid,
+                this.registers,
+                this.instructions,
+                this.burstTime,
+                STATE.RUN,
+                this.programCounter,
+                this.estimatedRunTime,
+                this.nextBurst
+        );
+
         this.children.add(child);
         this.setCurrentState(STATE.READY);
         multiLevelScheduler.scheduleProcess(this);
@@ -104,6 +120,8 @@ public class PCB implements Cloneable {
     public int getMemRequired() { return this.memRequired; }
     public int getProgramCounter() { return this.programCounter; }
     public int getMemAllocated() { return this.memAllocated; }
+    public int getEstimatedRunTime() { return this.estimatedRunTime; }
+    public int getNextBurst() { return this.nextBurst; }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
@@ -121,6 +139,10 @@ public class PCB implements Cloneable {
     public void setProgramCounter(int pc) { this.programCounter = pc; }
     public void setBurstTime(int burstTime) { this.burstTime = burstTime; }
     public void setMemAllocated(int mem) { this.memAllocated = mem; }
+    public void setNextBurst(int burst) { this.nextBurst = burst; }
+
+    public void decrementEstimatedRunTime(int mem) { this.estimatedRunTime -= mem; }
+
     /**
      * Initialize a PCB with the relevant information
      * @param commands --> An ArrayList of the String commands from a file
@@ -145,8 +167,8 @@ public class PCB implements Cloneable {
     /**
      * Method to decrement burst time
      */
-    public void decrementBurstTime() {
-        this.burstTime--;
+    public void incrementBurstTime() {
+        this.burstTime++;
     }
 
 

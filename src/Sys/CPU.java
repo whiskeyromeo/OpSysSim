@@ -32,21 +32,12 @@ public class CPU implements Runnable {
     private MemoryManager memoryManager = MemoryManager.getInstance();
 
 
-
     public CPU(int cpuId) {
-        this.registerSet = new Register[REGISTER_COUNT];
+        this.registerSet = Register.instantiateRegisterSet(REGISTER_COUNT);
         this.cpuID = cpuId;
         this.clock = 0;
     }
 
-
-    public Register[] instantiateRegisters() {
-        Register[] registers = new Register[REGISTER_COUNT];
-        for(int i = 0; i  < REGISTER_COUNT; i++) {
-            registers[i] = new Register("NULL");
-        }
-        return registers;
-    }
 
 
     public void addInstructionsToRegisters() {
@@ -77,78 +68,135 @@ public class CPU implements Runnable {
      * Need to increment clock on CPU while decrementing remaining burst time
      *
      */
+    int count = 0;
     public void run() {
         // CPU EXECUTES A PROCESS
         while(multiLevel.getReadyCount() != 0) {
-            //TODO: Implement a check to see whether any processes
-            System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
+            //System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
             execute();
         }
+        System.out.println("-----ALL PROCESSES EXECUTED-------");
     }
 
     public void execute() {
         String[] currentInstruction;
         int programCounter;
-        int currentBurst;
+        int currentBurst, nextBurst;
         int ioBurst;
+        int pid;
+        int calcBurst;
 
         setActiveProcess();
 
+        pid = this.activeProcess.getPid();
         instructionSet = this.activeProcess.getInstructions();
         programCounter = this.activeProcess.getProgramCounter();
 
 
-        while( programCounter < instructionSet.size() ) {
+        currentBurst = 0;
+        calcBurst = this.activeProcess.getBurstTime();
+        nextBurst = this.activeProcess.getNextBurst();
 
-            currentBurst = this.activeProcess.getBurstTime();
+        //************ ERROR CHECKING ******************//
 
-            if(currentBurst == 0 && !signalInterrupt) {
+
+//        System.out.format("Calculating for process %s\n", pid);
+        System.out.format("instructions : ");
+        for(String command : instructionSet) {
+            System.out.format("%s , ", command);
+        }
+        System.out.format("\n");
+//
+//        System.out.format("Program Counter is %d\n", programCounter);
+//        if(instructionSet.size() < programCounter) {
+//            System.out.format("Current instruction is : %s \n", instructionSet.get(programCounter));
+//        } else {
+//            System.out.println("No more Instructions, only calc left");
+//        }
+//        System.out.format("Calc burst for %d is %d\n",pid, calcBurst );
+////        System.out.format("Current burst for %d is %d\n",pid, currentBurst );
+//        System.out.format("Next burst for %d is %d\n", pid, nextBurst);
+
+        // *********** END ERROR CHECKING *****************//
+
+        while(currentBurst <= nextBurst && !signalInterrupt ) {
+
+            if(( calcBurst == 0 && !signalInterrupt) && (programCounter != instructionSet.size())) {
 
                 currentInstruction = instructionSet.get(programCounter).split(" ");
 
                 switch (currentInstruction[0]) {
                     case "CALCULATE":
-                        activeProcess.setBurstTime(Integer.valueOf(currentInstruction[1]));
-                        System.out.format("CALCULATE %s for pid : %d\n", currentInstruction[1], activeProcess.getPid());
+                        calcBurst = Integer.valueOf(currentInstruction[1]);
+                        System.out.format("CALCULATE %s for pid : %d\n", currentInstruction[1], pid);
                         break;
                     case "I/O":
-                        ioBurst = IOBurst.generateIO();
-                        activeProcess.setBurstTime(ioBurst);
+                        calcBurst = IOBurst.generateIO();
+                        // TODO : BLOCKED PROCESSES FALL THROUGH --> Need to schedule properly
                         activeProcess.setCurrentState(ProcessState.STATE.BLOCKED);
-                        System.out.format("I/O %d for pid : %d\n",ioBurst, activeProcess.getPid());
-                        signalInterrupt = true;
-                        break;
-                    case "YIELD":
-                        System.out.format("YIELD for pid : %d\n", activeProcess.getPid());
+                        System.out.format("I/O %d for pid : %d\n",calcBurst,pid);
 //                        signalInterrupt = true;
                         break;
+                    case "YIELD":
+                            System.out.format("YIELD for pid : %d\n", pid);
+    //                        signalInterrupt = true;
+                        break;
                     case "OUT":
-                        activeProcess.printPCBInfo();
+                            System.out.format("OUT for pid : %d\n", pid);
+//                            activeProcess.printPCBInfo();
                         break;
                     default:
+                        System.out.print("BROKE TO SWITCH DEFAULT");
                         return;
 
                 }
-                activeProcess.setProgramCounter(programCounter++);
+                programCounter += 1;
+                activeProcess.setProgramCounter(programCounter);
             } else {
-//                System.out.format("process cycling --> Cycles remaining : %d\n", currentBurst);
-                this.activeProcess.decrementBurstTime();
-                // HACK
-                if(this.activeProcess.getBurstTime() == 0) {
-                    if(this.activeProcess.getCurrentState() == ProcessState.STATE.BLOCKED) {
-                        System.out.format("Process %d is now unblocked!\n", this.activeProcess.getPid());
-                        this.activeProcess.setCurrentState(ProcessState.STATE.RUN);
-                        signalInterrupt = false;
-                    }
-                    activeProcess.setProgramCounter(programCounter++);
-                }
+                currentBurst++;
+                calcBurst--;
+//                if(calcBurst == 0) {
+//                    System.out.format("\nprocess done cycling --> Cycles remaining : %d\n", nextBurst - currentBurst);
+//                }
             }
             advanceClock();
+
+            // Ensure that all Calculations have been done before the process can exit
+            if(programCounter >= instructionSet.size() && calcBurst == 0) {
+                exitProcess();
+                System.out.format("process %d exited\n", pid);
+                break;
+            }
+
+        } // End while
+
+        // Process has been preempted --> save current state
+        if(this.activeProcess.getCurrentState() == ProcessState.STATE.RUN) {
+            System.out.format("Preempting process %d\n", pid);
+            System.out.format("Current Burst : %d, calcBurst : %d \n", currentBurst, calcBurst);
+            preemptCurrentProcess(calcBurst, currentBurst);
         }
-        System.out.println("Out of execute");
 
-        this.activeProcess.exit();
+        // TODO: CONVERT THIS TO SOMETHING THAT ACTUALLY COMMUNICATES WITH INTERRUPT HANDLER/IO
+        if(this.activeProcess.getCurrentState() == ProcessState.STATE.BLOCKED) {
+            System.out.format("Preempting BLOCKED process %d\n", pid);
+            System.out.format("Current Burst : %d, calcBurst : %d \n", currentBurst, calcBurst);
+            preemptCurrentProcess(calcBurst, currentBurst);
+        }
 
+        System.out.format("Finished calculating for process %s\n", this.activeProcess.getPid());
+        System.out.println("---------------------------------");
+
+
+    }
+
+
+    public void preemptCurrentProcess(int calcBurst, int currentBurst) {
+        this.activeProcess.setBurstTime(calcBurst);
+        System.out.format("decrementing estimated time by : %s\n", currentBurst);
+        this.activeProcess.decrementEstimatedRunTime(currentBurst);
+        this.activeProcess.setCurrentState(ProcessState.STATE.READY);
+        multiLevel.scheduleProcess(this.activeProcess);
     }
 
     public void exitProcess() {

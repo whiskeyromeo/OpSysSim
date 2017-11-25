@@ -33,6 +33,7 @@ public class Dispatcher {
     public PCB getNextProcessToExecute() {
         PCB process;
         process = processScheduler.getNextProcess();
+        System.out.format("---Dispatcher --> estimated Run time is : %d\n",process.getEstimatedRunTime());
         if(process != null) {
             process.setCurrentState(ProcessState.STATE.RUN);
         }
