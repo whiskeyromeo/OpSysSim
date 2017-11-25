@@ -25,12 +25,14 @@ public class CPU implements Runnable {
     private Register[] registerSet;     // The amount of memory available to a CPU
     private int cpuID;      // Figure we need an id to keep track of each CPU in case of multiple cores
     private int clock;
+    private boolean terminationStatus;
 
     public CPU(int cpuId) {
         this.registerSet = Register.instantiateRegisterSet(REGISTER_COUNT);
         this.cpuID = cpuId;
         this.clock = 0;
         this.cores = generateCores(0,CORE_COUNT);
+        this.terminationStatus = false;
     }
 
     @Override
@@ -49,8 +51,16 @@ public class CPU implements Runnable {
         return cores;
     }
 
-    public void advanceClock() {
 
+    
+    public boolean checkTerminationStatus() {
+        return this.terminationStatus;
     }
+
+    public void setTerminationStatus(boolean val) {
+        this.terminationStatus = true;
+    }
+
+
 
 }

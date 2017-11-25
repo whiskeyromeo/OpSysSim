@@ -42,8 +42,6 @@ public class Core implements Runnable {
 
     }
 
-
-
     public void setActiveProcess() {
         this.activeProcess = dispatcher.getNextProcessToExecute();
     }
@@ -62,13 +60,24 @@ public class Core implements Runnable {
      *
      */
     int count = 0;
-    public void run() {
-        // CPU EXECUTES A PROCESS
-        while(multiLevel.getReadyCount() != 0) {
-            //System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
-            execute();
+    public void run(){
+
+        while(true) {
+            while(multiLevel.getReadyCount() != 0) {
+                //System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
+                execute();
+            }
+            if(multiLevel.getReadyCount() == 0) {
+                Thread.currentThread().yield();
+                System.out.println("Current thread for core " + coreId + " waiting on new input...");
+            }
+            try {
+                Thread.currentThread().sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("-----ALL PROCESSES EXECUTED-------  ---> core " + coreId);
+        //System.out.println("-----ALL PROCESSES EXECUTED-------  ---> core " + coreId);
     }
 
     public void execute() {
@@ -79,7 +88,12 @@ public class Core implements Runnable {
         int pid;
         int calcBurst;
 
-        setActiveProcess();
+        try {
+            setActiveProcess();
+        } catch(NullPointerException ne) {
+            System.out.println("core " + coreId + " caught null pointer.....................................");
+            return;
+        }
 
 
         currentBurst = 0;
@@ -147,6 +161,7 @@ public class Core implements Runnable {
             } else {
                 currentBurst++;
                 calcBurst--;
+                this.activeProcess.setBurstTime(calcBurst);
 //                if(calcBurst == 0) {
 //                    System.out.format("\nprocess done cycling --> Cycles remaining : %d\n", nextBurst - currentBurst);
 //                }
@@ -178,7 +193,6 @@ public class Core implements Runnable {
 
         System.out.format("Finished calculating for process %s  ---> core %d\n", this.activeProcess.getPid(), coreId);
         System.out.println("---------------------------------");
-
 
     }
 
