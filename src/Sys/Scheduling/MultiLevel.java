@@ -49,13 +49,13 @@ public class MultiLevel {
      * @param process
      * @throws IllegalArgumentException
      */
-    public void scheduleProcess(PCB process) throws IllegalArgumentException {
+    public synchronized void scheduleProcess(PCB process) throws IllegalArgumentException {
         if(process.getCurrentState() != ProcessState.STATE.READY)
             throw new IllegalArgumentException("Process must be in READY state");
 
         int estimatedRunTime = process.getEstimatedRunTime();
 
-        System.out.format("process id : %d, ", process.getPid());
+        System.out.format("--MultiLevel-- process id : %d ", process.getPid());
 
         if(estimatedRunTime <= SJF_QUANTUM) {
             process.setNextBurst(process.getEstimatedRunTime());
@@ -76,7 +76,7 @@ public class MultiLevel {
      * Get the next process to execute --> Exhaust each queue in order
      * @return
      */
-    public PCB getNextProcess() {
+    public synchronized PCB getNextProcess() {
         if(sjfScheduler.getQueue().size() > 0 && !runBackground ) {
             System.out.println("Retrieving from SJF");
             return sjfScheduler.getNextFromQueue();
@@ -95,7 +95,7 @@ public class MultiLevel {
     /**
      * @return A count of all the processes currently in the ready queues
      */
-    public int getReadyCount() {
+    public synchronized int getReadyCount() {
         int readyProcesses = 0;
         readyProcesses += sjfScheduler.getQueue().size();
         readyProcesses += roundRobinScheduler.getQueue().size();

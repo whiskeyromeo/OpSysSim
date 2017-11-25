@@ -109,11 +109,6 @@ public class Simulator {
 
     public static void testCPU() {
         populateReadyQueues(10);
-//        MultiLevel multiLevel = MultiLevel.getInstance();
-//        PCB next = multiLevel.getNextProcess();
-//        retrieveProcessInfo(next);
-//        next = multiLevel.getNextProcess();
-//        retrieveProcessInfo(next);
         CPU cpu = new CPU(1);
         cpu.run();
 

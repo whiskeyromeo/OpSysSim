@@ -30,7 +30,7 @@ public class Dispatcher {
      * the short term scheduler and set it to RUN on the CPU
      * @return
      */
-    public PCB getNextProcessToExecute() {
+    public synchronized PCB getNextProcessToExecute() {
         PCB process;
         process = processScheduler.getNextProcess();
         System.out.format("---Dispatcher --> estimated Run time is : %d\n",process.getEstimatedRunTime());
