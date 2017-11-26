@@ -5,5 +5,4 @@ package Sys;
  */
 public class InterruptHandler {
 
-
 }

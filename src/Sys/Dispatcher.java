@@ -33,7 +33,7 @@ public class Dispatcher {
     public synchronized PCB getNextProcessToExecute() {
         PCB process;
         process = processScheduler.getNextProcess();
-        System.out.format("---Dispatcher --> estimated Run time is : %d\n",process.getEstimatedRunTime());
+//        System.out.format("---Dispatcher --> estimated Run time is : %d\n",process.getEstimatedRunTime());
         if(process != null) {
             process.setCurrentState(ProcessState.STATE.RUN);
         }
@@ -41,8 +41,11 @@ public class Dispatcher {
     }
 
 
-    public void addProcessToWaitingQueue(PCB process) {
-
+    public void removeCurrentProcess(PCB process) {
+        if(process.getCurrentState() == ProcessState.STATE.READY)
+            processScheduler.scheduleProcess(process);
+        else
+            System.err.println("-------ERR --> PROCESS NOT IN READY STATE------");
     }
 
     public void endProcess(PCB process) {

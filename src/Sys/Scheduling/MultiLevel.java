@@ -3,6 +3,12 @@ package Sys.Scheduling;
 import Sys.PCB;
 import Sys.ProcessState;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * @project OS_Simulator
  */
@@ -26,6 +32,8 @@ public class MultiLevel {
     public final int RR_TIME_QUANTUM = 30;
                                             // Otherwise --> FCFS
 
+
+
     private static MultiLevel multilevel;
 
     protected MultiLevel () {
@@ -43,8 +51,8 @@ public class MultiLevel {
     }
 
     /**
-     * TODO : CONSIDER CONVERTING THIS BACK TO BEING BASED ON BURST SIZE
-     * This implements Multilevel scheduling with priorities based on memory size
+     *
+     * This implements Multilevel scheduling with priorities based on estimated run time
      * in SJF or Round Robin queues
      * @param process
      * @throws IllegalArgumentException
@@ -55,19 +63,19 @@ public class MultiLevel {
 
         int estimatedRunTime = process.getEstimatedRunTime();
 
-        System.out.format("--MultiLevel-- process id : %d ", process.getPid());
+//        System.out.format("--MultiLevel-- process id : %d ", process.getPid());
 
         if(estimatedRunTime <= SJF_QUANTUM) {
             process.setNextBurst(process.getEstimatedRunTime());
-            System.out.format("---->MultiLevel SJF---> est Run time : %d\n", process.getNextBurst());
+//            System.out.format("---->MultiLevel SJF---> est Run time : %d\n", process.getNextBurst());
             sjfScheduler.addToQueue(process);
         } else if(estimatedRunTime <= RR_SCHED_QUANTUM) {
             process.setNextBurst(RR_TIME_QUANTUM);
-            System.out.format("---->MultiLevel RR---> est Run time : %d\n", process.getNextBurst());
+//            System.out.format("---->MultiLevel RR---> est Run time : %d\n", process.getNextBurst());
             roundRobinScheduler.addToQueue(process);
         } else {
             process.setNextBurst(process.getEstimatedRunTime());
-            System.out.format("---->MultiLevel FCFS---> est Run time : %d\n", process.getNextBurst());
+//            System.out.format("---->MultiLevel FCFS---> est Run time : %d\n", process.getNextBurst());
             fcfsScheduler.addToQueue(process);
         }
     }
@@ -78,17 +86,18 @@ public class MultiLevel {
      */
     public synchronized PCB getNextProcess() {
         if(sjfScheduler.getQueue().size() > 0 && !runBackground ) {
-            System.out.println("Retrieving from SJF");
+//            System.out.println("Retrieving from SJF");
             return sjfScheduler.getNextFromQueue();
         }
         if(roundRobinScheduler.getQueue().size() > 0 && !runBackground ) {
-            System.out.println("Retrieving from RoundRobin");
+//            System.out.println("Retrieving from RoundRobin");
             return roundRobinScheduler.getNextFromQueue();
         }
         if(fcfsScheduler.getQueue().size() > 0) {
-            System.out.println("Retrieving from FCFS");
+//            System.out.println("Retrieving from FCFS");
             return fcfsScheduler.getNextFromQueue();
         }
+        System.out.println("-----MultiLevel --> no more processes to be had");
         return null;
     }
 
@@ -103,6 +112,17 @@ public class MultiLevel {
         return readyProcesses;
     }
 
+
+    public List<PCB> getAllInReady() {
+
+        ArrayList<PCB> sjfQueue = sjfScheduler.getQueue();
+        ArrayList<PCB> rrQueue = roundRobinScheduler.getQueue();
+        ArrayList<PCB> fcfsQueue = fcfsScheduler.getQueue();
+
+        return Stream.of(sjfQueue, rrQueue, fcfsQueue)
+                .flatMap(Collection::stream).collect(Collectors.toList());
+
+    }
 
 
 

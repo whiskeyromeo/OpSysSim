@@ -25,9 +25,7 @@ public class RoundRobin extends Scheduler {
     public int getQueueSize() { return queue.size(); };
 
     public void addToQueue(PCB process) {
-
         queue.add(process);
-
     }
 
     public void resetQueue() {

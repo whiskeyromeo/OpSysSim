@@ -21,12 +21,14 @@ public class PCB implements Cloneable {
     private int programCounter;     // should point to the location of the next process to be executed in the program file
     private int arrivalTime;        // arrival time of the process
     private int burstTime;
-    private int waitTime;           // current wait time of the process
+    private int criticalTime;      // Arrival time to the io queue
     private int memRequired;        // amount of memory required from the program file
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
     private int estimatedRunTime;
     private int nextBurst;
+    private int completedTime;      // Time the process exits
+
 
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
@@ -41,7 +43,7 @@ public class PCB implements Cloneable {
         this.children = new ArrayList<>();           // children of the process
         this.arrivalTime = Kernel.getSystemClock();
         this.currentState = STATE.NEW;
-        this.waitTime = 0;
+        this.criticalTime = 0;
         this.burstTime = 0;
         this.memAllocated = 0;
         this.ioRequests = 0;
@@ -57,7 +59,7 @@ public class PCB implements Cloneable {
         this.children = new ArrayList<PCB>();
         this.arrivalTime = Kernel.getSystemClock();
         this.currentState = state;
-        this.waitTime = 0;
+        this.criticalTime = 0;
         this.programCounter = pc;
         this.burstTime = cycles;
         this.ioRequests = 0;
@@ -122,6 +124,7 @@ public class PCB implements Cloneable {
     public int getMemAllocated() { return this.memAllocated; }
     public int getEstimatedRunTime() { return this.estimatedRunTime; }
     public int getNextBurst() { return this.nextBurst; }
+    public int getCriticalTime() { return this.criticalTime; }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
@@ -140,7 +143,9 @@ public class PCB implements Cloneable {
     public void setBurstTime(int burstTime) { this.burstTime = burstTime; }
     public void setMemAllocated(int mem) { this.memAllocated = mem; }
     public void setNextBurst(int burst) { this.nextBurst = burst; }
+    public void setCriticalTime(int time) { this.criticalTime = time;}
 
+    public void incrementCriticalTime(int amount) { this.criticalTime += amount; }
     public void decrementEstimatedRunTime(int mem) { this.estimatedRunTime -= mem; }
 
     /**
@@ -178,7 +183,8 @@ public class PCB implements Cloneable {
     public void printPCBInfo() {
         System.out.println("PID : " + this.pid +
                 "\nPPID : " + this.ppid +
-                "\nCurrent Instruction : " + this.instructions.get(this.programCounter)
+                "\nCurrent Instruction : " + this.instructions.get(this.programCounter) +
+                "\nCritical Time : " + this.criticalTime
         );
     }
 

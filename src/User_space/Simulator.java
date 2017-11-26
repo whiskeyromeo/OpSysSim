@@ -1,20 +1,15 @@
+package User_space;
+
 import Sys.CPU;
 import Sys.Kernel;
 import Sys.Memory.MemoryManager;
 import Sys.PCB;
 import Sys.ProcessState;
-import Sys.Scheduling.FCFS;
 import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
-import Sys.Scheduling.Scheduler;
-import User_space.GUI;
-import java.awt.*;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.*;
 
 /**
  * @author Capitan on 11/7/17
@@ -24,19 +19,33 @@ public class Simulator {
 
     // Fire up the kernel
     static Kernel kernel = new Kernel();
+    private static LongTerm longTermScheduler = LongTerm.getInstance();
 
 
-    public static void main(String[] args)
-    {
-//        GUI gui = new GUI();
+    //public Simulator() {}
+    private static Simulator simulator;
+
+    protected Simulator() { }
+
+    public static Simulator getInstance() {
+        if(simulator == null) {
+            simulator = new Simulator();
+        }
+        return simulator;
+    }
+
+
+//    public static void main(String[] args)
+//    {
+//        GUI_v2 gui = new GUI_v2();
 //        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        gui.setSize(600, 200);
 //        gui.setVisible(true);
 //        gui.setTitle("Processes Table");
-//        runBaseTests();
-        testCPU();
-
-    }
+////        runBaseTests();
+//        //testCPU();
+//
+//    }
 
     /**
      * Hacky method to get the estimated number of cycles for printing later
@@ -59,6 +68,27 @@ public class Simulator {
         return cyclesNeeded;
     }
 
+    //******** BEGIN FILE PROCESS GENERATION METHODS ********************//
+
+    public static PCB prepareProcessForSimulation(ArrayList<String> fileCommands) {
+        PCB process = new PCB(kernel.getNewPid(), -1);
+        int mem = Integer.parseInt(fileCommands.remove(0));
+        int cycles = calculateEstimatedCycles(fileCommands);
+        process.initializeBlock(fileCommands, 0, mem, cycles);
+        return process;
+    }
+
+
+    public static void scheduleProcessFromFile(ArrayList<String> fileCommands) {
+        PCB process = prepareProcessForSimulation(fileCommands);
+        longTermScheduler.addToWaitingQueue(process);
+    }
+
+    //******** END FILE PROCESS GENERATION METHODS ********************//
+
+    //******** BEGIN FAKE PROCESS GENERATION METHODS ********************//
+
+
     public static ArrayList<String> generateFakeProcessString(int length) {
         int chosen, randCalcVal;
         String[] commands = {"CALCULATE", "YIELD","I/O", "OUT"};
@@ -77,6 +107,7 @@ public class Simulator {
 
     }
 
+
     public static PCB makeFakeProcess(int mem, int processLen) {
         PCB process = new PCB(kernel.getNewPid(), -1);
         ArrayList<String> commands = generateFakeProcessString(processLen);
@@ -86,18 +117,12 @@ public class Simulator {
     }
 
     public static void populateReadyQueues(int numProcesses) {
-        LongTerm longTermScheduler = LongTerm.getInstance();
         Random r = new Random();
         int mem, procLen;
         for(int i=0; i < numProcesses; i++){
             mem = r.nextInt(300);
             procLen = r.nextInt(14) + 1;
             PCB process = makeFakeProcess(mem,procLen);
-//            System.out.format("Process : ");
-//            for(String command : process.getInstructions()) {
-//                System.out.format(" %s , ", command);
-//            }
-            System.out.format("\n");
             longTermScheduler.addToWaitingQueue(process);
         }
         for(int i=0; i < numProcesses; i++){
@@ -106,13 +131,30 @@ public class Simulator {
 
     }
 
+    public static void populateReadyQueues(int numProcesses, int mem) {
+        Random r = new Random();
+        int procLen;
+        for(int i=0; i < numProcesses; i++){
+            procLen = r.nextInt(14) + 1;
+            PCB process = makeFakeProcess(mem,procLen);
+            longTermScheduler.addToWaitingQueue(process);
+        }
+        for(int i=0; i < numProcesses; i++){
+            longTermScheduler.scheduleWaitingProcess();
+        }
+
+    }
+
+    //******** END FAKE PROCESS GENERATION METHODS ********************//
 
     public static void testCPU() {
-        populateReadyQueues(10);
+        populateReadyQueues(5);
         CPU cpu = new CPU(1);
         cpu.run();
 
     }
+
+
 
     public static void retrieveProcessInfo(PCB process) {
         System.out.format("next id : %d\n", process.getPid());
@@ -127,6 +169,8 @@ public class Simulator {
         }
         System.out.format("\n");
     }
+
+
 
 
     public static void runBaseTests() {

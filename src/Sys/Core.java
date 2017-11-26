@@ -5,6 +5,8 @@ import Sys.Memory.Register;
 import Sys.Scheduling.MultiLevel;
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 
 /**
  * @project OS_Simulator
@@ -24,13 +26,16 @@ public class Core implements Runnable {
     private MultiLevel multiLevel = MultiLevel.getInstance();
     private MemoryManager memoryManager = MemoryManager.getInstance();
 
+    private Semaphore semaphore;
+    private BlockingQueue<String> messageQueue;
 
-    public Core(int coreId) {
+    public Core(Semaphore parentSemaphore, BlockingQueue<String> parentQueue, int coreId) {
         this.registerSet = Register.instantiateRegisterSet(REGISTER_COUNT);
         this.coreId = coreId;
         this.clock = 0;
+        this.semaphore = parentSemaphore;
+        this.messageQueue = parentQueue;
     }
-
 
 
     public void addInstructionsToRegisters() {
@@ -62,20 +67,15 @@ public class Core implements Runnable {
     int count = 0;
     public void run(){
 
-        while(true) {
-            while(multiLevel.getReadyCount() != 0) {
-                //System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
-                execute();
-            }
-            if(multiLevel.getReadyCount() == 0) {
-                Thread.currentThread().yield();
-                System.out.println("Current thread for core " + coreId + " waiting on new input...");
-            }
-            try {
-                Thread.currentThread().sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
+        while(multiLevel.getReadyCount() != 0) {
+            //System.out.format("Ready count is : %d\n", multiLevel.getReadyCount());
+            execute();
+
+        }
+        if(multiLevel.getReadyCount() == 0) {
+            Thread.currentThread().yield();
+            System.out.println("Current thread for core " + coreId + " waiting on new input...");
         }
         //System.out.println("-----ALL PROCESSES EXECUTED-------  ---> core " + coreId);
     }
@@ -84,14 +84,12 @@ public class Core implements Runnable {
         String[] currentInstruction;
         int programCounter;
         int currentBurst, nextBurst;
-        int ioBurst;
+        int lastIoBurst = 0;
         int pid;
         int calcBurst;
 
-        try {
-            setActiveProcess();
-        } catch(NullPointerException ne) {
-            System.out.println("core " + coreId + " caught null pointer.....................................");
+        setActiveProcess();
+        if(this.activeProcess == null) {
             return;
         }
 
@@ -105,14 +103,13 @@ public class Core implements Runnable {
 
         //************ ERROR CHECKING ******************//
 
+        System.out.format("-- Process %d now being calculated by core %d, program counter = %d ----\n", pid, coreId, programCounter);
+        System.out.format("Process %d instructions : ", pid);
+        for(String command : instructionSet) {
+            System.out.format("%s , ", command);
+        }
+        System.out.format(":: set size = %d\n", instructionSet.size());
 
-        System.out.format("-- Process %d now being calculated by core %d ----\n", pid, coreId);
-//        System.out.format("instructions : ");
-//        for(String command : instructionSet) {
-//            System.out.format("%s , ", command);
-//        }
-//        System.out.format("\n");
-//
 //        System.out.format("Program Counter is %d\n", programCounter);
 //        if(instructionSet.size() < programCounter) {
 //            System.out.format("Current instruction is : %s \n", instructionSet.get(programCounter));
@@ -120,36 +117,62 @@ public class Core implements Runnable {
 //            System.out.println("No more Instructions, only calc left");
 //        }
 //        System.out.format("Calc burst for %d is %d\n",pid, calcBurst );
-////        System.out.format("Current burst for %d is %d\n",pid, currentBurst );
+//        System.out.format("Current burst for %d is %d\n",pid, currentBurst );
 //        System.out.format("Next burst for %d is %d\n", pid, nextBurst);
+//        System.out.format("-WHILE--process %d :: calc burst = %d, nextBurst = %d, currentBurst = %d \n", pid, calcBurst, nextBurst, currentBurst);
 
         // *********** END ERROR CHECKING *****************//
 
-        while(currentBurst <= nextBurst && !signalInterrupt ) {
 
-            if(( calcBurst == 0 && !signalInterrupt) && (programCounter != instructionSet.size())) {
+        int count = 0;
+        while(currentBurst < nextBurst && !signalInterrupt ) {
+
+//            if(count > 150) {
+//                System.out.println("looping in while");
+//            }
+//            count++;
+
+            if(( calcBurst == 0 && !signalInterrupt) && (programCounter < instructionSet.size())) {
 
                 currentInstruction = instructionSet.get(programCounter).split(" ");
-
                 switch (currentInstruction[0]) {
+
                     case "CALCULATE":
                         calcBurst = Integer.valueOf(currentInstruction[1]);
-                        System.out.format("CALCULATE %s for pid : %d ---> core %d\n", currentInstruction[1], pid, coreId);
+                        System.out.format("CALCULATE %d for pid : %d ---> core %d\n", calcBurst, pid, coreId);
                         break;
                     case "I/O":
-                        calcBurst = IOBurst.generateIO();
-                        // TODO : BLOCKED PROCESSES FALL THROUGH --> Need to schedule properly
-                        activeProcess.setCurrentState(ProcessState.STATE.BLOCKED);
-                        System.out.format("I/O %d for pid : %d ---> core %d\n",calcBurst,pid, coreId);
-//                        signalInterrupt = true;
+                        try {
+                            semaphore.acquire();
+                            System.out.format("--- process %d acquired lock --> entering block state on core %d\n", pid, coreId);
+                            calcBurst = IOBurst.generateIO();
+                            if (calcBurst > nextBurst) {
+                                nextBurst = calcBurst + currentBurst;
+                            }
+                            activeProcess.setCurrentState(ProcessState.STATE.BLOCKED);
+                            lastIoBurst = calcBurst;
+                        } catch (Throwable e) {
+                            System.out.format("----%d attempted to enter critical -- failed -- core %d \n", pid, coreId);
+                            preemptCurrentProcess(calcBurst, currentBurst);
+                            e.printStackTrace();
+                            return;
+                        }
+
+                        System.out.format("I/O %d for pid : %d ---> core %d\n", calcBurst, pid, coreId);
                         break;
                     case "YIELD":
                         System.out.format("YIELD for pid : %d ---> core %d\n", pid, coreId);
-                        //                        signalInterrupt = true;
-                        break;
+
+                        getMessageFromMessageQueue(pid);
+
+                        programCounter+=1;
+                        this.activeProcess.setProgramCounter(programCounter);
+                        preemptCurrentProcess(calcBurst, currentBurst);
+                        return;
+//                        break;
                     case "OUT":
                         System.out.format("OUT for pid : %d  ---> core %d\n", pid, coreId);
-//                            activeProcess.printPCBInfo();
+                        activeProcess.printPCBInfo();
                         break;
                     default:
                         System.out.print("BROKE TO SWITCH DEFAULT");
@@ -158,17 +181,20 @@ public class Core implements Runnable {
                 }
                 programCounter += 1;
                 activeProcess.setProgramCounter(programCounter);
-            } else {
+            }
+            if (calcBurst > 0) {
                 currentBurst++;
                 calcBurst--;
                 this.activeProcess.setBurstTime(calcBurst);
-//                if(calcBurst == 0) {
-//                    System.out.format("\nprocess done cycling --> Cycles remaining : %d\n", nextBurst - currentBurst);
-//                }
+                if(calcBurst == 0 && this.activeProcess.getCurrentState() == ProcessState.STATE.BLOCKED) {
+                    System.out.format("process %d released lock after %d cycles--> leaving block state on core %d\n", pid,lastIoBurst ,coreId);
+                    semaphore.release();
+                    this.activeProcess.setCurrentState(ProcessState.STATE.RUN);
+                    this.activeProcess.incrementCriticalTime(lastIoBurst);
+                    lastIoBurst = 0;
+                }
             }
             advanceClock();
-
-            // Ensure that all Calculations have been done before the process can exit
             if(programCounter >= instructionSet.size() && calcBurst == 0) {
                 exitProcess();
                 System.out.format("process %d exited  ---> core %d\n", pid, coreId);
@@ -180,21 +206,27 @@ public class Core implements Runnable {
         // Process has been preempted --> save current state
         if(this.activeProcess.getCurrentState() == ProcessState.STATE.RUN) {
             System.out.format("Preempting process %d  ---> core %d\n", pid, coreId);
-            System.out.format("Current Burst : %d, calcBurst : %d  ---> core %d\n", currentBurst, calcBurst, coreId);
-            preemptCurrentProcess(calcBurst, currentBurst);
-        }
-
-        // TODO: CONVERT THIS TO SOMETHING THAT ACTUALLY COMMUNICATES WITH INTERRUPT HANDLER/IO
-        if(this.activeProcess.getCurrentState() == ProcessState.STATE.BLOCKED) {
-            System.out.format("Preempting BLOCKED process %d ---> core %d\n", pid, coreId);
-            System.out.format("Current Burst : %d, calcBurst : %d  ---> core %d\n", currentBurst, calcBurst, coreId);
-            preemptCurrentProcess(calcBurst, currentBurst);
+            System.out.format("Current Burst : %d, calcBurst : %d , nextBurst : %d ---> core %d\n", currentBurst, this.activeProcess.getBurstTime(),nextBurst, coreId);
+            preemptCurrentProcess(this.activeProcess.getBurstTime(), currentBurst);
         }
 
         System.out.format("Finished calculating for process %s  ---> core %d\n", this.activeProcess.getPid(), coreId);
         System.out.println("---------------------------------");
 
     }
+
+
+    public void getMessageFromMessageQueue(int pid) {
+        String msg = messageQueue.poll();
+        if(msg != null) {
+            System.out.format("----!!!---%d received a message! : %s----!!!---\n", pid, msg);
+        } else {
+            System.out.format("---No messages for now, adding message ------\n");
+            messageQueue.add("NEW MESSAGE FOR YOU!! MAYBE SOMETHING TO FORK AROUND WITH");
+        }
+
+    }
+
 
 
     public void preemptCurrentProcess(int calcBurst, int currentBurst) {

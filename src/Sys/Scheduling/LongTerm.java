@@ -1,12 +1,13 @@
 package Sys.Scheduling;
 
-import Sys.Dispatcher;
 import Sys.Kernel;
 import Sys.Memory.MemoryManager;
 import Sys.PCB;
 import Sys.ProcessState;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -43,12 +44,15 @@ public class LongTerm extends Scheduler {
                 process.setArrivalTime(0);
                 process.setCurrentState(ProcessState.STATE.READY);
                 memoryManager.allocateMemory(memoryRequired);
+                process.setMemAllocated(memoryRequired);
                 processScheduler.scheduleProcess(process);
                 waitingQueue.remove(process);
                 return;
             }
         }
-        System.out.println("----COULD NOT ADD PROCESS TO READY QUEUE!--------");
+//        System.out.println("-------------------------------------------------");
+//        System.out.println("----COULD NOT ADD PROCESS TO READY QUEUE!--------");
+//        System.out.println("-------------------------------------------------");
 
     }
 
@@ -58,8 +62,8 @@ public class LongTerm extends Scheduler {
         waitingQueue.add(process);
     }
 
-    public ArrayList<PCB> getWaitingQueue() {
-        return waitingQueue;
+    public List<PCB> getWaitingQueue() {
+        return waitingQueue.stream().collect(Collectors.toList());
     }
 
     public void resetWaitingQueue() {
