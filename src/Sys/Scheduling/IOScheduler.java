@@ -53,6 +53,17 @@ public class IOScheduler {
 
     }
 
+    public synchronized void removeProcessFromIOQueue(PCB process){
+        int procIndex = -1;
+        for(IOEvent ioEvent: ioQueue) {
+            if(ioEvent.process == process) {
+                procIndex = ioQueue.indexOf(process);
+            }
+        }
+        if(procIndex >= 0) {
+            ioQueue.remove(procIndex);
+        }
+    }
 
     public List<PCB> streamIOQueue() {
         List<PCB> processes = ioQueue.stream()

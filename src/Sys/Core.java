@@ -15,6 +15,13 @@ public class Core implements Runnable{
 
     private int coreId;
     private int clock;
+    private int programCounter;
+    private int numInstructions;
+    private int currentBurst;
+    private int calcBurst;
+    private int burstRemaining;
+    private int nextBurst;
+    private boolean timeout = false;
     private PCB activeProcess;
     private boolean isStarted;
     private boolean signalInterrupt = false; //Temp variable to use in the switch statement
@@ -53,23 +60,21 @@ public class Core implements Runnable{
     }
 
     public void execute() {
-        int burstRemaining, ioBurst, calcBurst, nextBurst, programCounter, numInstructions;
-        int currentBurst = 0;
+        currentBurst = 0;
         String[] command;
         boolean timeout = false;
-        boolean isCritical = false;
+
 
         setActiveProcess();
 
         delayForUpdate(200);
 
-        RunningQueue.addToList(this.activeProcess);
-        updateTableVals();
-
-
         if(this.activeProcess == null) {
             return;
         }
+
+        RunningQueue.addToList(this.activeProcess);
+        updateTableVals();
 
         delayForUpdate(50);
 
@@ -90,44 +95,16 @@ public class Core implements Runnable{
 
                 switch (command[0]) {
                     case "CALCULATE":
-                        System.out.print("calculate " + command[1] + " : ");
-                        calcBurst = Integer.parseInt(command[1]);
-                        this.activeProcess.setBurstTime(calcBurst);
+                        executeCalculate(command[1]);
                         break;
                     case "I/O":
-                        System.out.print("i/o : ");
-                        this.activeProcess.incrementIoRequests();
-                        CPU.messageQueue.add(String.format("Process %d entered I/O", this.activeProcess.getPid()));
-                        programCounter += 1;
-                        this.activeProcess.setProgramCounter(programCounter);
-                        this.activeProcess.setCurrentState(ProcessState.STATE.BLOCKED);
-                        ioScheduler.addToIOEventToQueue(this.activeProcess);
+                        executeIO();
                         return;
                     case "OUT":
-                        String output = this.activeProcess.getPCBOutput();
-                        if(!CPU.messageQueue.isEmpty()) {
-                            String message = CPU.messageQueue.poll();
-                            System.out.println("Process " + this.activeProcess.getPid() + " received message : " + message);
-                            output += "\n\t Received message : " + message;
-                        }
-                        //System.out.println(output);
-                        // SEND INFORMATION TO THE GUI
-                        try {
-                            GUI.addLine(output);
-                        } catch(Throwable e) {
-                            System.out.println("...got expected error");
-                        }
-
-                        System.out.print("out : ");
+                        executeOut();
                         break;
                     case "YIELD":
-                        System.out.print("yield : ");
-                        this.activeProcess.setBurstTime(calcBurst);
-                        this.activeProcess.setProgramCounter(programCounter+1);
-                        this.activeProcess.decrementEstimatedRunTime(currentBurst);
-                        this.activeProcess.setCurrentState(ProcessState.STATE.READY);
-                        multiLevel.scheduleProcess(this.activeProcess);
-                        System.out.println("Preempting process as part of yield");
+                        executeYield();
                         return;
                     default:
                         System.out.print("BROKE TO SWITCH DEFAULT : command : " + command[0] );
@@ -143,7 +120,7 @@ public class Core implements Runnable{
                 this.activeProcess.decrementEstimatedRunTime(nextBurst);
                 this.activeProcess.setCurrentState(ProcessState.STATE.READY);
                 multiLevel.scheduleProcess(this.activeProcess);
-//                System.out.println("Preempting process exceeding time quantum");
+                timeout = false;
                 return;
             } else if(calcBurst > 0 && nextBurst >= calcBurst) {
                 calcBurst--;
@@ -160,11 +137,13 @@ public class Core implements Runnable{
             CPU.advanceTotalCycles();
 
         } //else {
-            System.out.println("process " + this.activeProcess.getPid() + " has exited");
-            RunningQueue.removeFromList(this.activeProcess);
-            memoryManager.deallocateMemory(this.activeProcess.getMemRequired());
-            this.activeProcess.exit();
-            updateGui(this.activeProcess.getPCBLine());
+
+        System.out.println("process " + this.activeProcess.getPid() + " has exited");
+        //RunningQueue.removeFromList(this.activeProcess);
+        ioScheduler.removeProcessFromIOQueue(this.activeProcess);
+        memoryManager.deallocateMemory(this.activeProcess.getMemRequired());
+        this.activeProcess.exit();
+        updateGui(this.activeProcess.getPCBLine());
         //}
     }
 
@@ -192,6 +171,61 @@ public class Core implements Runnable{
             e.printStackTrace();
         }
     }
+
+    public void executeYield() {
+        System.out.print("yield : ");
+        this.activeProcess.setBurstTime(calcBurst);
+        this.activeProcess.setProgramCounter(programCounter+1);
+        this.activeProcess.decrementEstimatedRunTime(currentBurst);
+        this.activeProcess.setCurrentState(ProcessState.STATE.READY);
+        multiLevel.scheduleProcess(this.activeProcess);
+        System.out.println("Preempting process as part of yield");
+    }
+
+    public void executeIO() {
+        System.out.print("i/o : ");
+        this.activeProcess.incrementIoRequests();
+        CPU.messageQueue.add(String.format("Process %d entered I/O", this.activeProcess.getPid()));
+        programCounter += 1;
+        this.activeProcess.setProgramCounter(programCounter);
+        this.activeProcess.setCurrentState(ProcessState.STATE.BLOCKED);
+        ioScheduler.addToIOEventToQueue(this.activeProcess);
+    }
+
+    public void executeCalculate(String cycles) {
+        System.out.print("calculate " + cycles + " : ");
+        calcBurst = Integer.parseInt(cycles);
+        this.activeProcess.setBurstTime(calcBurst);
+    }
+
+    public void executeOut() {
+        String output = this.activeProcess.getPCBOutput();
+        if(!CPU.messageQueue.isEmpty()) {
+            String message = CPU.messageQueue.poll();
+            System.out.println("Process " + this.activeProcess.getPid() + " received message : " + message);
+            output += "\n\t Received message : " + message;
+        }
+        //System.out.println(output);
+        // SEND INFORMATION TO THE GUI
+        try {
+            GUI.addLine(output);
+        } catch(Throwable e) {
+            System.out.println("...got expected error");
+        }
+
+        System.out.print("out : ");
+    }
+
+    public void timeoutProcess() {
+        //Preempt the process --> out of cycle time
+        this.activeProcess.setBurstTime(burstRemaining);
+        this.activeProcess.decrementEstimatedRunTime(nextBurst);
+        this.activeProcess.setCurrentState(ProcessState.STATE.READY);
+        multiLevel.scheduleProcess(this.activeProcess);
+        timeout = false;
+    }
+
+
 
     public void setActiveProcess(PCB process) {
         this.activeProcess = process;

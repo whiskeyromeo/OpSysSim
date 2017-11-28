@@ -112,18 +112,6 @@ public class GUI extends Application {
 
 
 
-        // Scheduler Table
-        TableColumn schedCol = new TableColumn("SCHEDULER");
-            schedCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("scheduler"));
-        TableColumn throughputCol = new TableColumn("THROUGHPUT");
-            throughputCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("throughput"));
-        TableColumn avgWaitCol = new TableColumn("AVG WAITING");
-            avgWaitCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("avg_wait"));
-        TableColumn avgResponseCol = new TableColumn("AVG RESPONSE");
-            avgResponseCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("avg_response"));
-
-
-        schedulerTable = new TableView();
         activeTable = new TableView();
         newTable = new TableView();
         newTable.setMaxHeight(300);
@@ -140,8 +128,6 @@ public class GUI extends Application {
         newTable.setItems(this.newProcessList);
         newTable.getColumns().addAll(pidCol2, memReqCol, arrivalTimeCol2, waitingCol, stateCol2);
 
-        schedulerTable.setItems(this.schedulerList);
-        schedulerTable.getColumns().addAll(schedCol, throughputCol, avgWaitCol, avgResponseCol);
 
         activeTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         newTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -322,8 +308,7 @@ public class GUI extends Application {
         activeProcesses.addAll(ioScheduler.getProcessesFromIOQueue());
         activeProcesses.addAll(RunningQueue.runningList);
         activeProcesses.addAll(multiLevel.getReadyQueues());
-        activeProcesses.addAll(ioScheduler.getProcessesFromIOQueue());
-        System.out.println("activeProcess count : " + activeProcesses.size());
+        //System.out.println("activeProcess count : " + activeProcesses.size());
 
         hs.addAll(activeProcesses);
         activeProcesses.clear();
@@ -353,6 +338,10 @@ public class GUI extends Application {
     public static void addLine(String text) {
         textArea.appendText(text + "\n");
         previousCommands.add(text);
+    }
+
+    public static void addLine(TextArea textArea, String text){
+        textArea.appendText(text + "\n");
     }
 
     public static void addText(String text) {

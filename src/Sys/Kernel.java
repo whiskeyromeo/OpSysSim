@@ -59,13 +59,14 @@ public class Kernel {
         int newSize = longTerm.getWaitingQueueSize();
         int multiSize = multiLevel.getReadyCount();
         int runningSize = cpu.getRunningCount();
-        System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
+        //System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
         if(ioSize == 0 && newSize == 0 && multiSize == 0 && runningSize == 0) {
             processesExist =  false;
         }
         processesExist = true;
 
         if(!processesExist) {
+            System.out.println("interrupt signalled");
             InterruptHandler.signalInterrupt();
         }
     }
