@@ -22,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -327,9 +328,12 @@ public class GUI extends Application {
         hs.addAll(activeProcesses);
         activeProcesses.clear();
         activeProcesses.addAll(hs);
+        activeProcesses.sort(Comparator.comparingInt(PCB::getPid));
+        schedulerTextArea.clear();
+
 
         for(PCB process : activeProcesses) {
-            schedulerTextArea.setText("proc : " + process.getPid() + ", state: " + process.getCurrentState());
+            addSchedulerLine(process.getPCBLine());
         }
 
 

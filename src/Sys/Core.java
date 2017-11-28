@@ -61,21 +61,17 @@ public class Core implements Runnable{
 
         setActiveProcess();
 
+        delayForUpdate(200);
+
+        RunningQueue.addToList(this.activeProcess);
+        updateTableVals();
+
+
         if(this.activeProcess == null) {
             return;
         }
 
-        RunningQueue.addToList(this.activeProcess);
-        //System.out.println("--------------" + RunningQueue.runningList.size());
-
-        updateTableVals();
-
-        try{
-            Thread.currentThread().sleep(200);
-        }catch(Throwable e) {
-            e.printStackTrace();
-        }
-
+        delayForUpdate(50);
 
         burstRemaining = 0;
         calcBurst = this.activeProcess.getBurstTime();
@@ -165,6 +161,7 @@ public class Core implements Runnable{
 
         } //else {
             System.out.println("process " + this.activeProcess.getPid() + " has exited");
+            RunningQueue.removeFromList(this.activeProcess);
             memoryManager.deallocateMemory(this.activeProcess.getMemRequired());
             this.activeProcess.exit();
             updateGui(this.activeProcess.getPCBLine());
@@ -186,6 +183,14 @@ public class Core implements Runnable{
             //System.out.println("...expected table val err");
         }
 
+    }
+
+    public void delayForUpdate(int millis) {
+        try{
+            Thread.currentThread().sleep(millis);
+        }catch(Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public void setActiveProcess(PCB process) {
