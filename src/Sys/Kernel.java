@@ -1,9 +1,9 @@
 package Sys;
 
 import Sys.Memory.MemoryManager;
+import Sys.Scheduling.IOScheduler;
+import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
-
-import java.util.ArrayList;
 
 /**
  * @author Will Russell on 11/8/17
@@ -12,21 +12,65 @@ import java.util.ArrayList;
 public class Kernel {
 
     private CPU cpu; // Each Kernel should have at least one CPU
-    private static final int BASE_CORES = 1; // The number of cores to use in the system
     private volatile static int processCounter = 1;     // Should be used to assign the pid for each process
-    private MemoryManager memoryManager;
-    private MultiLevel scheduler;
-    private static int systemClock;
-    private static ArrayList<Integer> currentProcesses = new ArrayList<>();
-    private static ArrayList<Integer> finishedProcesses = new ArrayList<>();
 
-    public Kernel() {
-        this.cpu = new CPU(1); // TODO: starting with 1 cpu to test
-        memoryManager = MemoryManager.getInstance();
-        scheduler = scheduler.getInstance();
-        systemClock = 0;
+    private MemoryManager memoryManager = MemoryManager.getInstance();
+    private MultiLevel multiLevel = MultiLevel.getInstance();
+    private LongTerm longTerm = LongTerm.getInstance();
+    private IOScheduler ioScheduler = IOScheduler.getInstance();
+
+
+    private static int systemClock;
+    private boolean processesExist = true;
+
+    private static Kernel kernel;
+
+    protected Kernel() {
+        this.systemClock = 0;
+        this.cpu = new CPU(1);
 
     }
+
+    public static Kernel getInstance() {
+        if(kernel == null) {
+            kernel = new Kernel();
+        }
+        return kernel;
+    }
+
+
+    int count = 0;
+    public void execute() {
+
+        checkIfNoProcessesInSystem();
+
+        if(!InterruptHandler.interruptSignalled) {
+
+            longTerm.scheduleWaitingProcess();
+            ioScheduler.reScheduleCompleteProcesses();
+            cpu.run();
+
+        }
+        advanceClock();
+    }
+
+    public void checkIfNoProcessesInSystem() {
+        int ioSize = ioScheduler.getIOQueueSize();
+        int newSize = longTerm.getWaitingQueueSize();
+        int multiSize = multiLevel.getReadyCount();
+        int runningSize = cpu.getRunningCount();
+        System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
+        if(ioSize == 0 && newSize == 0 && multiSize == 0 && runningSize == 0) {
+            processesExist =  false;
+        }
+        processesExist = true;
+
+        if(!processesExist) {
+            InterruptHandler.signalInterrupt();
+        }
+    }
+
+
 
     /**
      * Generates pids for new processes
@@ -39,22 +83,11 @@ public class Kernel {
     }
 
     //-------GETTERS----------
-    public static void advanceClock() { systemClock++; }
-    public static void addToCurrentProcesses(int pid) {
-        currentProcesses.add(pid);
-    }
-    public static void addToFinishedProcesses(int pid) {
-        finishedProcesses.add(pid);
-    }
+    public void advanceClock() { this.systemClock++; }
+    public void resetClock() { this.systemClock = 0; }
 
     //-------SETTERS----------
-    public static int getSystemClock() {
-        return systemClock;
-    }
-    public static ArrayList<Integer> getCurrentProcessIds() {
-        return currentProcesses;
-    }
-    public static ArrayList<Integer> getFinishedProcessIds() {
-        return finishedProcesses;
+    public int getSystemClock() {
+        return this.systemClock;
     }
 }

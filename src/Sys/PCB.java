@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 public class PCB implements Cloneable {
 
+    Kernel kernel = Kernel.getInstance();
     Dispatcher dispatcher = Dispatcher.getInstance();
     MultiLevel multiLevelScheduler = MultiLevel.getInstance();
 
@@ -25,6 +26,7 @@ public class PCB implements Cloneable {
     private int memRequired;        // amount of memory required from the program file
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
+
     private int estimatedRunTime;
     private int nextBurst;
     private int completedTime;      // Time the process exits
@@ -35,13 +37,13 @@ public class PCB implements Cloneable {
     private ArrayList<PCB> children; // list of children of the process
     private ArrayList<Register> registers; // Set of registers needed by the process
 
-    public PCB(int id, int parentId) {
+    public PCB(int id, int parentId, int clockTime) {
         this.pid = id;                                  // id of the process
         this.ppid = parentId;                           // parent id if exists, otherwise -1
         this.registers = new ArrayList<>();     // The set of registers allocated to the process
         this.instructions = new ArrayList<>();    // The set of instructions for the process parsed from a file
         this.children = new ArrayList<>();           // children of the process
-        this.arrivalTime = Kernel.getSystemClock();
+        this.arrivalTime = clockTime;
         this.currentState = STATE.NEW;
         this.criticalTime = 0;
         this.burstTime = 0;
@@ -57,7 +59,7 @@ public class PCB implements Cloneable {
         this.registers = registers;
         this.instructions = instructions;
         this.children = new ArrayList<PCB>();
-        this.arrivalTime = Kernel.getSystemClock();
+        this.arrivalTime = kernel.getSystemClock();
         this.currentState = state;
         this.criticalTime = 0;
         this.programCounter = pc;
@@ -67,7 +69,6 @@ public class PCB implements Cloneable {
         this.nextBurst = nextBurst;
 
     }
-
 
 
     /**
@@ -125,6 +126,7 @@ public class PCB implements Cloneable {
     public int getEstimatedRunTime() { return this.estimatedRunTime; }
     public int getNextBurst() { return this.nextBurst; }
     public int getCriticalTime() { return this.criticalTime; }
+    public int getIoRequests( ) { return this.ioRequests; }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
@@ -145,8 +147,10 @@ public class PCB implements Cloneable {
     public void setNextBurst(int burst) { this.nextBurst = burst; }
     public void setCriticalTime(int time) { this.criticalTime = time;}
 
+    public void incrementIoRequests() { this.ioRequests++; }
     public void incrementCriticalTime(int amount) { this.criticalTime += amount; }
     public void decrementEstimatedRunTime(int mem) { this.estimatedRunTime -= mem; }
+
 
     /**
      * Initialize a PCB with the relevant information
@@ -163,10 +167,8 @@ public class PCB implements Cloneable {
 
     public void exit() {
         this.currentState = STATE.EXIT;
-        this.burstTime = 0;
-        this.memRequired = 0;
-        this.programCounter = 0;
-        this.registers = null;
+        this.memAllocated = 0;
+        this.completedTime = kernel.getSystemClock();
     }
 
     /**
@@ -186,6 +188,25 @@ public class PCB implements Cloneable {
                 "\nCurrent Instruction : " + this.instructions.get(this.programCounter) +
                 "\nCritical Time : " + this.criticalTime
         );
+    }
+
+    public String getPCBLine() {
+        return "PID : " + this.pid +
+                " , State : " + this.currentState +
+                " , IO Requests : " + this.ioRequests +
+                " , Current Memory : " + this.memAllocated;
+    }
+
+    public String getPCBOutput() {
+        String output = "PID : " + this.pid +
+                "\n\t PPID : " + this.ppid +
+                "\n\t Next Instruction : " + this.instructions.get(this.programCounter) +
+                "\n\t Next Burst : " + this.nextBurst +
+                "\n\t Arrival Time : " + this.arrivalTime +
+                "\n\t State : " + this.currentState +
+                "\n\t IO Requests : " + this.ioRequests +
+                "\n\t Critical Time : " + this.criticalTime;
+        return output;
     }
 
 

@@ -1,9 +1,9 @@
 package Sys.Scheduling;
 
-import Sys.Kernel;
 import Sys.Memory.MemoryManager;
 import Sys.PCB;
 import Sys.ProcessState;
+import User_space.CLI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,9 @@ public class LongTerm extends Scheduler {
     private static ArrayList<PCB> waitingQueue = new ArrayList<>();
 
     private static LongTerm longTermScheduler;
-    private MemoryManager memoryManager = MemoryManager.getInstance();
-    private static MultiLevel processScheduler = MultiLevel.getInstance();
 
+    private MemoryManager memoryManager = MemoryManager.getInstance();
+    private MultiLevel processScheduler = MultiLevel.getInstance();
 
     protected LongTerm() { }
 
@@ -38,10 +38,15 @@ public class LongTerm extends Scheduler {
 
     // Pass off a waiting process to the Multi-level scheduling queue
     public void scheduleWaitingProcess() {
+
+
+
         for(PCB process : waitingQueue) {
             int memoryRequired = process.getMemRequired();
             if(memoryRequired <= memoryManager.getCurrentMemory()) {
-                process.setArrivalTime(0);
+                CLI.newProcessList.remove(process);
+                CLI.activeProcessList.add(process);
+                //process.setArrivalTime(kernel.getSystemClock());
                 process.setCurrentState(ProcessState.STATE.READY);
                 memoryManager.allocateMemory(memoryRequired);
                 process.setMemAllocated(memoryRequired);
@@ -50,19 +55,24 @@ public class LongTerm extends Scheduler {
                 return;
             }
         }
-//        System.out.println("-------------------------------------------------");
-//        System.out.println("----COULD NOT ADD PROCESS TO READY QUEUE!--------");
-//        System.out.println("-------------------------------------------------");
+        // Not enough memory...do something here
 
     }
 
     public void addToWaitingQueue(PCB process) {
+        CLI.newProcessList.add(process);
         process.setCurrentState(ProcessState.STATE.WAIT);
-        process.setArrivalTime(Kernel.getSystemClock());
+        //process.setArrivalTime(kernel.getSystemClock());
         waitingQueue.add(process);
     }
 
-    public List<PCB> getWaitingQueue() {
+    public int getWaitingQueueSize() { return waitingQueue.size(); }
+
+    public static ArrayList<PCB> getWaitingQueue() {
+        return waitingQueue;
+    }
+
+    public List<PCB> streamWaitingQueue() {
         return waitingQueue.stream().collect(Collectors.toList());
     }
 

@@ -1,8 +1,10 @@
 package User_space;
 
-import Sys.PCB;
+import Sys.*;
+import Sys.Scheduling.IOScheduler;
 import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +21,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 /**
  * @author Will Russell on 11/8/17
@@ -34,25 +41,31 @@ public class GUI extends Application {
     private javafx.scene.control.TextField textInput;
     private javafx.scene.control.Button button;
 
-    private TableView activeTable;
-    private TableView newTable;
-    private TableView schedulerTable;
+    public static TableView activeTable;
+    public static TableView newTable;
+    public static TableView schedulerTable;
 
     private ScrollPane scrollPane;
     private Label label;
 
     static protected TextArea textArea;
+    static protected TextArea schedulerTextArea;
 
-    private final ObservableList<PCB> activeProcessList = FXCollections.observableArrayList();
-    private final ObservableList<PCB> newProcessList = FXCollections.observableArrayList();
-    private final ObservableList<PCB> schedulerList = FXCollections.observableArrayList();
+
+    public static final ObservableList<PCB> activeProcessList = FXCollections.observableArrayList();
+    public static final ObservableList<PCB> newProcessList = FXCollections.observableArrayList();
+    private static final ObservableList<PCB> schedulerList = FXCollections.observableArrayList();
 
 
     ///************ SYSTEM INSTANCES HERE ******************* //
 
-    MultiLevel multiLevel = MultiLevel.getInstance();
-    Simulator simulator = Simulator.getInstance();
-    LongTerm longTermScheduler = LongTerm.getInstance();
+    static MultiLevel multiLevel = MultiLevel.getInstance();
+    static Simulator simulator = Simulator.getInstance();
+    static LongTerm longTermScheduler = LongTerm.getInstance();
+    static IOScheduler ioScheduler = IOScheduler.getInstance();
+    static Kernel kernel = Kernel.getInstance();
+
+    static CPU cpu = new CPU(1);
 
 
     //***************END SYSTEM INSTANCES ***************** //
@@ -97,10 +110,6 @@ public class GUI extends Application {
             stateCol2.setCellValueFactory(new PropertyValueFactory<PCB, String>("currentState"));
 
 
-        simulator.populateReadyQueues(10, 500);
-
-        this.activeProcessList.setAll(multiLevel.getAllInReady());
-        this.newProcessList.setAll(longTermScheduler.getWaitingQueue());
 
         // Scheduler Table
         TableColumn schedCol = new TableColumn("SCHEDULER");
@@ -118,6 +127,12 @@ public class GUI extends Application {
         newTable = new TableView();
         newTable.setMaxHeight(300);
 
+        simulator.populateReadyQueues(3);
+
+        this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
+        this.newProcessList.setAll(longTermScheduler.streamWaitingQueue());
+
+
         activeTable.setItems(this.activeProcessList);
         activeTable.getColumns().addAll(pidCol, memAllCol, arrivalTimeCol, estRunTimeCol, stateCol, commandCol);
 
@@ -132,25 +147,31 @@ public class GUI extends Application {
         schedulerTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         textInput = new TextField();
-            textInput.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    button.fire();
-                } else {
-                    System.out.println("key event : " + event.getCode());
-                }
+        textInput.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+            if (event.getCode() == KeyCode.ENTER) {
+                button.fire();
             }
+        }
         });
 
 
         textArea = new TextArea();
-            textArea.setEditable(false);
-            textArea.setFocusTraversable(false);
-            textArea.setPrefRowCount(3);
-            textArea.setScrollTop(0);
-            textArea.setPrefColumnCount(50);
-            textArea.autosize();
+        textArea.setEditable(false);
+        textArea.setFocusTraversable(false);
+        textArea.setPrefRowCount(10);
+        textArea.setScrollTop(0);
+        textArea.setPrefColumnCount(50);
+        textArea.autosize();
+
+        schedulerTextArea = new TextArea();
+        schedulerTextArea.setEditable(false);
+        schedulerTextArea.setFocusTraversable(false);
+        schedulerTextArea.setPrefRowCount(20);
+        schedulerTextArea.setScrollTop(0);
+        schedulerTextArea.setPrefColumnCount(29);
+        schedulerTextArea.autosize();
 
 
         button = new Button();
@@ -165,13 +186,13 @@ public class GUI extends Application {
 //                displayBox.display("ERROR", "INVALID COMMAND");
                 textArea.setText(inputText + " is not a valid command");
             } else {
-                textArea.setText("Executing Command : \"" + inputText + "\"");
+                CLI.execute(inputText);
             }
         });
 
         controls = new HBox();
-            controls.setSpacing(10);
-            controls.getChildren().addAll(textInput, button);
+        controls.setSpacing(10);
+        controls.getChildren().addAll(textInput, button);
 
 
         root = new BorderPane();
@@ -203,7 +224,7 @@ public class GUI extends Application {
         Text schedulerTableTitle = new Text("Scheduler Stats");
         schedulerTableTitle.setStyle("-fx-font-size: 16px");
 
-        topRightBox.getChildren().addAll(schedulerTableTitle, schedulerTable);
+        topRightBox.getChildren().addAll(schedulerTableTitle, schedulerTextArea);
 
 
         VBox topLeftBox = new VBox();
@@ -225,60 +246,128 @@ public class GUI extends Application {
 
 
         bottomBox = new VBox();
-            bottomBox.setSpacing(10);
-            bottomBox.setPadding(new Insets(10, 10, 10, 10));
-            bottomBox.getChildren().addAll(textArea, controls);
+        bottomBox.setSpacing(10);
+        bottomBox.setPadding(new Insets(10, 10, 10, 10));
+        bottomBox.getChildren().addAll(textArea, controls);
 
-            root.setTop(topBox);
-            root.setBottom(bottomBox);
+        root.setTop(topBox);
+        root.setBottom(bottomBox);
 
         Scene scene = new Scene(root, 1000, 600);
-            window.setScene(scene);
+        window.setScene(scene);
 
-            window.show();
-
-        //startup();
+        runSim();
     }
 
-//    public void startup() throws InterruptedException {
-//        //this.activeProcessList.setAll(Scheduler.getReadyQueue().stream().collect(Collectors.toList()));
-//        //this.waitingProcessList.setAll(Scheduler.getWaitingQueue().stream().collect(Collectors.toList()));
-//
-//        final long[] prevTime = {0};
-//
-//        new AnimationTimer() {
-//            @Override public void handle(long currentNanoTime) {
-//                if (currentNanoTime > prevTime[0] + 90000000) {
-////                    try {
-////                        loop();
-////                    } catch (InterruptedException e) {
-////                        e.printStackTrace();
-////                    }
-//
-//                    prevTime[0] = currentNanoTime + 90000000;
-//                }
-//            }
-//        }.start();
-//    }
+    public void runSim() throws InterruptedException {
+       // this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
+//        this.newProcessList.setAll(longTermScheduler.streamWaitingQueue());
 
-    public void loop() throws InterruptedException {
-//        // Render GUI
-//        this.activeProcessList.setAll(Scheduler.getReadyQueue().stream().collect(Collectors.toList()));
-//        this.waitingProcessList.setAll(Scheduler.getWaitingQueue().stream().collect(Collectors.toList()));
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                try {
+                    loopMethod();
+
+                } catch(InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }.start();
+
+        window.show();
+    }
+
+    public void loopMethod() throws InterruptedException {
+
+//        this.activeProcessList.setAll(ioScheduler.getProcessesFromIOQueue().stream().collect(Collectors.toList()));
+//        this.activeProcessList.setAll(cpu.getRunningList().stream().collect(Collectors.toList()));
+//        this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
+//        this.newProcessList.setAll(longTermScheduler.streamWaitingQueue());
 //
-//        // Run User_space.Simulator
-//        if (!User_space.Simulator.exeContinuously && User_space.Simulator.exeSteps == 0) {
-//            return;
-//        } else {
-//            User_space.Simulator.exeSteps--;
-//        }
-//
-//        os.execute();
+//        this.activeTable.setItems(this.activeProcessList);
+//        this.newTable.setItems(this.newProcessList);
+
+        try {
+            Thread.sleep(50);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        if(CLI.numExeSteps == 0) {
+            System.out.print(" .. ");
+            InterruptHandler.interruptSignalled = true;
+        }
+
+        if((!CLI.runProgramContinuously && CLI.numExeSteps < 0) || InterruptHandler.interruptSignalled ) {
+            //System.out.println("looping");
+            return;
+        } else if(!CLI.runProgramContinuously && CLI.numExeSteps > 0){
+            CLI.numExeSteps--;
+        }
+
+        kernel.execute();
+        //System.out.println("made it passed kernel");
+        newTable.getItems().clear();
+        activeTable.getItems().clear();
+
+
+
+    }
+
+    public static void updateTableValues() {
+        ArrayList<PCB> activeProcesses = new ArrayList<>();
+        Set<PCB> hs = new HashSet<>();
+        activeProcesses.addAll(ioScheduler.getProcessesFromIOQueue());
+        activeProcesses.addAll(RunningQueue.runningList);
+        activeProcesses.addAll(multiLevel.getReadyQueues());
+        activeProcesses.addAll(ioScheduler.getProcessesFromIOQueue());
+        System.out.println("activeProcess count : " + activeProcesses.size());
+
+        hs.addAll(activeProcesses);
+        activeProcesses.clear();
+        activeProcesses.addAll(hs);
+
+        for(PCB process : activeProcesses) {
+            schedulerTextArea.setText("proc : " + process.getPid() + ", state: " + process.getCurrentState());
+        }
+
+
+        activeProcessList.setAll(ioScheduler.getProcessesFromIOQueue().stream().collect(Collectors.toList()));
+        activeProcessList.setAll(cpu.getRunningList().stream().collect(Collectors.toList()));
+        activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
+        newProcessList.setAll(longTermScheduler.streamWaitingQueue());
+
+        activeTable.setItems(activeProcessList);
+        newTable.setItems(newProcessList);
+    }
+
+    public static ArrayList<String> previousCommands = new ArrayList<>();
+    public static ArrayList<String> prevSchedulerCommands = new ArrayList<>();
+
+
+    public static void addLine(String text) {
+        textArea.appendText(text + "\n");
+        previousCommands.add(text);
+    }
+
+    public static void addText(String text) {
+        textArea.appendText(text);
+        previousCommands.add(text);
+    }
+
+    public static void addSchedulerLine(String text) {
+        schedulerTextArea.appendText(text + "\n");
+        prevSchedulerCommands.add(text);
+    }
+
+    public static void addSchedulerText(String text) {
+        schedulerTextArea.appendText(text);
+        prevSchedulerCommands.add(text);
     }
 
     // TODO : REMOVE WHEN READY
     public static void main(String[] args) {
-
         launch(args);
     }
 

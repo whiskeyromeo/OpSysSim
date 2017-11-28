@@ -1,0 +1,4 @@
+LOAD newjob.job
+EXE 24
+LOAD testjob.job
+EXE 500

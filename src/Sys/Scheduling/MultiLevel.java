@@ -6,7 +6,6 @@ import Sys.ProcessState;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -40,7 +39,6 @@ public class MultiLevel {
         sjfScheduler = new SJF();
         roundRobinScheduler = new RoundRobin();
         fcfsScheduler = new FCFS();
-        runBackground = false;
     }
 
     public static MultiLevel getInstance() {
@@ -97,7 +95,7 @@ public class MultiLevel {
 //            System.out.println("Retrieving from FCFS");
             return fcfsScheduler.getNextFromQueue();
         }
-        System.out.println("-----MultiLevel --> no more processes to be had");
+//        System.out.println("-----MultiLevel --> no more processes to be had");
         return null;
     }
 
@@ -113,20 +111,43 @@ public class MultiLevel {
     }
 
 
-    public List<PCB> getAllInReady() {
+    public Stream<PCB> getAllInReadyStream() {
 
         ArrayList<PCB> sjfQueue = sjfScheduler.getQueue();
         ArrayList<PCB> rrQueue = roundRobinScheduler.getQueue();
         ArrayList<PCB> fcfsQueue = fcfsScheduler.getQueue();
 
         return Stream.of(sjfQueue, rrQueue, fcfsQueue)
-                .flatMap(Collection::stream).collect(Collectors.toList());
+                .flatMap(Collection::stream);
 
+    }
+
+    public ArrayList<PCB> getReadyQueue() {
+        ArrayList<PCB> newQueue = new ArrayList<>();
+        ArrayList<PCB> sjfQueue = sjfScheduler.getQueue();
+        ArrayList<PCB> rrQueue = roundRobinScheduler.getQueue();
+        ArrayList<PCB> fcfsQueue = fcfsScheduler.getQueue();
+        newQueue.addAll(sjfQueue);
+        newQueue.addAll(rrQueue);
+        newQueue.addAll(fcfsQueue);
+        return newQueue;
+    }
+
+    public void resetReadyQueues() {
+        sjfScheduler.resetQueue();
+        fcfsScheduler.resetQueue();
+        roundRobinScheduler.resetQueue();
     }
 
 
 
-
+    public List<PCB> getReadyQueues() {
+        List<PCB> readyList = new ArrayList<>();
+        readyList.addAll(sjfScheduler.getQueue());
+        readyList.addAll(fcfsScheduler.getQueue());
+        readyList.addAll(roundRobinScheduler.getQueue());
+        return readyList;
+    }
 
 
 

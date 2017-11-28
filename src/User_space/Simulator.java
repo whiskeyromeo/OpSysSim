@@ -1,10 +1,10 @@
 package User_space;
 
-import Sys.CPU;
 import Sys.Kernel;
 import Sys.Memory.MemoryManager;
 import Sys.PCB;
 import Sys.ProcessState;
+import Sys.Scheduling.IOScheduler;
 import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
 
@@ -18,10 +18,10 @@ import java.util.Random;
 public class Simulator {
 
     // Fire up the kernel
-    static Kernel kernel = new Kernel();
+    static Kernel kernel = Kernel.getInstance();
     private static LongTerm longTermScheduler = LongTerm.getInstance();
-
-
+    private static MultiLevel multiLevel = MultiLevel.getInstance();
+    private static IOScheduler ioScheduler = IOScheduler.getInstance();
     //public Simulator() {}
     private static Simulator simulator;
 
@@ -35,17 +35,10 @@ public class Simulator {
     }
 
 
-//    public static void main(String[] args)
-//    {
-//        GUI_v2 gui = new GUI_v2();
-//        gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        gui.setSize(600, 200);
-//        gui.setVisible(true);
-//        gui.setTitle("Processes Table");
-////        runBaseTests();
-//        //testCPU();
-//
-//    }
+    public static void main(String[] args)
+    {
+        testCPU();
+    }
 
     /**
      * Hacky method to get the estimated number of cycles for printing later
@@ -71,7 +64,7 @@ public class Simulator {
     //******** BEGIN FILE PROCESS GENERATION METHODS ********************//
 
     public static PCB prepareProcessForSimulation(ArrayList<String> fileCommands) {
-        PCB process = new PCB(kernel.getNewPid(), -1);
+        PCB process = new PCB(kernel.getNewPid(), -1, kernel.getSystemClock());
         int mem = Integer.parseInt(fileCommands.remove(0));
         int cycles = calculateEstimatedCycles(fileCommands);
         process.initializeBlock(fileCommands, 0, mem, cycles);
@@ -109,7 +102,7 @@ public class Simulator {
 
 
     public static PCB makeFakeProcess(int mem, int processLen) {
-        PCB process = new PCB(kernel.getNewPid(), -1);
+        PCB process = new PCB(kernel.getNewPid(), -1, kernel.getSystemClock());
         ArrayList<String> commands = generateFakeProcessString(processLen);
         int cycles = calculateEstimatedCycles(commands);
         process.initializeBlock(commands, 0, mem, cycles);
@@ -138,6 +131,7 @@ public class Simulator {
             procLen = r.nextInt(14) + 1;
             PCB process = makeFakeProcess(mem,procLen);
             longTermScheduler.addToWaitingQueue(process);
+            kernel.advanceClock();
         }
         for(int i=0; i < numProcesses; i++){
             longTermScheduler.scheduleWaitingProcess();
@@ -148,9 +142,11 @@ public class Simulator {
     //******** END FAKE PROCESS GENERATION METHODS ********************//
 
     public static void testCPU() {
-        populateReadyQueues(5);
-        CPU cpu = new CPU(1);
-        cpu.run();
+
+        populateReadyQueues(20);
+        while(multiLevel.getReadyCount() != 0 || ioScheduler.getIOQueueSize() > 0) {
+            kernel.execute();
+        }
 
     }
 
