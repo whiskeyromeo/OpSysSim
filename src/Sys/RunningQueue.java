@@ -14,7 +14,9 @@ public class RunningQueue {
     }
 
     public synchronized static void removeFromList(PCB process) {
-        runningList.remove(process);
+        while(runningList.contains(process)) {
+            runningList.remove(process);
+        }
     }
 
     public static int getSize() {

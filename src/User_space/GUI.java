@@ -131,7 +131,7 @@ public class GUI extends Application {
 
         activeTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         newTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        schedulerTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+//        schedulerTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         textInput = new TextField();
         textInput.setOnKeyPressed(new EventHandler<KeyEvent>() {

@@ -70,17 +70,17 @@ public class CPU {
     }
 
     public void run() {
-        if(!coresInitialized) {
-            initializeCores();
-        }
-
-        for(Core core: cores) {
-            core.run();
-        }
-//        core1.run();
-//        core2.run();
-//        core3.run();
-//        core4.run();
+//        if(!coresInitialized) {
+//            initializeCores();
+//        }
+//
+//        for(Core core: cores) {
+//            core.run();
+//        }
+        core1.run();
+        core2.run();
+        core3.run();
+        core4.run();
 
     }
 

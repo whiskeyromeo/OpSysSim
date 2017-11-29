@@ -41,11 +41,12 @@ public class IOScheduler {
         if(ioQueue.size() > 0) {
             IOEvent event = ioQueue.remove(0);
             timePassed = kernel.getSystemClock() - event.originTime;
-            System.out.println("Ioscheduler -event.numcycles : " + event.numCycles + ", timepassed : " + timePassed);
+//            System.out.println("Ioscheduler -event.numcycles : " + event.numCycles + ", timepassed : " + timePassed);
             if(timePassed < event.numCycles) {
                 ioQueue.add(0, event);
             } else {
-                System.out.println("Rescheduling process");
+                //System.out.println("Rescheduling process");
+                event.process.decrementEstimatedRunTime(event.numCycles);
                 event.process.setCurrentState(ProcessState.STATE.READY);
                 multiLevel.scheduleProcess(event.process);
 

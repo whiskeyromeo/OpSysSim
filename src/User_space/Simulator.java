@@ -90,7 +90,7 @@ public class Simulator {
         for(int i = 0; i < length; i++) {
             chosen = r.nextInt(4);
             if(chosen == 0) {
-                randCalcVal = r.nextInt(200) + 1;
+                randCalcVal = r.nextInt(50) + 1;
                 commandList.add(commands[chosen] + " " + String.valueOf(randCalcVal));
             } else {
                 commandList.add(commands[chosen]);
@@ -143,7 +143,7 @@ public class Simulator {
 
     public static void testCPU() {
 
-        populateReadyQueues(20);
+        populateReadyQueues(5);
         while(true) {
             kernel.execute();
         }

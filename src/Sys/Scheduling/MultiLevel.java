@@ -60,6 +60,7 @@ public class MultiLevel {
             throw new IllegalArgumentException("Process must be in READY state");
 
         int estimatedRunTime = process.getEstimatedRunTime();
+        System.out.println("Estimated run time for proc : " + process.getPid() + " is " + estimatedRunTime);
 
 //        System.out.format("--MultiLevel-- process id : %d ", process.getPid());
 
