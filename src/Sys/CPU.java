@@ -35,7 +35,6 @@ public class CPU {
     public static int totalCyclesPermitted = totalCoreCycles;
     public static double avgCycleCount = totalCoreCycles/CORE_COUNT;
 
-    private Dispatcher dispatcher = Dispatcher.getInstance();
 
 
     public static BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>();
@@ -44,18 +43,16 @@ public class CPU {
     private Register[] registerSet;     // The amount of memory available to a CPU
     private int cpuID;      // Figure we need an id to keep track of each CPU in case of multiple cores
 
+
     public CPU(int cpuId) {
         this.registerSet = Register.instantiateRegisterSet(REGISTER_COUNT);
         this.cpuID = cpuId;
         this.semaphore = new Semaphore(1);
     }
 
-
-    Thread core1 = new Thread(new Core(semaphore, messageQueue, 1));
-    Thread core2 = new Thread(new Core(semaphore, messageQueue, 2));
-    Thread core3 = new Thread(new Core(semaphore, messageQueue, 3));
-    Thread core4 = new Thread(new Core(semaphore, messageQueue, 4));
-
+    /**
+     * Initialize a thread with a Core object for each in the CORE_COUNT
+     */
     public void initializeThreadCores() {
         for(int i = 0; i < CORE_COUNT; i++) {
             Thread core = new Thread(new Core(semaphore, messageQueue, i));
@@ -64,26 +61,29 @@ public class CPU {
         coresInitialized = true;
     }
 
+    /**
+     *  Start up each thread --> only can be used without GUI
+     */
     public void startThreadCores() {
         for(Thread core: threadCores) {
             core.start();
         }
     }
 
-    public void initializeCores() {
-        for(int i = 0; i < CORE_COUNT; i++) {
-            Core core = new Core(semaphore, messageQueue, i);
-            cores.add(core);
-        }
-        coresInitialized = true;
-    }
 
+    /**
+     *  Run each thread --> Can be used with the GUI as is technically
+     *  still single threaded
+     */
     public void runThreadCores() {
         for(Thread c:threadCores) {
             c.run();
         }
     }
 
+    /**
+     * Cycle the cpu cores;
+     */
     public void run() {
         if(GUI.isActive) {
             // Run using simulated cores if GUI is being used

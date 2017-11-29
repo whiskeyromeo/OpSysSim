@@ -93,12 +93,13 @@ public class GUI extends Application {
         schedulerTextArea.setPrefColumnCount(25);
         schedulerTextArea.autosize();
 
+
         activeProcessesTextArea = new TextArea();
         activeProcessesTextArea.setEditable(false);
         activeProcessesTextArea.setFocusTraversable(true);
         activeProcessesTextArea.setPrefRowCount(17);
         activeProcessesTextArea.setScrollTop(0);
-        activeProcessesTextArea.setPrefColumnCount(40);
+        activeProcessesTextArea.setPrefColumnCount(45);
         activeProcessesTextArea.autosize();
 
         newProcessesTextArea = new TextArea();
@@ -106,7 +107,7 @@ public class GUI extends Application {
         newProcessesTextArea.setFocusTraversable(false);
         newProcessesTextArea.setPrefRowCount(11);
         newProcessesTextArea.setScrollTop(0);
-        newProcessesTextArea.setPrefColumnCount(40);
+        newProcessesTextArea.setPrefColumnCount(45);
         newProcessesTextArea.autosize();
 
 
@@ -191,6 +192,9 @@ public class GUI extends Application {
 
         Scene scene = new Scene(root, 1000, 600);
         window.setScene(scene);
+
+
+
         updateTableValues();
 
         isActive = true;
@@ -216,6 +220,7 @@ public class GUI extends Application {
         }.start();
 
         window.show();
+
     }
 
     public void loopMethod() throws InterruptedException {

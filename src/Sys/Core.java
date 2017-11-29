@@ -54,7 +54,6 @@ public class Core implements Runnable{
 
     }
 
-
     public void run() {
         if(GUI.isActive) {
             runForGUI();

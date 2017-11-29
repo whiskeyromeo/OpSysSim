@@ -84,6 +84,8 @@ public class LongTerm extends Scheduler {
     }
 
     public void resetWaitingQueue() {
+        longTermWaitTime = 0;
+        noProcesses = 0;
         waitingQueue.clear();
     }
 
