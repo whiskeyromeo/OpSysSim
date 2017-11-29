@@ -144,7 +144,7 @@ public class Simulator {
     public static void testCPU() {
 
         populateReadyQueues(20);
-        while(multiLevel.getReadyCount() != 0 || ioScheduler.getIOQueueSize() > 0) {
+        while(true) {
             kernel.execute();
         }
 

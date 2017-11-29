@@ -67,7 +67,7 @@ public class Core implements Runnable{
 
         setActiveProcess();
 
-        delayForUpdate(200);
+        //delayForUpdate(20);
 
         if(this.activeProcess == null) {
             return;
@@ -88,7 +88,7 @@ public class Core implements Runnable{
         // section is done if an interrupt is signalled
         // Otherwise continue until some interrupt pulls the program out of
         // the processor
-        while ( programCounter < numInstructions && !signalInterrupt ) {
+        if ( programCounter < numInstructions && !signalInterrupt ) {
 
             if(calcBurst == 0 && !timeout) {
                 command = this.activeProcess.getInstructions().get(programCounter).split(" ");

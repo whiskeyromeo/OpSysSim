@@ -50,6 +50,8 @@ public class Kernel {
             ioScheduler.reScheduleCompleteProcesses();
             cpu.run();
 
+        } else {
+            System.out.println("interrupt was signalled --> kernel");
         }
         advanceClock();
     }
@@ -59,7 +61,7 @@ public class Kernel {
         int newSize = longTerm.getWaitingQueueSize();
         int multiSize = multiLevel.getReadyCount();
         int runningSize = cpu.getRunningCount();
-        //System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
+        System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
         if(ioSize == 0 && newSize == 0 && multiSize == 0 && runningSize == 0) {
             processesExist =  false;
         }
