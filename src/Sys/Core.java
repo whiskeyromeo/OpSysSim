@@ -56,30 +56,21 @@ public class Core implements Runnable{
 
 
     public void run() {
-        if(!isStarted) {
-            isStarted = true;
+        while(!InterruptHandler.interruptSignalled) {
+
+            if (!isStarted) {
+                isStarted = true;
+            }
+
+            execute();
+
+            if (this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
+                RunningQueue.removeFromList(this.activeProcess);
+
+                this.activeProcess = null;
+                updateTableVals();
+            }
         }
-
-        execute();
-
-        if(this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
-            RunningQueue.removeFromList(this.activeProcess);
-
-            if(this.activeProcess.getCurrentState() != ProcessState.STATE.EXIT)
-                System.out.println("removing : " + this.activeProcess.getPid() + " from running list, run list size is : " + RunningQueue.getSize());
-            this.activeProcess = null;
-            updateTableVals();
-        } else if(this.activeProcess != null) {
-//            System.out.println("unexpected process : " + this.activeProcess.getPid() +
-//                    ", state : " + this.activeProcess.getCurrentState() +
-//                    ", pcounter : " + this.activeProcess.getProgramCounter() +
-//                    ", ins size : " + this.activeProcess.getInstructions().size() +
-//                    ", calcBurst : " + this.activeProcess.getBurstTime() +
-//                    ", nextBurst : " + this.activeProcess.getNextBurst() +
-//                    ", burstRem : " + (burstRemaining)
-//                );
-        }
-
 
     }
 
@@ -158,7 +149,7 @@ public class Core implements Runnable{
         }
     }
 
-    public void updateTableVals() {
+    public synchronized void updateTableVals() {
         try {
             GUI.updateTableValues();
         } catch(Throwable e) {
@@ -166,7 +157,7 @@ public class Core implements Runnable{
         }
     }
 
-    public void updateGui(String string) {
+    public synchronized void updateGui(String string) {
         try {
             GUI.addLine(string);
         } catch(Throwable e) {
@@ -175,7 +166,7 @@ public class Core implements Runnable{
 
     }
 
-    public void delayForUpdate(int millis) {
+    public synchronized void delayForUpdate(int millis) {
         try{
             Thread.currentThread().sleep(millis);
         }catch(Throwable e) {
@@ -185,11 +176,18 @@ public class Core implements Runnable{
 
     public void executeYield() {
         //System.out.print("yield : ");
-        this.activeProcess.setBurstTime(calcBurst);
-        this.activeProcess.setProgramCounter(programCounter+1);
-        this.activeProcess.decrementEstimatedRunTime(currentBurst);
-        this.activeProcess.setCurrentState(ProcessState.STATE.READY);
-        multiLevel.scheduleProcess(this.activeProcess);
+        try {
+            semaphore.acquire();
+            this.activeProcess.setBurstTime(calcBurst);
+            this.activeProcess.setProgramCounter(programCounter+1);
+            this.activeProcess.decrementEstimatedRunTime(currentBurst);
+            this.activeProcess.setCurrentState(ProcessState.STATE.READY);
+            multiLevel.scheduleProcess(this.activeProcess);
+            semaphore.release();
+        } catch(Throwable e) {
+            e.printStackTrace();
+        }
+
         //System.out.println("Preempting process as part of yield");
     }
 
@@ -205,10 +203,8 @@ public class Core implements Runnable{
 
     public void executeCalculate(String cycles) {
         int resetCalc;
-        //System.out.print("calculate " + cycles + " : ");
         calcBurst = Integer.parseInt(cycles);
         if(calcBurst > nextBurst) {
-            System.out.println("reset : " + this.activeProcess.getPid());
             resetCalc = calcBurst - nextBurst;
             String reset = "CALCULATE " + resetCalc;
             this.activeProcess.getInstructions().set(programCounter, reset);
@@ -233,7 +229,7 @@ public class Core implements Runnable{
 
     public void timeoutProcess() {
         //Preempt the process --> out of cycle time
-        System.out.println("process reached timeout , last burst was: " + nextBurst);
+        //System.out.println("process reached timeout , last burst was: " + nextBurst);
         this.activeProcess.setBurstTime(burstRemaining);
         this.activeProcess.decrementEstimatedRunTime(nextBurst);
         this.activeProcess.setCurrentState(ProcessState.STATE.READY);

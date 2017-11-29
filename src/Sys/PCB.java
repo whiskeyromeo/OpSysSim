@@ -190,11 +190,30 @@ public class PCB implements Cloneable {
         );
     }
 
+    public String sanitizePCString() {
+        if(this.programCounter >= this.instructions.size()) {
+            return "--ending...";
+        } else {
+            return this.instructions.get(this.programCounter);
+        }
+    }
+
+    public String getNewPCBLine() {
+        return "PID : " + this.pid +
+                " - State : " + this.currentState +
+                " - Est Cyc : " + this.estimatedRunTime +
+                " - Mem : " + this.memRequired +
+                " - Exec : " + sanitizePCString() +
+                " - Arr time : " + this.arrivalTime + "";
+    }
+
     public String getPCBLine() {
         return "PID : " + this.pid +
-                " , State : " + this.currentState +
-                " , IO Requests : " + this.ioRequests +
-                " , Current Memory : " + this.memAllocated;
+                " - State : " + this.currentState +
+                " - IO Req : " + this.ioRequests +
+                " - Mem : " + this.memAllocated +
+                " - Exec : " + sanitizePCString() +
+                " - Arr time : " + this.arrivalTime + "";
     }
 
     public String getPCBOutput() {

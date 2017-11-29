@@ -26,7 +26,7 @@ public class CLI extends GUI {
     private static LongTerm longTerm = LongTerm.getInstance();
 
 
-    public static String[] commands = {"PROC", "MEM", "EXE", "RESET", "EXIT", "LOAD"};
+    public static String[] commands = {"PROC", "MEM", "EXE", "RESET","CLOCK", "EXIT", "LOAD"};
 
     public static FileParser fileParser = new FileParser();
 
@@ -38,9 +38,6 @@ public class CLI extends GUI {
 
     public static boolean isValidCommand(String input) {
         String[] command = input.toUpperCase().split(" ");
-        for(String c: command) {
-            System.out.println("C is : " + c);
-        }
         if(command.length > 2) {
             return false;
         }
@@ -69,10 +66,7 @@ public class CLI extends GUI {
     public static void execute(String input) {
         String[]  command = input.split(" ");
         command[0] = command[0].toUpperCase();
-//
-//        for(String c: command) {
-//            System.out.println("--command is : " + c);
-//        }
+
         int val = -1;
         if(command.length > 1) {
             if(!command[0].equals("LOAD")) {
@@ -86,6 +80,9 @@ public class CLI extends GUI {
                 break;
             case "MEM":
                 _mem();
+                break;
+            case "CLOCK":
+                GUI.addLine("Clock time is : " + kernel.getSystemClock());
                 break;
             case "EXE":
                 _exe(val);
@@ -144,6 +141,13 @@ public class CLI extends GUI {
     }
 
     public static void _load(String filename) {
+        if(filename.contains(".random")) {
+            System.out.println("in load");
+            String[] proc = filename.split("\\.");
+            int numProceses = Integer.parseInt(proc[0]);
+            simulator.populateReadyQueues(numProceses);
+            return;
+        }
         fileParser.parse(filename);
         ArrayList<String> commands = fileParser.getCommandQueue();
         if(commands.isEmpty()) {
@@ -176,7 +180,7 @@ public class CLI extends GUI {
         memoryManager.resetMemory();
         longTerm.resetWaitingQueue();
         ioScheduler.resetIOQueue();
-        memoryManager.resetMemory();
+        multiLevel.resetReadyQueues();
         kernel.resetClock();
         textArea.clear();
         CPU.resetRunningList();

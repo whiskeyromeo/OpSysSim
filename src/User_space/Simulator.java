@@ -1,5 +1,6 @@
 package User_space;
 
+import Sys.InterruptHandler;
 import Sys.Kernel;
 import Sys.Memory.MemoryManager;
 import Sys.PCB;
@@ -143,8 +144,8 @@ public class Simulator {
 
     public static void testCPU() {
 
-        populateReadyQueues(5);
-        while(true) {
+        populateReadyQueues(50);
+        while(!InterruptHandler.interruptSignalled) {
             kernel.execute();
         }
 

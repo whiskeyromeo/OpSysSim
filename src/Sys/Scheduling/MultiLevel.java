@@ -60,21 +60,17 @@ public class MultiLevel {
             throw new IllegalArgumentException("Process must be in READY state");
 
         int estimatedRunTime = process.getEstimatedRunTime();
-        System.out.println("Estimated run time for proc : " + process.getPid() + " is " + estimatedRunTime);
+        // System.out.println("Estimated run time for proc : " + process.getPid() + " is " + estimatedRunTime);
 
-//        System.out.format("--MultiLevel-- process id : %d ", process.getPid());
 
         if(estimatedRunTime <= SJF_QUANTUM) {
             process.setNextBurst(process.getEstimatedRunTime());
-//            System.out.format("---->MultiLevel SJF---> est Run time : %d\n", process.getNextBurst());
             sjfScheduler.addToQueue(process);
         } else if(estimatedRunTime <= RR_SCHED_QUANTUM) {
             process.setNextBurst(RR_TIME_QUANTUM);
-//            System.out.format("---->MultiLevel RR---> est Run time : %d\n", process.getNextBurst());
             roundRobinScheduler.addToQueue(process);
         } else {
             process.setNextBurst(process.getEstimatedRunTime());
-//            System.out.format("---->MultiLevel FCFS---> est Run time : %d\n", process.getNextBurst());
             fcfsScheduler.addToQueue(process);
         }
     }

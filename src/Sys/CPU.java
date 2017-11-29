@@ -1,6 +1,7 @@
 package Sys;
 
 import Sys.Memory.Register;
+import User_space.GUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,13 @@ public class CPU {
             Thread core = new Thread(new Core(semaphore, messageQueue, i));
             threadCores.add(core);
         }
+        coresInitialized = true;
+    }
+
+    public void startThreadCores() {
+        for(Thread core: threadCores) {
+            core.start();
+        }
     }
 
     public void initializeCores() {
@@ -67,20 +75,30 @@ public class CPU {
             Core core = new Core(semaphore, messageQueue, i);
             cores.add(core);
         }
+        coresInitialized = true;
+    }
+
+    public void runCores() {
+        for(Core c:cores) {
+            c.run();
+        }
     }
 
     public void run() {
-//        if(!coresInitialized) {
-//            initializeCores();
-//        }
-//
-//        for(Core core: cores) {
-//            core.run();
-//        }
-        core1.run();
-        core2.run();
-        core3.run();
-        core4.run();
+        if(GUI.isActive) {
+            // Run using simulated cores if GUI is being used
+            if(!coresInitialized) {
+                initializeCores();
+            }
+            runCores();
+
+        } else {
+            // Otherwise multithread
+            if(!coresInitialized) {
+                initializeThreadCores();
+                startThreadCores();
+            }
+        }
 
     }
 

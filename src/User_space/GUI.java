@@ -6,13 +6,10 @@ import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -42,21 +38,15 @@ public class GUI extends Application {
     private javafx.scene.control.TextField textInput;
     private javafx.scene.control.Button button;
 
-    public static TableView activeTable;
-    public static TableView newTable;
-    public static TableView schedulerTable;
-
     private ScrollPane scrollPane;
     private Label label;
 
     static protected TextArea textArea;
     static protected TextArea schedulerTextArea;
+    static protected TextArea activeProcessesTextArea;
+    static protected TextArea newProcessesTextArea;
 
-
-    public static final ObservableList<PCB> activeProcessList = FXCollections.observableArrayList();
-    public static final ObservableList<PCB> newProcessList = FXCollections.observableArrayList();
-    private static final ObservableList<PCB> schedulerList = FXCollections.observableArrayList();
-
+    public static boolean isActive = false;
 
     ///************ SYSTEM INSTANCES HERE ******************* //
 
@@ -74,64 +64,11 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
-        window.setTitle("OS User_space.Simulator");
+        window.setTitle("OS Simulator");
 
-        TableView<PCB> processTable = new TableView<>();
-        ObservableList<PCB> processList = FXCollections.observableArrayList();
-            processTable.setItems(processList);
-
-        // Ready Processes
-        TableColumn pidCol = new TableColumn("PID");
-            pidCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("pid"));
-        TableColumn parentCol = new TableColumn("PARENT");
-            parentCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("ppid"));
-        TableColumn memAllCol = new TableColumn("MEMORY");
-            memAllCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("memAllocated"));
-        TableColumn arrivalTimeCol = new TableColumn("ARRIVAL");
-            arrivalTimeCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("arrivalTime"));
-        TableColumn estRunTimeCol = new TableColumn("EST RUN TIME");
-            estRunTimeCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("estimatedRunTime"));
-        TableColumn stateCol = new TableColumn("STATE");
-            stateCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("currentState"));
-        TableColumn commandCol = new TableColumn("EXECUTING");
-            commandCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("programCounter"));
-            commandCol.setPrefWidth(120);
-
-
-        // New Processes
-        TableColumn pidCol2 = new TableColumn("PID");
-            pidCol2.setCellValueFactory(new PropertyValueFactory<PCB, String>("pid"));
-        TableColumn memReqCol = new TableColumn("MEMORY REQ");
-            memReqCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("memRequired"));
-        TableColumn arrivalTimeCol2 = new TableColumn("ARRIVAL");
-            arrivalTimeCol2.setCellValueFactory(new PropertyValueFactory<PCB, String>("arrivalTime"));
-        TableColumn waitingCol = new TableColumn("WAITING");
-            waitingCol.setCellValueFactory(new PropertyValueFactory<PCB, String>("waitTime"));
-        TableColumn stateCol2 = new TableColumn("STATE");
-            stateCol2.setCellValueFactory(new PropertyValueFactory<PCB, String>("currentState"));
-
-
-
-        activeTable = new TableView();
-        newTable = new TableView();
-        newTable.setMaxHeight(300);
 
         simulator.populateReadyQueues(3);
 
-        this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
-        this.newProcessList.setAll(longTermScheduler.streamWaitingQueue());
-
-
-        activeTable.setItems(this.activeProcessList);
-        activeTable.getColumns().addAll(pidCol, memAllCol, arrivalTimeCol, estRunTimeCol, stateCol, commandCol);
-
-        newTable.setItems(this.newProcessList);
-        newTable.getColumns().addAll(pidCol2, memReqCol, arrivalTimeCol2, waitingCol, stateCol2);
-
-
-        activeTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        newTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-//        schedulerTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         textInput = new TextField();
         textInput.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -157,8 +94,24 @@ public class GUI extends Application {
         schedulerTextArea.setFocusTraversable(false);
         schedulerTextArea.setPrefRowCount(20);
         schedulerTextArea.setScrollTop(0);
-        schedulerTextArea.setPrefColumnCount(29);
+        schedulerTextArea.setPrefColumnCount(25);
         schedulerTextArea.autosize();
+
+        activeProcessesTextArea = new TextArea();
+        activeProcessesTextArea.setEditable(false);
+        activeProcessesTextArea.setFocusTraversable(true);
+        activeProcessesTextArea.setPrefRowCount(17);
+        activeProcessesTextArea.setScrollTop(0);
+        activeProcessesTextArea.setPrefColumnCount(40);
+        activeProcessesTextArea.autosize();
+
+        newProcessesTextArea = new TextArea();
+        newProcessesTextArea.setEditable(false);
+        newProcessesTextArea.setFocusTraversable(false);
+        newProcessesTextArea.setPrefRowCount(11);
+        //newProcessesTextArea.setScrollTop(0);
+        newProcessesTextArea.setPrefColumnCount(40);
+        newProcessesTextArea.autosize();
 
 
         button = new Button();
@@ -189,7 +142,7 @@ public class GUI extends Application {
 
         Text newProcessTitle = new Text("New Process Queue");
         newProcessTitle.setStyle("-fx-font-size: 16px");
-        newProcessBox.getChildren().addAll(newProcessTitle, newTable);
+        newProcessBox.getChildren().addAll(newProcessTitle, newProcessesTextArea);
 
         ScrollPane newScrollPane = new ScrollPane(newProcessBox);
         newScrollPane.setFitToHeight(true);
@@ -200,7 +153,7 @@ public class GUI extends Application {
 
         Text activeProcessTitle = new Text("Active/Blocked Processes");
         activeProcessTitle.setStyle("-fx-font-size: 16px");
-        activeProcessBox.getChildren().addAll(activeProcessTitle, activeTable);
+        activeProcessBox.getChildren().addAll(activeProcessTitle, activeProcessesTextArea);
 
         ScrollPane activeScrollPane = new ScrollPane(activeProcessBox);
         activeScrollPane.setFitToHeight(true);
@@ -242,9 +195,13 @@ public class GUI extends Application {
 
         Scene scene = new Scene(root, 1000, 600);
         window.setScene(scene);
+        updateTableValues();
 
+        isActive = true;
         runSim();
     }
+
+
 
     public void runSim() throws InterruptedException {
        // this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
@@ -267,13 +224,6 @@ public class GUI extends Application {
 
     public void loopMethod() throws InterruptedException {
 
-//        this.activeProcessList.setAll(ioScheduler.getProcessesFromIOQueue().stream().collect(Collectors.toList()));
-//        this.activeProcessList.setAll(cpu.getRunningList().stream().collect(Collectors.toList()));
-//        this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
-//        this.newProcessList.setAll(longTermScheduler.streamWaitingQueue());
-//
-//        this.activeTable.setItems(this.activeProcessList);
-//        this.newTable.setItems(this.newProcessList);
 
         try {
             Thread.sleep(50);
@@ -282,9 +232,10 @@ public class GUI extends Application {
         }
 
         if(CLI.numExeSteps == 0) {
-            System.out.print(" .. ");
             InterruptHandler.interruptSignalled = true;
         }
+
+        updateTableValues();
 
         if((!CLI.runProgramContinuously && CLI.numExeSteps < 0) || InterruptHandler.interruptSignalled ) {
             //System.out.println("looping");
@@ -294,67 +245,66 @@ public class GUI extends Application {
         }
 
         kernel.execute();
-        //System.out.println("made it passed kernel");
-        newTable.getItems().clear();
-        activeTable.getItems().clear();
-
-
 
     }
 
-    public static void updateTableValues() {
+
+    public static synchronized void updateTableValues() {
+        // **** update active processes ******
         ArrayList<PCB> activeProcesses = new ArrayList<>();
         Set<PCB> hs = new HashSet<>();
         activeProcesses.addAll(ioScheduler.getProcessesFromIOQueue());
         activeProcesses.addAll(RunningQueue.runningList);
         activeProcesses.addAll(multiLevel.getReadyQueues());
-        //System.out.println("activeProcess count : " + activeProcesses.size());
 
         hs.addAll(activeProcesses);
         activeProcesses.clear();
         activeProcesses.addAll(hs);
         activeProcesses.sort(Comparator.comparingInt(PCB::getPid));
-        schedulerTextArea.clear();
 
+
+
+        activeProcessesTextArea.clear();
+        newProcessesTextArea.clear();
 
         for(PCB process : activeProcesses) {
-            addSchedulerLine(process.getPCBLine());
+            addLine(activeProcessesTextArea, process.getPCBLine());
         }
 
+        // **** end update active processes ******
 
-        activeProcessList.setAll(ioScheduler.getProcessesFromIOQueue().stream().collect(Collectors.toList()));
-        activeProcessList.setAll(cpu.getRunningList().stream().collect(Collectors.toList()));
-        activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
-        newProcessList.setAll(longTermScheduler.streamWaitingQueue());
+        // ***** update new processes ********
+        ArrayList<PCB> newQueue = longTermScheduler.getWaitingQueue();
+        for(PCB process : newQueue) {
+            addLine(newProcessesTextArea, process.getNewPCBLine());
+        }
 
-        activeTable.setItems(activeProcessList);
-        newTable.setItems(newProcessList);
     }
 
     public static ArrayList<String> previousCommands = new ArrayList<>();
     public static ArrayList<String> prevSchedulerCommands = new ArrayList<>();
 
 
-    public static void addLine(String text) {
+    public static synchronized void addLine(String text) {
         textArea.appendText(text + "\n");
         previousCommands.add(text);
     }
 
-    public static void addLine(TextArea textArea, String text){
+    public static synchronized void addLine(TextArea textArea, String text){
         textArea.appendText(text + "\n");
     }
 
-    public static void addText(String text) {
+    public static synchronized void addText(String text) {
         textArea.appendText(text);
         previousCommands.add(text);
     }
 
-    public static void addSchedulerLine(String text) {
+    public static synchronized void addSchedulerLine(String text) {
         schedulerTextArea.appendText(text + "\n");
         prevSchedulerCommands.add(text);
     }
 
-    public static void addSchedulerText(String text) {
+    public static synchronized void addSchedulerText(String text) {
         schedulerTextArea.appendText(text);
         prevSchedulerCommands.add(text);
     }

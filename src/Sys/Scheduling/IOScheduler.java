@@ -31,7 +31,7 @@ public class IOScheduler {
     }
 
 
-    public void addToIOEventToQueue(PCB process) {
+    public synchronized void addToIOEventToQueue(PCB process) {
         IOEvent event = new IOEvent(process, IOBurst.generateIO());
         ioQueue.add(event);
     }
@@ -74,12 +74,12 @@ public class IOScheduler {
         return processes;
     }
 
-    public int getIOQueueSize() {
+    public synchronized int getIOQueueSize() {
         return ioQueue.size();
     }
 
 
-    public List<PCB> getProcessesFromIOQueue() {
+    public synchronized List<PCB> getProcessesFromIOQueue() {
         List<PCB> processes = new ArrayList<>();
         for(IOEvent event : ioQueue) {
             processes.add(event.process);

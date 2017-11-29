@@ -1,7 +1,6 @@
 package Sys.Memory;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 
 /**
  *
@@ -33,7 +32,8 @@ public class MemoryManager {
         }
 
         public static void deallocateMemory(int amount) {
-            memory += amount;
+            if(memory+amount <= TOTAL_MEMORY)
+                memory += amount;
         }
 
         public static int getCurrentMemory() {
