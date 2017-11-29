@@ -1,11 +1,8 @@
 package User_space;
 
 
-import Sys.CPU;
-import Sys.InterruptHandler;
-import Sys.Kernel;
+import Sys.*;
 import Sys.Memory.MemoryManager;
-import Sys.PCB;
 import Sys.Scheduling.IOScheduler;
 import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
@@ -123,9 +120,6 @@ public class CLI extends GUI {
     public static void _exe(int cycles) {
         if(cycles == -1) {
             // EXECUTE CONTINUOUSLY
-            if(!InterruptHandler.interruptSignalled) {
-                simulator.populateReadyQueues(5);
-            }
             InterruptHandler.interruptSignalled = false;
             numExeSteps = -1;
             runProgramContinuously = true;
@@ -181,6 +175,7 @@ public class CLI extends GUI {
         longTerm.resetWaitingQueue();
         ioScheduler.resetIOQueue();
         multiLevel.resetReadyQueues();
+        RunningQueue.runningList.clear();
         kernel.resetClock();
         textArea.clear();
         CPU.resetRunningList();

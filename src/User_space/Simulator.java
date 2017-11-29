@@ -115,7 +115,7 @@ public class Simulator {
         int mem, procLen;
         for(int i=0; i < numProcesses; i++){
             mem = r.nextInt(300);
-            procLen = r.nextInt(14) + 1;
+            procLen = r.nextInt(14) + 2;
             PCB process = makeFakeProcess(mem,procLen);
             longTermScheduler.addToWaitingQueue(process);
         }
@@ -144,9 +144,10 @@ public class Simulator {
 
     public static void testCPU() {
 
-        populateReadyQueues(50);
+        populateReadyQueues(2);
         while(!InterruptHandler.interruptSignalled) {
             kernel.execute();
+            kernel.advanceClock();
         }
 
     }

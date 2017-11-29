@@ -66,10 +66,6 @@ public class GUI extends Application {
         window = primaryStage;
         window.setTitle("OS Simulator");
 
-
-        simulator.populateReadyQueues(3);
-
-
         textInput = new TextField();
         textInput.setOnKeyPressed(new EventHandler<KeyEvent>() {
         @Override
@@ -109,7 +105,7 @@ public class GUI extends Application {
         newProcessesTextArea.setEditable(false);
         newProcessesTextArea.setFocusTraversable(false);
         newProcessesTextArea.setPrefRowCount(11);
-        //newProcessesTextArea.setScrollTop(0);
+        newProcessesTextArea.setScrollTop(0);
         newProcessesTextArea.setPrefColumnCount(40);
         newProcessesTextArea.autosize();
 
@@ -226,7 +222,7 @@ public class GUI extends Application {
 
 
         try {
-            Thread.sleep(50);
+            Thread.sleep(100);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -236,6 +232,9 @@ public class GUI extends Application {
         }
 
         updateTableValues();
+        updateSchedulerTextArea();
+
+        kernel.advanceClock();
 
         if((!CLI.runProgramContinuously && CLI.numExeSteps < 0) || InterruptHandler.interruptSignalled ) {
             //System.out.println("looping");
@@ -281,13 +280,8 @@ public class GUI extends Application {
 
     }
 
-    public static ArrayList<String> previousCommands = new ArrayList<>();
-    public static ArrayList<String> prevSchedulerCommands = new ArrayList<>();
-
-
     public static synchronized void addLine(String text) {
         textArea.appendText(text + "\n");
-        previousCommands.add(text);
     }
 
     public static synchronized void addLine(TextArea textArea, String text){
@@ -296,17 +290,39 @@ public class GUI extends Application {
 
     public static synchronized void addText(String text) {
         textArea.appendText(text);
-        previousCommands.add(text);
     }
 
     public static synchronized void addSchedulerLine(String text) {
         schedulerTextArea.appendText(text + "\n");
-        prevSchedulerCommands.add(text);
     }
 
     public static synchronized void addSchedulerText(String text) {
         schedulerTextArea.appendText(text);
-        prevSchedulerCommands.add(text);
+    }
+
+    public static void updateSchedulerTextArea() {
+        schedulerTextArea.clear();
+        String sjf = "SJF Scheduler : " +
+                "\n\t" + "Total Processes Scheduled : " + multiLevel.sjfScheduled +
+                "\n\t" + "Current No. Processes : " + multiLevel.sjfScheduler.getQueue().size() +
+                "\n\t" + "Wait Time : " + multiLevel.sjfWaitTime;
+        String rr = "RR Scheduler : " +
+                "\n\t" + "Total Processes Scheduled : " + multiLevel.rrScheduled +
+                "\n\t" + "Current No. Processes : " + multiLevel.roundRobinScheduler.getQueue().size() +
+                "\n\t" + "Wait Time : " + multiLevel.rrWaitTime;
+        String fcfs = "FCFS Scheduler : " +
+                "\n\t" + "Total Processes Scheduled : " + multiLevel.fcfsScheduled +
+                "\n\t" + "Current No. Processes : " + multiLevel.fcfsScheduler.getQueue().size() +
+                "\n\t" + "Wait Time : " + multiLevel.fcfsWaitTime;
+        String longTerm = "Long Term Scheduler : " +
+                "\n\t" + "Total Processes Scheduled : " + longTermScheduler.noProcesses +
+                "\n\t" + "Current No. Processes : " + longTermScheduler.getWaitingQueueSize() +
+                "\n\t" + "Wait Time : " + longTermScheduler.getWaitingQueueSize();
+
+        addLine(schedulerTextArea, sjf );
+        addLine(schedulerTextArea, rr );
+        addLine(schedulerTextArea, fcfs );
+        addLine(schedulerTextArea, longTerm);
     }
 
     // TODO : REMOVE WHEN READY

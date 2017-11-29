@@ -1,5 +1,6 @@
 package Sys.Scheduling;
 
+import Sys.Kernel;
 import Sys.PCB;
 import Sys.ProcessState;
 
@@ -25,12 +26,21 @@ public class MultiLevel {
     // use to create timeslice to prevent starvation
     boolean runBackground;
 
+    public static int clockTime;
+
     // Set the time quantum to determine which scheduler should be called upon
     public final int SJF_QUANTUM = 30;      // If a process has a burst time of < 10 --> sjf
     public final int RR_SCHED_QUANTUM = 250;       // If a process has a burst time of < 40 --> rrobin
     public final int RR_TIME_QUANTUM = 30;
                                             // Otherwise --> FCFS
 
+    public static int sjfScheduled = 0;
+    public static int fcfsScheduled = 0;
+    public static int rrScheduled = 0;
+
+    public static int sjfWaitTime = 0;
+    public static int rrWaitTime = 0;
+    public static int fcfsWaitTime = 0;
 
 
     private static MultiLevel multilevel;
@@ -61,7 +71,7 @@ public class MultiLevel {
 
         int estimatedRunTime = process.getEstimatedRunTime();
         // System.out.println("Estimated run time for proc : " + process.getPid() + " is " + estimatedRunTime);
-
+        process.setArrivalTime(Kernel.getStaticSystemClock());
 
         if(estimatedRunTime <= SJF_QUANTUM) {
             process.setNextBurst(process.getEstimatedRunTime());
@@ -80,17 +90,28 @@ public class MultiLevel {
      * @return
      */
     public synchronized PCB getNextProcess() {
+        PCB process;
         if(sjfScheduler.getQueue().size() > 0 && !runBackground ) {
+            sjfScheduled++;
 //            System.out.println("Retrieving from SJF");
-            return sjfScheduler.getNextFromQueue();
+            process = sjfScheduler.getNextFromQueue();
+            sjfWaitTime = updateWaitTime(sjfWaitTime, sjfScheduled, process);
+
+            return process;
         }
         if(roundRobinScheduler.getQueue().size() > 0 && !runBackground ) {
-//            System.out.println("Retrieving from RoundRobin");
-            return roundRobinScheduler.getNextFromQueue();
+            rrScheduled++;
+
+            process = roundRobinScheduler.getNextFromQueue();
+            rrWaitTime = updateWaitTime(rrWaitTime, rrScheduled, process);
+            return process;
         }
         if(fcfsScheduler.getQueue().size() > 0) {
+            fcfsScheduled++;
 //            System.out.println("Retrieving from FCFS");
-            return fcfsScheduler.getNextFromQueue();
+            process =  fcfsScheduler.getNextFromQueue();
+            fcfsScheduled = updateWaitTime(fcfsWaitTime, fcfsScheduled, process);
+            return process;
         }
 //        System.out.println("-----MultiLevel --> no more processes to be had");
         return null;
@@ -119,7 +140,7 @@ public class MultiLevel {
 
     }
 
-    public ArrayList<PCB> getReadyQueue() {
+    public synchronized ArrayList<PCB> getReadyQueue() {
         ArrayList<PCB> newQueue = new ArrayList<>();
         ArrayList<PCB> sjfQueue = sjfScheduler.getQueue();
         ArrayList<PCB> rrQueue = roundRobinScheduler.getQueue();
@@ -134,6 +155,12 @@ public class MultiLevel {
         sjfScheduler.resetQueue();
         fcfsScheduler.resetQueue();
         roundRobinScheduler.resetQueue();
+        sjfScheduled = 0;
+        fcfsScheduled = 0;
+        rrScheduled = 0;
+        sjfWaitTime = 0;
+        rrWaitTime = 0;
+        fcfsWaitTime = 0;
     }
 
 
@@ -144,6 +171,12 @@ public class MultiLevel {
         readyList.addAll(fcfsScheduler.getQueue());
         readyList.addAll(roundRobinScheduler.getQueue());
         return readyList;
+    }
+
+    public int updateWaitTime(int currentWait, int n, PCB process) {
+        int procWait = Kernel.getStaticSystemClock() - process.getArrivalTime();
+        int newWait = (((n-1)*currentWait)+procWait)/n;
+        return newWait;
     }
 
 

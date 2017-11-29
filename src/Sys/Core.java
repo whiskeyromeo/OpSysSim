@@ -56,22 +56,38 @@ public class Core implements Runnable{
 
 
     public void run() {
-        while(!InterruptHandler.interruptSignalled) {
-
-            if (!isStarted) {
-                isStarted = true;
-            }
-
-            execute();
-
-            if (this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
-                RunningQueue.removeFromList(this.activeProcess);
-
-                this.activeProcess = null;
-                updateTableVals();
-            }
+        if(GUI.isActive) {
+            runForGUI();
+        } else {
+            runForSim();
         }
 
+    }
+
+    public void runForGUI() {
+
+        if (!isStarted) {
+            isStarted = true;
+        }
+
+        execute();
+
+        if (this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
+            RunningQueue.removeFromList(this.activeProcess);
+            this.activeProcess = null;
+            updateTableVals();
+        } else if(this.activeProcess != null) {
+            //System.out.println(" run queue may have : " +this.activeProcess.getInstructions().size()
+            //       + ", pc : " + this.activeProcess.getProgramCounter()
+            //);
+        }
+
+    }
+
+    public void runForSim() {
+        while(!InterruptHandler.interruptSignalled) {
+            runForGUI();
+        }
     }
 
     public void execute() {
@@ -174,15 +190,25 @@ public class Core implements Runnable{
         }
     }
 
-    public void executeYield() {
+    public synchronized void executeYield() {
         //System.out.print("yield : ");
         try {
             semaphore.acquire();
+            PCB previousProcess = this.activeProcess;
             this.activeProcess.setBurstTime(calcBurst);
             this.activeProcess.setProgramCounter(programCounter+1);
             this.activeProcess.decrementEstimatedRunTime(currentBurst);
-            this.activeProcess.setCurrentState(ProcessState.STATE.READY);
-            multiLevel.scheduleProcess(this.activeProcess);
+            this.activeProcess.incrementCriticalTime(1);
+            if((memoryManager.getCurrentMemory() > (this.activeProcess.getMemAllocated()/2))
+                    && this.activeProcess.getChildren().size() < 3 && this.activeProcess.getPid() < 10) {
+                messageQueue.add(String.format("Process %d had a child!", this.activeProcess.getPid()));
+                this.activeProcess = this.activeProcess._fork();
+            }
+
+            if(previousProcess == this.activeProcess){
+                this.activeProcess.setCurrentState(ProcessState.STATE.READY);
+                multiLevel.scheduleProcess(this.activeProcess);
+            }
             semaphore.release();
         } catch(Throwable e) {
             e.printStackTrace();
@@ -229,7 +255,6 @@ public class Core implements Runnable{
 
     public void timeoutProcess() {
         //Preempt the process --> out of cycle time
-        //System.out.println("process reached timeout , last burst was: " + nextBurst);
         this.activeProcess.setBurstTime(burstRemaining);
         this.activeProcess.decrementEstimatedRunTime(nextBurst);
         this.activeProcess.setCurrentState(ProcessState.STATE.READY);

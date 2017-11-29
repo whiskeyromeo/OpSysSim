@@ -1,5 +1,6 @@
 package Sys;
 
+import Sys.Memory.MemoryManager;
 import Sys.Memory.Register;
 import Sys.ProcessState.STATE;
 import Sys.Scheduling.MultiLevel;
@@ -15,6 +16,7 @@ public class PCB implements Cloneable {
     Kernel kernel = Kernel.getInstance();
     Dispatcher dispatcher = Dispatcher.getInstance();
     MultiLevel multiLevelScheduler = MultiLevel.getInstance();
+    MemoryManager memoryManager = MemoryManager.getInstance();
 
     private STATE currentState;
     private int pid;                // unique process identifier for each process
@@ -75,7 +77,7 @@ public class PCB implements Cloneable {
      * forks a process --> returns the parent to the ReadyQueue
      * @return The child process
      */
-    public PCB _fork() throws IllegalArgumentException{
+    public synchronized PCB _fork() throws IllegalArgumentException{
         if(this.currentState != STATE.RUN) {
             throw new IllegalArgumentException("The process must be RUNNING to be forked");
         }
@@ -87,17 +89,28 @@ public class PCB implements Cloneable {
                 this.instructions,
                 this.burstTime,
                 STATE.RUN,
-                this.programCounter,
+                0,
                 this.estimatedRunTime,
-                this.nextBurst
+                this.burstTime
         );
+        if(memoryManager.getCurrentMemory() > this.memRequired/2){
+            memoryManager.allocateMemory(this.memRequired/2);
+            child.memAllocated = this.memRequired/2;
+            child.memRequired = this.memRequired/2;
 
+        } else {
+            child = null;
+            return this;
+        }
         this.children.add(child);
         this.setCurrentState(STATE.READY);
         multiLevelScheduler.scheduleProcess(this);
         return child;
     }
 
+//    public ArrayList<String> passInstructionsToChild() {
+//
+//    }
 
     public int _exec() {
         // Should execute in place of the current shell without creating a new process

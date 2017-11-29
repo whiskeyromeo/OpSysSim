@@ -49,11 +49,10 @@ public class Kernel {
             longTerm.scheduleWaitingProcess();
             ioScheduler.reScheduleCompleteProcesses();
             cpu.run();
-
         } else {
             System.out.println("interrupt was signalled --> kernel");
         }
-        advanceClock();
+
     }
 
     public void checkIfNoProcessesInSystem() {
@@ -68,7 +67,7 @@ public class Kernel {
         }
 
         if(!processesExist) {
-            System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
+            //System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
             System.out.println("interrupt signalled");
             InterruptHandler.signalInterrupt();
         }
@@ -93,5 +92,9 @@ public class Kernel {
     //-------SETTERS----------
     public int getSystemClock() {
         return this.systemClock;
+    }
+
+    public static int getStaticSystemClock() {
+        return systemClock;
     }
 }

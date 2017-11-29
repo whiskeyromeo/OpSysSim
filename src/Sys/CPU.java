@@ -78,8 +78,8 @@ public class CPU {
         coresInitialized = true;
     }
 
-    public void runCores() {
-        for(Core c:cores) {
+    public void runThreadCores() {
+        for(Thread c:threadCores) {
             c.run();
         }
     }
@@ -88,13 +88,12 @@ public class CPU {
         if(GUI.isActive) {
             // Run using simulated cores if GUI is being used
             if(!coresInitialized) {
-                initializeCores();
+                initializeThreadCores();
             }
-            runCores();
-
+            runThreadCores();
         } else {
-            // Otherwise multithread
             if(!coresInitialized) {
+                // Otherwise multithread
                 initializeThreadCores();
                 startThreadCores();
             }

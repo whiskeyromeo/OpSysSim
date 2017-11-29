@@ -1,9 +1,9 @@
 package Sys.Scheduling;
 
+import Sys.Kernel;
 import Sys.Memory.MemoryManager;
 import Sys.PCB;
 import Sys.ProcessState;
-import User_space.CLI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
  *
  */
 public class LongTerm extends Scheduler {
+
+    public static  int longTermWaitTime = 0;
+    public static int noProcesses = 0;
 
     private static ArrayList<PCB> waitingQueue = new ArrayList<>();
 
@@ -36,6 +39,8 @@ public class LongTerm extends Scheduler {
         return longTermScheduler;
     }
 
+
+
     // Pass off a waiting process to the Multi-level scheduling queue
     public void scheduleWaitingProcess() {
 
@@ -44,14 +49,14 @@ public class LongTerm extends Scheduler {
         for(PCB process : waitingQueue) {
             int memoryRequired = process.getMemRequired();
             if(memoryRequired <= memoryManager.getCurrentMemory()) {
-                CLI.newProcessList.remove(process);
-                CLI.activeProcessList.add(process);
-                //process.setArrivalTime(kernel.getSystemClock());
+//                process.setArrivalTime(Kernel.getSystemClock());
                 process.setCurrentState(ProcessState.STATE.READY);
                 memoryManager.allocateMemory(memoryRequired);
                 process.setMemAllocated(memoryRequired);
                 processScheduler.scheduleProcess(process);
                 waitingQueue.remove(process);
+                noProcesses++;
+                longTermWaitTime = updateWaitTime(longTermWaitTime, noProcesses,process);
                 return;
             }
         }
@@ -60,11 +65,13 @@ public class LongTerm extends Scheduler {
     }
 
     public void addToWaitingQueue(PCB process) {
-        CLI.newProcessList.add(process);
         process.setCurrentState(ProcessState.STATE.WAIT);
         //process.setArrivalTime(kernel.getSystemClock());
         waitingQueue.add(process);
     }
+
+
+
 
     public int getWaitingQueueSize() { return waitingQueue.size(); }
 
@@ -78,6 +85,13 @@ public class LongTerm extends Scheduler {
 
     public void resetWaitingQueue() {
         waitingQueue.clear();
+    }
+
+
+    public int updateWaitTime(int currentWait, int n, PCB process) {
+        int procWait = Kernel.getStaticSystemClock() - process.getArrivalTime();
+        int newWait = (((n-1)*currentWait)+procWait)/n;
+        return newWait;
     }
 
 }

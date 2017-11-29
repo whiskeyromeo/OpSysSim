@@ -2,7 +2,6 @@ package Sys.Scheduling;
 
 import Sys.PCB;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -42,6 +41,7 @@ public abstract class Scheduler {
     }
 
     public Stats getStats() { return this.stats; }
+
 
     public PCB getNextFromQueue(ArrayList<PCB> queue) {
         PCB next;
