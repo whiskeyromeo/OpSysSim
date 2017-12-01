@@ -5,6 +5,6 @@ package Sys;
  * @project OS_Simulator
  */
 public class ProcessState {
-    public enum STATE { NEW, READY, WAIT, BLOCKED, RUN, EXIT};
+    public enum STATE { NEW, READY, SUSPEND, WAIT, BLOCKED, RUN, EXIT};
 
 }

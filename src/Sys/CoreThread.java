@@ -54,6 +54,8 @@ public class CoreThread implements Runnable{
                 System.out.println("Process : " + this.activeProcess.getPid() + " added to Running Queue on core thread " + this.coreId);
                 RunningQueue.addToList(this.activeProcess);
             }
+        } else {
+            this.activeProcess.setCurrentState(ProcessState.STATE.RUN);
         }
 
     }
@@ -110,10 +112,15 @@ public class CoreThread implements Runnable{
             RunningQueue.removeFromList(this.activeProcess);
             System.out.println("Process : " + this.activeProcess.getPid() + " was removed from running queue on thread " + this.coreId );
             this.activeProcess = null;
-            updateTableVals();
         } else if (this.activeProcess != null) {
+//            RunningQueue.removeFromList(this.activeProcess);
+//            this.activeProcess.setCurrentState(ProcessState.STATE.READY);
+//            multiLevel.scheduleProcess(this.activeProcess);
+//            this.activeProcess = null;
+            //this.activeProcess.setCurrentState(ProcessState.STATE.SUSPEND);
             //System.out.println("run queue size : " + RunningQueue.getSize());
         }
+        //updateTableVals();
 
     }
 
@@ -131,6 +138,7 @@ public class CoreThread implements Runnable{
         if(this.activeProcess == null) {
             return;
         }
+        updateTableVals();
 
         // Check if there are any calculations remaining to be done
         // in this cycle
@@ -147,12 +155,13 @@ public class CoreThread implements Runnable{
         // section is done if an interrupt is signalled
         // Otherwise continue until some interrupt pulls the program out of
         // the processor
-        if ( programCounter < numInstructions && !signalInterrupt ) {
-//            System.out.println("Starting process" + this.activeProcess.getPid() + ", nextburst : " + nextBurst +
-//                    ",instruction : " + this.activeProcess.getInstructions().get(programCounter));
+
+        if (programCounter < numInstructions && !signalInterrupt) {
+            //            System.out.println("Starting process" + this.activeProcess.getPid() + ", nextburst : " + nextBurst +
+            //                    ",instruction : " + this.activeProcess.getInstructions().get(programCounter));
 
             // Get a new instruction from the set
-            if(calcBurst == 0 && !timeout) {
+            if (calcBurst == 0 && !timeout) {
                 command = this.activeProcess.getInstructions().get(programCounter).split(" ");
 
                 switch (command[0]) {
@@ -169,18 +178,18 @@ public class CoreThread implements Runnable{
                         executeYield();
                         return;
                     default:
-                        System.out.print("BROKE TO SWITCH DEFAULT : command : " + command[0] );
+                        System.out.print("BROKE TO SWITCH DEFAULT : command : " + command[0]);
                         return;
                 }
 
                 programCounter += 1;
                 this.activeProcess.setProgramCounter(programCounter);
 
-            } else if(calcBurst == 0 && timeout) {
+            } else if (calcBurst == 0 && timeout) {
                 //Preempt the process --> out of cycle time
                 timeoutProcess();
                 return;
-            } else if(calcBurst > 0 && nextBurst >= calcBurst) {
+            } else if (calcBurst > 0 && nextBurst >= calcBurst) {
                 // process should be preempted(Round robin) --> set the burst time accordingly
                 // System.out.println("proc : " + this.activeProcess.getPid() + ", calcburst : " + calcBurst);
                 calcBurst--;
@@ -196,6 +205,7 @@ public class CoreThread implements Runnable{
             this.activeProcess.exit();
             updateGui(this.activeProcess.getPCBLine());
         }
+
     }
 
     /**
@@ -223,13 +233,6 @@ public class CoreThread implements Runnable{
 
     }
 
-    public synchronized void delayForUpdate(int millis) {
-        try{
-            Thread.currentThread().sleep(millis);
-        }catch(Throwable e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Execute the operations associated with the YIELD instruction
