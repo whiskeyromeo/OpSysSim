@@ -7,6 +7,8 @@ import Sys.Scheduling.IOScheduler;
 import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,7 +27,7 @@ public class CLI extends GUI {
     private static LongTerm longTerm = LongTerm.getInstance();
 
 
-    public static String[] commands = {"PROC", "MEM", "EXE", "RESET","CLOCK", "EXIT", "LOAD"};
+    public static String[] commands = {"PROC", "MEM", "EXE", "RESET","CLOCK", "EXIT", "LOAD", "PWD"};
 
     public static FileParser fileParser = new FileParser();
 
@@ -98,6 +100,9 @@ public class CLI extends GUI {
             case "RESET":
                 _reset();
                 break;
+            case "PWD":
+                printWorkingDirectory();
+                break;
             case "EXIT":
                 _exit();
                 break;
@@ -105,6 +110,12 @@ public class CLI extends GUI {
                 System.out.println("----INVALID COMMAND FROM CLI----");
                 break;
         }
+    }
+
+    public static void printWorkingDirectory() {
+        Path currentPath = Paths.get("");
+        String dir = currentPath.toAbsolutePath().toString();
+        GUI.addLine("Current Path : " + dir);
     }
 
     public static void _proc() {

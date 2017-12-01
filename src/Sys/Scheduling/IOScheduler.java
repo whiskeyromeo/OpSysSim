@@ -31,17 +31,23 @@ public class IOScheduler {
     }
 
 
+    /**
+     * Add a process to the IO queue
+     * @param process the process to enqueue
+     */
     public synchronized void addToIOEventToQueue(PCB process) {
         IOEvent event = new IOEvent(process, IOBurst.generateIO());
         ioQueue.add(event);
     }
 
+    /**
+     * Reschedule a process which has completed its IO service time
+     */
     public synchronized void reScheduleCompleteProcesses() {
         int timePassed;
         if(ioQueue.size() > 0) {
             IOEvent event = ioQueue.remove(0);
             timePassed = kernel.getSystemClock() - event.originTime;
-//            System.out.println("Ioscheduler -event.numcycles : " + event.numCycles + ", timepassed : " + timePassed);
             if(timePassed < event.numCycles) {
                 ioQueue.add(0, event);
             } else {
@@ -55,6 +61,9 @@ public class IOScheduler {
 
     }
 
+    /**
+     * @param process the process to be removed from the queue
+     */
     public synchronized void removeProcessFromIOQueue(PCB process){
         int procIndex = -1;
         for(IOEvent ioEvent: ioQueue) {
@@ -67,12 +76,6 @@ public class IOScheduler {
         }
     }
 
-    public List<PCB> streamIOQueue() {
-        List<PCB> processes = ioQueue.stream()
-                .map(p -> p.process).collect(Collectors.toList());
-
-        return processes;
-    }
 
     public synchronized int getIOQueueSize() {
         return ioQueue.size();
@@ -93,6 +96,9 @@ public class IOScheduler {
 
 }
 
+/**
+ * A class to keep track of the arrival time of a process to the IO Queue
+ */
 class IOEvent {
 
     private static Kernel kernel = Kernel.getInstance();

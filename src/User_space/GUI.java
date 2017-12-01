@@ -324,13 +324,6 @@ public class GUI extends Application {
         textArea.appendText(text);
     }
 
-    public static synchronized void addSchedulerLine(String text) {
-        schedulerTextArea.appendText(text + "\n");
-    }
-
-    public static synchronized void addSchedulerText(String text) {
-        schedulerTextArea.appendText(text);
-    }
 
     /**
      *  Update the scheduler values
@@ -360,7 +353,6 @@ public class GUI extends Application {
         addLine(schedulerTextArea, longTerm);
     }
 
-    // TODO : REMOVE WHEN READY
     public static void main(String[] args) {
         launch(args);
     }

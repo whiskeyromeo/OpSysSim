@@ -3,6 +3,7 @@ package Sys.Scheduling;
 import Sys.Kernel;
 import Sys.PCB;
 import Sys.ProcessState;
+import User_space.GUI;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +31,7 @@ public class MultiLevel {
 
     // Set the time quantum to determine which scheduler should be called upon
     public final int SJF_QUANTUM = 30;      // If a process has a burst time of < 10 --> sjf
-    public final int RR_SCHED_QUANTUM = 250;       // If a process has a burst time of < 40 --> rrobin
+    public final int RR_SCHED_QUANTUM = 150;       // If a process has a burst time of < 40 --> rrobin
     public final int RR_TIME_QUANTUM = 30;
                                             // Otherwise --> FCFS
 
@@ -91,34 +92,33 @@ public class MultiLevel {
      */
     public synchronized PCB getNextProcess() {
         setRunBackground();
-        PCB process;
+        PCB process = null;
         if(sjfScheduler.getQueue().size() > 0 && !runBackground ) {
             sjfScheduled++;
 //            System.out.println("Retrieving from SJF");
             process = sjfScheduler.getNextFromQueue();
             sjfWaitTime = updateWaitTime(sjfWaitTime, sjfScheduled, process);
 
-            return process;
-        }
-        if(roundRobinScheduler.getQueue().size() > 0 && !runBackground ) {
+        }else if(roundRobinScheduler.getQueue().size() > 0 && !runBackground ) {
             rrScheduled++;
 
             process = roundRobinScheduler.getNextFromQueue();
             rrWaitTime = updateWaitTime(rrWaitTime, rrScheduled, process);
             return process;
-        }
-        if(runBackground){
-            System.out.println("Should be running background");
-        }
-        if(fcfsScheduler.getQueue().size() > 0) {
+        }else if(fcfsScheduler.getQueue().size() > 0) {
             fcfsScheduled++;
-//            System.out.println("Retrieving from FCFS");
+            // System.out.println("Retrieving from FCFS");
             process =  fcfsScheduler.getNextFromQueue();
-            fcfsScheduled = updateWaitTime(fcfsWaitTime, fcfsScheduled, process);
+            fcfsWaitTime = updateWaitTime(fcfsWaitTime, fcfsScheduled, process);
             return process;
         }
-
-        return null;
+        // Try catch in case the simulator is being run via the CL
+        try {
+            GUI.updateSchedulerTextArea();
+        } catch (Throwable e) {
+            //
+        }
+        return process;
     }
 
     /**
@@ -193,8 +193,7 @@ public class MultiLevel {
 
     public synchronized int updateWaitTime(int currentWait, int n, PCB process) {
         int procWait = Kernel.getStaticSystemClock() - process.getArrivalTime();
-        int newWait = (((n-1)*currentWait)+procWait)/n;
-        return newWait;
+        return (((n-1)*currentWait)+procWait)/n;
     }
 
 

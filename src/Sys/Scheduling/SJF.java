@@ -57,22 +57,4 @@ public class SJF extends Scheduler{
     }
 
 
-
-    /**
-     * This will preempt a process --> maybe should not be used here
-     * but instead used in the interrupt handler? or CPU?
-     * @param process
-     */
-//    public void preemptProcess(PCB process) {
-//        // Should preempt the current process
-//        int burst = process.getRemainingBurst();
-//        int arrivalTime = process.getArrivalTime();
-//        int currentTime = Kernel.getSystemClock();
-//        int timeRemaining = (burst - (currentTime - arrivalTime));
-//        process.setRemainingBurst(timeRemaining);
-//        process.setNextBurst(timeRemaining);
-//        process.setCurrentState(ProcessState.STATE.READY);
-//    }
-
-
 }

@@ -21,8 +21,12 @@ public class FileParser {
         this.commandQueue = new ArrayList<>();
     }
 
-
+    /**
+     * Parses a file in order to get the commands
+     * @param fileName
+     */
     public void parse(String fileName) {
+
         input = "./src/Program_Files/" + fileName;
 
         Path currentRelativePath = Paths.get("");
