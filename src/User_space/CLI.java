@@ -8,6 +8,8 @@ import Sys.Scheduling.LongTerm;
 import Sys.Scheduling.MultiLevel;
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @project OS_Simulator
@@ -27,9 +29,9 @@ public class CLI extends GUI {
 
     public static FileParser fileParser = new FileParser();
 
-
     public static boolean runProgramContinuously = false;
     public static int numExeSteps = -1;
+    private static int endClock = -1;
 
 
 
@@ -170,9 +172,9 @@ public class CLI extends GUI {
 
     public static void executeProgramCommands(ArrayList<String> commands) {
         int i = 0;
-        while(i < commands.size())
-        {
-            execute(commands.get(i));
+        while(i < commands.size()) {
+            String comm = commands.get(i);
+            GUI.exe_commands.add(comm);
             i++;
         }
     }

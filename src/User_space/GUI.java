@@ -23,6 +23,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author Will Russell on 11/8/17
@@ -40,6 +42,9 @@ public class GUI extends Application {
 
     private ScrollPane scrollPane;
     private Label label;
+
+    public static BlockingQueue<String> exe_commands = new LinkedBlockingQueue<>();
+
 
     static protected TextArea textArea;
     static protected TextArea schedulerTextArea;
@@ -254,7 +259,10 @@ public class GUI extends Application {
             InterruptHandler.interruptSignalled = true;
             CLI.numExeSteps = -1;
         }
-
+        if(!CLI.exe_commands.isEmpty()) {
+            String command = CLI.exe_commands.poll();
+            CLI.execute(command);
+        }
 
         updateTableValues();
         updateSchedulerTextArea();
