@@ -169,8 +169,11 @@ public class CLI extends GUI {
     }
 
     public static void executeProgramCommands(ArrayList<String> commands) {
-        while(commands.size() > 0) {
-
+        int i = 0;
+        while(i < commands.size())
+        {
+            execute(commands.get(i));
+            i++;
         }
     }
 
