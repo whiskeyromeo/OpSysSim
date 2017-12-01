@@ -90,6 +90,7 @@ public class MultiLevel {
      * @return
      */
     public synchronized PCB getNextProcess() {
+        setRunBackground();
         PCB process;
         if(sjfScheduler.getQueue().size() > 0 && !runBackground ) {
             sjfScheduled++;
@@ -106,6 +107,9 @@ public class MultiLevel {
             rrWaitTime = updateWaitTime(rrWaitTime, rrScheduled, process);
             return process;
         }
+        if(runBackground){
+            System.out.println("Should be running background");
+        }
         if(fcfsScheduler.getQueue().size() > 0) {
             fcfsScheduled++;
 //            System.out.println("Retrieving from FCFS");
@@ -113,7 +117,7 @@ public class MultiLevel {
             fcfsScheduled = updateWaitTime(fcfsWaitTime, fcfsScheduled, process);
             return process;
         }
-//        System.out.println("-----MultiLevel --> no more processes to be had");
+
         return null;
     }
 
@@ -140,6 +144,20 @@ public class MultiLevel {
 
     }
 
+    /**
+     * Runs background tasks if needed
+     */
+    public void setRunBackground() {
+        if((Kernel.getStaticSystemClock() % 10 == 0 ) && (fcfsScheduler.getQueue().size() > 0)) {
+            runBackground = true;
+        } else {
+            runBackground = false;
+        }
+    }
+
+    /**
+     * @return All of the processes currently in the ready queues in the system
+     */
     public synchronized ArrayList<PCB> getReadyQueue() {
         ArrayList<PCB> newQueue = new ArrayList<>();
         ArrayList<PCB> sjfQueue = sjfScheduler.getQueue();

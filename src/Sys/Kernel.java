@@ -42,8 +42,9 @@ public class Kernel {
     int count = 0;
     public void execute() {
 
+        // Assert that processes exist in the system --> if not throw an interrupt to save some processing
         checkIfNoProcessesInSystem();
-        //System.out.println("processes exist : " + processesExist);
+
         if(!InterruptHandler.interruptSignalled) {
 
             longTerm.scheduleWaitingProcess();
@@ -55,6 +56,9 @@ public class Kernel {
 
     }
 
+    /**
+     *  Method to signal an interrupt if there are no processes to execute
+     */
     public void checkIfNoProcessesInSystem() {
         int ioSize = ioScheduler.getIOQueueSize();
         int newSize = longTerm.getWaitingQueueSize();
@@ -85,14 +89,16 @@ public class Kernel {
          return new_pid;
     }
 
-    //-------GETTERS----------
+    //-------SETTERS----------
     public void advanceClock() { this.systemClock++; }
     public void resetClock() { this.systemClock = 0; }
+    public void resetProcessCounter() { processCounter = 1; }
 
-    //-------SETTERS----------
+    //-------GETTERS----------
     public int getSystemClock() {
         return this.systemClock;
     }
+
 
     public static int getStaticSystemClock() {
         return systemClock;

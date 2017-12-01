@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="OS_Simulator">
+    <output-path>$PROJECT_DIR$/out/artifacts/OS_Simulator</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="User_space.GUI" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="OS Simulator" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="OS_Simulator.jar">
+        <element id="module-output" name="OS_Simulator" />
+      </element>
+    </root>
+  </artifact>
+</component>

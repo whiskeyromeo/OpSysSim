@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.util.Stack;
 
 /**
  * @author Will Russell on 11/8/17
@@ -110,12 +110,14 @@ public class GUI extends Application {
         newProcessesTextArea.setPrefColumnCount(45);
         newProcessesTextArea.autosize();
 
-
+        Stack prev = new Stack();
+        String prevCmd;
         button = new Button();
         button.setText("Submit");
         button.setOnAction(event -> {
             boolean valid = false;
             String inputText = textInput.getText();
+            prev.push(inputText);
             if (!inputText.trim().equals(""))
                 valid = CLI.isValidCommand(textInput.getText());
             textInput.clear();
@@ -131,6 +133,19 @@ public class GUI extends Application {
         controls.setSpacing(10);
         controls.getChildren().addAll(textInput, button);
 
+        //Set the text editor to the most previously submitted command
+        controls.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode().equals(KeyCode.UP)) {
+                if(!prev.empty()) {
+                    textInput.setText(prev.pop().toString());
+                }
+                else{
+                    //do Nothing
+                }
+            }
+
+
+        });
 
         root = new BorderPane();
 
@@ -223,6 +238,10 @@ public class GUI extends Application {
 
     }
 
+    /**
+     * Primary loop method
+     * @throws InterruptedException
+     */
     public void loopMethod() throws InterruptedException {
 
 

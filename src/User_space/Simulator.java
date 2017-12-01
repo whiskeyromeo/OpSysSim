@@ -114,7 +114,7 @@ public class Simulator {
         Random r = new Random();
         int mem, procLen;
         for(int i=0; i < numProcesses; i++){
-            mem = r.nextInt(300);
+            mem = r.nextInt(400);
             procLen = r.nextInt(14) + 2;
             PCB process = makeFakeProcess(mem,procLen);
             longTermScheduler.addToWaitingQueue(process);

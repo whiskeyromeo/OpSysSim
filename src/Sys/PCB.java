@@ -110,7 +110,7 @@ public class PCB implements Cloneable {
         return child;
     }
 
-    
+
     public int _exec() {
         // Should execute in place of the current shell without creating a new process
         return 0;
@@ -224,7 +224,7 @@ public class PCB implements Cloneable {
                 " - State : " + this.currentState +
                 " - IO Req : " + this.ioRequests +
                 " - Mem : " + this.memAllocated +
-                " - Exec : " + sanitizePCString() +
+                " - Next : " + sanitizePCString() +
                 " - Arr time : " + this.arrivalTime + "";
         if(this.completedTime > -1) {
             output += " - Comp Time : " + this.completedTime;

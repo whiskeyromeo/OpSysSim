@@ -181,6 +181,7 @@ public class CLI extends GUI {
         multiLevel.resetReadyQueues();
         RunningQueue.runningList.clear();
         kernel.resetClock();
+        kernel.resetProcessCounter();
         textArea.clear();
         CPU.resetRunningList();
 

@@ -73,19 +73,26 @@ public class Core implements Runnable{
      * Runs the core in a JavaFx safe manner
      */
     public void runForGUI() {
-
+        // Initialize to sanitize for multiple threads
         if (!isStarted) {
             isStarted = true;
         }
+        InterruptHandler.checkForDeviceInterrupt(this.coreId);
 
-        execute();
+        if(!InterruptHandler.deviceInterruptSignalled || InterruptHandler.serviceID != this.coreId) {
+            //System.out.println("Core " + this.coreId + " is running");
+            execute();
 
-        if (this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
-            RunningQueue.removeFromList(this.activeProcess);
-            this.activeProcess = null;
-            updateTableVals();
-        } else if(this.activeProcess != null) {
-            //System.out.println("run queue size : " + RunningQueue.getSize());
+            if (this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
+                RunningQueue.removeFromList(this.activeProcess);
+                this.activeProcess = null;
+                updateTableVals();
+            } else if (this.activeProcess != null) {
+                //System.out.println("run queue size : " + RunningQueue.getSize());
+            }
+        } else {
+            //System.out.println("Core " + this.coreId + " is servicing the interrupt");
+            InterruptHandler.serviceDeviceInterrupt();
         }
 
     }
@@ -215,7 +222,7 @@ public class Core implements Runnable{
             PCB previousProcess = this.activeProcess;
             this.activeProcess.setBurstTime(calcBurst);
             this.activeProcess.setProgramCounter(programCounter+1);
-            System.out.println("Decrementing " + this.activeProcess.getPid() + " burst by " + currentBurst);
+            // System.out.println("Decrementing " + this.activeProcess.getPid() + " burst by " + currentBurst);
             this.activeProcess.decrementEstimatedRunTime(currentBurst);
             this.activeProcess.incrementCriticalTime(1);
             if((memoryManager.getCurrentMemory() > (this.activeProcess.getMemAllocated()/2))
