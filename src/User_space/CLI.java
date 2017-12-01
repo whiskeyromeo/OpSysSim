@@ -34,7 +34,10 @@ public class CLI extends GUI {
     private static int endClock = -1;
 
 
-
+    /**
+     * @param input : an input string
+     * @return : whether the string is valid or not
+     */
     public static boolean isValidCommand(String input) {
         String[] command = input.toUpperCase().split(" ");
         if(command.length > 2) {
@@ -62,6 +65,9 @@ public class CLI extends GUI {
     }
 
 
+    /**
+     * @param input : command from GUI or a program file
+     */
     public static void execute(String input) {
         String[]  command = input.split(" ");
         command[0] = command[0].toUpperCase();
@@ -122,6 +128,10 @@ public class CLI extends GUI {
     }
 
 
+    /**
+     * @param cycles : the number of cycles to execute --> if -1
+     *               execute to completion
+     */
     public static void _exe(int cycles) {
         if(cycles == -1) {
             // EXECUTE CONTINUOUSLY
@@ -140,6 +150,12 @@ public class CLI extends GUI {
 
     }
 
+    /**
+     * Loads a file, if a .job file, load the process
+     * if a .pgrm file, load into the exe_commands queue
+     * and operate via the primary thread loop in the GUI
+     * @param filename : the file to load
+     */
     public static void _load(String filename) {
         if(filename.contains(".random")) {
             System.out.println("in load");
@@ -170,6 +186,10 @@ public class CLI extends GUI {
         }
     }
 
+
+    /**
+     * @param commands the .pgrm file contents
+     */
     public static void executeProgramCommands(ArrayList<String> commands) {
         int i = 0;
         while(i < commands.size()) {
@@ -179,6 +199,9 @@ public class CLI extends GUI {
         }
     }
 
+    /**
+     * Reset all queues
+     */
     public static void _reset() {
         memoryManager.resetMemory();
         longTerm.resetWaitingQueue();

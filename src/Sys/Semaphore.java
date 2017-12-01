@@ -2,6 +2,8 @@ package Sys;
 
 /**
  * @project OS_Simulator
+ *
+ * Bounded semaphore model safe for concurrency
  */
 public class Semaphore {
     private int numSignals = 0;

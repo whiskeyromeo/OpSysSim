@@ -224,8 +224,6 @@ public class GUI extends Application {
 
 
     public void runSim() throws InterruptedException {
-       // this.activeProcessList.setAll(multiLevel.getAllInReadyStream().collect(Collectors.toList()));
-//        this.newProcessList.setAll(longTermScheduler.streamWaitingQueue());
 
         new AnimationTimer() {
             @Override

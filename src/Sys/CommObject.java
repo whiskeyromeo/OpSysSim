@@ -2,12 +2,14 @@ package Sys;
 
 /**
  * @project OS_Simulator
+ *
+ * Provides a simple means of communication between parents/children/grandchildren
  */
-public class SharedObject {
+public class CommObject {
 
     private String sharedPiece;
 
-    public SharedObject(int id) {
+    public CommObject(int id) {
         this.sharedPiece = String.format("%d mod, ", id);
     }
 

@@ -31,12 +31,11 @@ public class PCB implements Cloneable {
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
     private int loadTime;
-    private SharedObject sharedString;
+    private CommObject sharedString;
 
     private int estimatedRunTime;
     private int nextBurst;
     private int completedTime;      // Time the process exits
-
 
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
@@ -140,9 +139,7 @@ public class PCB implements Cloneable {
     public int getMemAllocated() { return this.memAllocated; }
     public int getEstimatedRunTime() { return this.estimatedRunTime; }
     public int getNextBurst() { return this.nextBurst; }
-    public int getCriticalTime() { return this.criticalTime; }
     public int getIoRequests( ) { return this.ioRequests; }
-    public int getLoadTime() { return this.loadTime; }
     public String getSharedString() { return this.sharedString.getSharedPiece(); }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
@@ -157,12 +154,10 @@ public class PCB implements Cloneable {
     // ******* SETTERS *******
     public void setCurrentState(STATE newState) { this.currentState = newState; }
     public void setArrivalTime( int arrival) { this.arrivalTime = arrival; }
-    public void setMemRequired(int mem) { this.memRequired = mem; }
     public void setProgramCounter(int pc) { this.programCounter = pc; }
     public void setBurstTime(int burstTime) { this.burstTime = burstTime; }
     public void setMemAllocated(int mem) { this.memAllocated = mem; }
     public void setNextBurst(int burst) { this.nextBurst = burst; }
-    public void setCriticalTime(int time) { this.criticalTime = time;}
     public void setLoadTime(int load) { this.loadTime = load; }
     public void addToSharedString(int id) { this.sharedString.setSharedPiece(id); }
     public void incrementIoRequests() { this.ioRequests++; }
@@ -181,7 +176,7 @@ public class PCB implements Cloneable {
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
         this.estimatedRunTime = estCycles;
-        this.sharedString = new SharedObject(this.pid);
+        this.sharedString = new CommObject(this.pid);
     }
 
     public void exit() {
@@ -217,6 +212,9 @@ public class PCB implements Cloneable {
         }
     }
 
+    /**
+     * @return The string printed when a job is in the waiting queue
+     */
     public String getNewPCBLine() {
         return "PID : " + this.pid +
                 " - State : " + this.currentState +
@@ -226,6 +224,9 @@ public class PCB implements Cloneable {
                 " - Arr time : " + this.arrivalTime + "";
     }
 
+    /**
+     * @return The string printed when a process finishes or PROC is called
+     */
     public String getPCBLine() {
         String output = "PID : " + this.pid +
                 " - State : " + this.currentState +
@@ -239,6 +240,9 @@ public class PCB implements Cloneable {
         return output;
     }
 
+    /**
+     * @return The string printed when a process calls OUT
+     */
     public String getPCBOutput() {
         String output = "PID : " + this.pid +
                 "\n\t PPID : " + this.ppid +

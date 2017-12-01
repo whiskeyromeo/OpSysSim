@@ -151,11 +151,12 @@ public class CoreThread implements Runnable{
         programCounter = this.activeProcess.getProgramCounter();
         numInstructions = this.activeProcess.getInstructions().size();
 
-        // if the process is in the critical section(I/O), it should continue until the
-        // section is done if an interrupt is signalled
-        // Otherwise continue until some interrupt pulls the program out of
-        // the processor
-
+        /*
+         * if the process is in the critical section(I/O), it should continue until the
+         * section is done if an interrupt is signalled
+         * Otherwise continue until some interrupt pulls the program out of
+         * the processor
+         */
         if (programCounter < numInstructions && !signalInterrupt) {
             //            System.out.println("Starting process" + this.activeProcess.getPid() + ", nextburst : " + nextBurst +
             //                    ",instruction : " + this.activeProcess.getInstructions().get(programCounter));

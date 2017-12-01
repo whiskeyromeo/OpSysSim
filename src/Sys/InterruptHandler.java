@@ -19,6 +19,10 @@ public class InterruptHandler {
     }
 
 
+    /**
+     * Generates a random device-based interrupt
+     * @param coreId the core which the interrupt should be serviced by
+     */
     public synchronized static void checkForDeviceInterrupt(int coreId) {
         if(deviceInterruptSignalled) {
             return;
@@ -34,7 +38,9 @@ public class InterruptHandler {
     }
 
 
-
+    /**
+     * Service an interrupt which has occurred
+     */
     public synchronized static void serviceDeviceInterrupt() {
 
         if(deviceTime > 0) {
