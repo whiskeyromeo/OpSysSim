@@ -101,6 +101,9 @@ public class CLI extends GUI {
 
     public static void _proc() {
         ArrayList<PCB> processQueue = multiLevel.getReadyQueue();
+        processQueue.addAll(ioScheduler.getProcessesFromIOQueue());
+        processQueue.addAll(RunningQueue.runningList);
+
         if(processQueue.isEmpty()){
             GUI.addLine("No processes running...");
         } else {
@@ -130,6 +133,7 @@ public class CLI extends GUI {
             }
             // EXECUTE FOR THE GIVEN NUMBER OF CYCLES
             numExeSteps = cycles;
+            System.out.println("Should execute for " + numExeSteps + "cycles");
         }
 
     }

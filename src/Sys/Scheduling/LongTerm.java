@@ -44,8 +44,6 @@ public class LongTerm extends Scheduler {
     // Pass off a waiting process to the Multi-level scheduling queue
     public void scheduleWaitingProcess() {
 
-
-
         for(PCB process : waitingQueue) {
             int memoryRequired = process.getMemRequired();
             if(memoryRequired <= memoryManager.getCurrentMemory()) {

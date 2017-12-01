@@ -42,6 +42,9 @@ public class Core implements Runnable{
         this.isStarted = false;
     }
 
+    /**
+     * Acts as the Core cache, setting the attributes of the process locally
+     */
     public void setActiveProcess() {
 
         if(this.activeProcess == null) {
@@ -54,6 +57,9 @@ public class Core implements Runnable{
 
     }
 
+    /**
+     * Puts the core into a running state
+     */
     public void run() {
         if(GUI.isActive) {
             runForGUI();
@@ -63,6 +69,9 @@ public class Core implements Runnable{
 
     }
 
+    /**
+     * Runs the core in a JavaFx safe manner
+     */
     public void runForGUI() {
 
         if (!isStarted) {
@@ -76,36 +85,42 @@ public class Core implements Runnable{
             this.activeProcess = null;
             updateTableVals();
         } else if(this.activeProcess != null) {
-            //System.out.println(" run queue may have : " +this.activeProcess.getInstructions().size()
-            //       + ", pc : " + this.activeProcess.getProgramCounter()
-            //);
+            //System.out.println("run queue size : " + RunningQueue.getSize());
         }
 
     }
 
+    /**
+     * Runs the core in a manner suited for multithreading
+     */
     public void runForSim() {
         while(!InterruptHandler.interruptSignalled) {
             runForGUI();
         }
     }
 
+    /**
+     * Main code --> determines the execution of a process
+     * in the core.
+     */
     public void execute() {
         currentBurst = 0;
         String[] command;
 
         setActiveProcess();
 
-        //delayForUpdate(20);
-
+        //Make sure a process was set before proceeding
         if(this.activeProcess == null) {
             return;
         }
 
-//        delayForUpdate(20);
-
+        // Check if there are any calculations remaining to be done
+        // in this cycle
         if(calcBurst == 0) {
             calcBurst = this.activeProcess.getBurstTime();
         }
+
+
         nextBurst = this.activeProcess.getNextBurst();
         programCounter = this.activeProcess.getProgramCounter();
         numInstructions = this.activeProcess.getInstructions().size();
@@ -118,6 +133,7 @@ public class Core implements Runnable{
             //System.out.println("Starting process" + this.activeProcess.getPid() + ", nextburst : " + nextBurst +
              //       ",instruction : " + this.activeProcess.getInstructions().get(programCounter));
 
+            // Get a new instruction from the set
             if(calcBurst == 0 && !timeout) {
                 command = this.activeProcess.getInstructions().get(programCounter).split(" ");
 
@@ -147,7 +163,7 @@ public class Core implements Runnable{
                 timeoutProcess();
                 return;
             } else if(calcBurst > 0 && nextBurst >= calcBurst) {
-                // process should be preempted --> set the burst time accordingly
+                // process should be preempted(Round robin) --> set the burst time accordingly
                 // System.out.println("proc : " + this.activeProcess.getPid() + ", calcburst : " + calcBurst);
                 calcBurst--;
                 this.activeProcess.setBurstTime(calcBurst);
@@ -155,7 +171,7 @@ public class Core implements Runnable{
             currentBurst++;
 
         } else {
-
+            // The process has completed all calculations and can exit
             System.out.println("process " + this.activeProcess.getPid() + " has exited");
             ioScheduler.removeProcessFromIOQueue(this.activeProcess);
             memoryManager.deallocateMemory(this.activeProcess.getMemRequired());
@@ -164,6 +180,9 @@ public class Core implements Runnable{
         }
     }
 
+    /**
+     * update the table in the GUI
+     */
     public synchronized void updateTableVals() {
         try {
             GUI.updateTableValues();
@@ -196,6 +215,7 @@ public class Core implements Runnable{
             PCB previousProcess = this.activeProcess;
             this.activeProcess.setBurstTime(calcBurst);
             this.activeProcess.setProgramCounter(programCounter+1);
+            System.out.println("Decrementing " + this.activeProcess.getPid() + " burst by " + currentBurst);
             this.activeProcess.decrementEstimatedRunTime(currentBurst);
             this.activeProcess.incrementCriticalTime(1);
             if((memoryManager.getCurrentMemory() > (this.activeProcess.getMemAllocated()/2))

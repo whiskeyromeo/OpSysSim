@@ -4,6 +4,7 @@ import Sys.Memory.MemoryManager;
 import Sys.Memory.Register;
 import Sys.ProcessState.STATE;
 import Sys.Scheduling.MultiLevel;
+import User_space.Simulator;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public class PCB implements Cloneable {
     Dispatcher dispatcher = Dispatcher.getInstance();
     MultiLevel multiLevelScheduler = MultiLevel.getInstance();
     MemoryManager memoryManager = MemoryManager.getInstance();
+    Simulator simulator = Simulator.getInstance();
 
     private STATE currentState;
     private int pid;                // unique process identifier for each process
@@ -36,7 +38,7 @@ public class PCB implements Cloneable {
 
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
-    private ArrayList<PCB> children; // list of children of the process
+    private ArrayList<Integer> children; // list of children of the process
     private ArrayList<Register> registers; // Set of registers needed by the process
 
     public PCB(int id, int parentId, int clockTime) {
@@ -53,21 +55,21 @@ public class PCB implements Cloneable {
         this.ioRequests = 0;
         this.programCounter = 0; // program counter --> points to next process to be executed in program file
         this.estimatedRunTime = 0;
+        this.completedTime = -1;
     }
 
-    public PCB(int id, int parentId, ArrayList<Register> registers, ArrayList<String> instructions, int cycles, STATE state, int pc, int parentRunTime, int nextBurst) {
+    public PCB(int id, int parentId, ArrayList<Register> registers, ArrayList<String> instructions, int cycles, STATE state, int pc, int nextBurst) {
         this.pid = id;
         this.ppid = parentId;
         this.registers = registers;
         this.instructions = instructions;
-        this.children = new ArrayList<PCB>();
+        this.children = new ArrayList<Integer>();
         this.arrivalTime = kernel.getSystemClock();
         this.currentState = state;
         this.criticalTime = 0;
         this.programCounter = pc;
         this.burstTime = cycles;
         this.ioRequests = 0;
-        this.estimatedRunTime = parentRunTime;
         this.nextBurst = nextBurst;
 
     }
@@ -86,11 +88,10 @@ public class PCB implements Cloneable {
                 Kernel.getNewPid(),
                 this.pid,
                 this.registers,
-                this.instructions,
+                simulator.generateFakeProcessString(3),
                 this.burstTime,
                 STATE.RUN,
                 0,
-                this.estimatedRunTime,
                 this.burstTime
         );
         if(memoryManager.getCurrentMemory() > this.memRequired/2){
@@ -102,24 +103,22 @@ public class PCB implements Cloneable {
             child = null;
             return this;
         }
-        this.children.add(child);
+        child.estimatedRunTime = simulator.calculateEstimatedCycles(child.instructions);
+        this.children.add(child.getPid());
         this.setCurrentState(STATE.READY);
         multiLevelScheduler.scheduleProcess(this);
         return child;
     }
 
-//    public ArrayList<String> passInstructionsToChild() {
-//
-//    }
-
+    
     public int _exec() {
         // Should execute in place of the current shell without creating a new process
         return 0;
     }
 
+
     public int _wait(int process_id) {
         // Need to have some sort of status check to see if the process passed in has completed
-
         return 0;
     }
 
@@ -147,7 +146,7 @@ public class PCB implements Cloneable {
     }
 
     public ArrayList<String> getInstructions() { return instructions; }
-    public ArrayList<PCB> getChildren() { return children; }
+    public ArrayList<Integer> getChildren() { return children; }
     public ArrayList<Register> getRegisters() { return registers; }
 
     // ******* SETTERS *******
@@ -221,12 +220,16 @@ public class PCB implements Cloneable {
     }
 
     public String getPCBLine() {
-        return "PID : " + this.pid +
+        String output = "PID : " + this.pid +
                 " - State : " + this.currentState +
                 " - IO Req : " + this.ioRequests +
                 " - Mem : " + this.memAllocated +
                 " - Exec : " + sanitizePCString() +
                 " - Arr time : " + this.arrivalTime + "";
+        if(this.completedTime > -1) {
+            output += " - Comp Time : " + this.completedTime;
+        }
+        return output;
     }
 
     public String getPCBOutput() {
@@ -237,7 +240,11 @@ public class PCB implements Cloneable {
                 "\n\t Arrival Time : " + this.arrivalTime +
                 "\n\t State : " + this.currentState +
                 "\n\t IO Requests : " + this.ioRequests +
-                "\n\t Critical Time : " + this.criticalTime;
+                "\n\t Critical Time : " + this.criticalTime +
+                "\n\t Instruction set : " + String.join(", ", instructions);
+        if(this.children.size() > 0)
+            output += "\n\t Children : " + String.join(", ", this.children.toString());
+
         return output;
     }
 

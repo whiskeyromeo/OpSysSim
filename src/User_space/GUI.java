@@ -231,9 +231,9 @@ public class GUI extends Application {
         } catch(Exception e) {
             e.printStackTrace();
         }
-
         if(CLI.numExeSteps == 0) {
             InterruptHandler.interruptSignalled = true;
+            CLI.numExeSteps = -1;
         }
 
         updateTableValues();
@@ -242,7 +242,6 @@ public class GUI extends Application {
         kernel.advanceClock();
 
         if((!CLI.runProgramContinuously && CLI.numExeSteps < 0) || InterruptHandler.interruptSignalled ) {
-            //System.out.println("looping");
             return;
         } else if(!CLI.runProgramContinuously && CLI.numExeSteps > 0){
             CLI.numExeSteps--;
@@ -253,6 +252,9 @@ public class GUI extends Application {
     }
 
 
+    /**
+     * Update the new and active table values
+     */
     public static synchronized void updateTableValues() {
         // **** update active processes ******
         ArrayList<PCB> activeProcesses = new ArrayList<>();
@@ -305,6 +307,9 @@ public class GUI extends Application {
         schedulerTextArea.appendText(text);
     }
 
+    /**
+     *  Update the scheduler values
+     */
     public static void updateSchedulerTextArea() {
         schedulerTextArea.clear();
         String sjf = "SJF Scheduler : " +
