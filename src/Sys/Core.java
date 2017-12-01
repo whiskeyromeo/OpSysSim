@@ -4,6 +4,7 @@ import Sys.Memory.MemoryManager;
 import Sys.Scheduling.IOScheduler;
 import Sys.Scheduling.MultiLevel;
 import User_space.GUI;
+import javafx.application.Platform;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -31,10 +32,10 @@ public class Core implements Runnable{
     private IOScheduler ioScheduler = IOScheduler.getInstance();
     private MemoryManager memoryManager = MemoryManager.getInstance();
 
-    private Semaphore semaphore;
+    private Sys.Semaphore semaphore;
     private BlockingQueue<String> messageQueue;
 
-    public Core(Semaphore parentSemaphore, BlockingQueue<String> parentQueue, int coreId) {
+    public Core(Sys.Semaphore parentSemaphore, BlockingQueue<String> parentQueue, int coreId) {
         this.coreId = coreId;
         this.clock = 0;
         this.semaphore = parentSemaphore;
@@ -102,7 +103,19 @@ public class Core implements Runnable{
      */
     public void runForSim() {
         while(!InterruptHandler.interruptSignalled) {
-            runForGUI();
+            if(!isStarted) {
+                isStarted = true;
+            }
+            execute();
+
+            if (this.activeProcess != null && this.activeProcess.getCurrentState() != ProcessState.STATE.RUN) {
+                RunningQueue.removeFromList(this.activeProcess);
+                this.activeProcess = null;
+                updateTableVals();
+            } else if (this.activeProcess != null) {
+                //System.out.println("run queue size : " + RunningQueue.getSize());
+            }
+
         }
     }
 
@@ -137,8 +150,8 @@ public class Core implements Runnable{
         // Otherwise continue until some interrupt pulls the program out of
         // the processor
         if ( programCounter < numInstructions && !signalInterrupt ) {
-            //System.out.println("Starting process" + this.activeProcess.getPid() + ", nextburst : " + nextBurst +
-             //       ",instruction : " + this.activeProcess.getInstructions().get(programCounter));
+//            System.out.println("Starting process" + this.activeProcess.getPid() + ", nextburst : " + nextBurst +
+//                    ",instruction : " + this.activeProcess.getInstructions().get(programCounter));
 
             // Get a new instruction from the set
             if(calcBurst == 0 && !timeout) {
@@ -192,16 +205,21 @@ public class Core implements Runnable{
      */
     public synchronized void updateTableVals() {
         try {
-            GUI.updateTableValues();
+            Platform.runLater(() -> GUI.updateTableValues());
+
         } catch(Throwable e) {
+            //e.printStackTrace();
           //System.out.println("...expected table val err");
         }
     }
 
     public synchronized void updateGui(String string) {
         try {
-            GUI.addLine(string);
+            Platform.runLater(()-> GUI.addLine(string));
+//            GUI.addLine(string);
+
         } catch(Throwable e) {
+            //e.printStackTrace();
             //System.out.println("...expected table val err");
         }
 
@@ -218,30 +236,40 @@ public class Core implements Runnable{
     public synchronized void executeYield() {
         //System.out.print("yield : ");
         try {
-            semaphore.acquire();
+            System.out.println("Proc " + this.activeProcess.getPid() + " is waiting for semaphore");
+            semaphore.lock();
+            System.out.println("Proc " + this.activeProcess.getPid() + " received semaphore");
             PCB previousProcess = this.activeProcess;
             this.activeProcess.setBurstTime(calcBurst);
-            this.activeProcess.setProgramCounter(programCounter+1);
+            this.activeProcess.setProgramCounter(programCounter + 1);
             // System.out.println("Decrementing " + this.activeProcess.getPid() + " burst by " + currentBurst);
             this.activeProcess.decrementEstimatedRunTime(currentBurst);
             this.activeProcess.incrementCriticalTime(1);
-            if((memoryManager.getCurrentMemory() > (this.activeProcess.getMemAllocated()/2))
+            if ((memoryManager.getCurrentMemory() > (this.activeProcess.getMemAllocated() / 2))
                     && this.activeProcess.getChildren().size() < 3 && this.activeProcess.getPid() < 10) {
                 messageQueue.add(String.format("Process %d had a child!", this.activeProcess.getPid()));
                 this.activeProcess = this.activeProcess._fork();
             }
 
-            if(previousProcess == this.activeProcess){
+            if (previousProcess == this.activeProcess) {
                 this.activeProcess.setCurrentState(ProcessState.STATE.READY);
                 multiLevel.scheduleProcess(this.activeProcess);
             }
-            semaphore.release();
         } catch(Throwable e) {
             e.printStackTrace();
+        } finally {
+            try {
+                System.out.println("Proc " + this.activeProcess.getPid() + " is releasing semaphore");
+                semaphore.release();
+            } catch(Throwable e) {
+                e.printStackTrace();
+            }
         }
 
         //System.out.println("Preempting process as part of yield");
     }
+
+
 
     public void executeIO() {
         //System.out.print("i/o : ");
@@ -286,16 +314,6 @@ public class Core implements Runnable{
         this.activeProcess.setCurrentState(ProcessState.STATE.READY);
         multiLevel.scheduleProcess(this.activeProcess);
         timeout = false;
-    }
-
-
-
-    public void setActiveProcess(PCB process) {
-        this.activeProcess = process;
-    }
-    public PCB getActiveProcess() { return this.activeProcess; }
-    public void advanceClock() {
-        this.clock++;
     }
 
 

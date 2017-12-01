@@ -64,7 +64,7 @@ public class LongTerm extends Scheduler {
 
     public void addToWaitingQueue(PCB process) {
         process.setCurrentState(ProcessState.STATE.WAIT);
-        //process.setArrivalTime(kernel.getSystemClock());
+        process.setLoadTime(Kernel.getStaticSystemClock());
         waitingQueue.add(process);
     }
 

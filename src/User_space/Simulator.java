@@ -144,14 +144,13 @@ public class Simulator {
 
     public static void testCPU() {
 
-        populateReadyQueues(2);
+        populateReadyQueues(10);
         while(!InterruptHandler.interruptSignalled) {
             kernel.execute();
             kernel.advanceClock();
         }
 
     }
-
 
 
     public static void retrieveProcessInfo(PCB process) {

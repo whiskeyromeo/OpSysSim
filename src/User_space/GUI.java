@@ -255,6 +255,7 @@ public class GUI extends Application {
             CLI.numExeSteps = -1;
         }
 
+
         updateTableValues();
         updateSchedulerTextArea();
 
@@ -275,6 +276,7 @@ public class GUI extends Application {
      * Update the new and active table values
      */
     public static synchronized void updateTableValues() {
+
         // **** update active processes ******
         ArrayList<PCB> activeProcesses = new ArrayList<>();
         Set<PCB> hs = new HashSet<>();
@@ -286,8 +288,6 @@ public class GUI extends Application {
         activeProcesses.clear();
         activeProcesses.addAll(hs);
         activeProcesses.sort(Comparator.comparingInt(PCB::getPid));
-
-
 
         activeProcessesTextArea.clear();
         newProcessesTextArea.clear();

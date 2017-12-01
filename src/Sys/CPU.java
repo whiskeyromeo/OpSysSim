@@ -29,7 +29,7 @@ public class CPU {
     public static ArrayList<Thread> threadCores = new ArrayList<>();
     public static ArrayList<Core> cores = new ArrayList<>();
     public static boolean coresInitialized = false;
-    public static Semaphore semaphore;
+    public static Sys.Semaphore semaphore;
 
     public static int totalCoreCycles = 0;
     public static int totalCyclesPermitted = totalCoreCycles;
@@ -47,7 +47,7 @@ public class CPU {
     public CPU(int cpuId) {
         this.registerSet = Register.instantiateRegisterSet(REGISTER_COUNT);
         this.cpuID = cpuId;
-        this.semaphore = new Semaphore(1);
+        this.semaphore = new Sys.Semaphore(1);
     }
 
     /**
@@ -87,11 +87,11 @@ public class CPU {
     public void run() {
         if(GUI.isActive) {
             // Run using simulated cores if GUI is being used
-            if(!coresInitialized) {
-                initializeThreadCores();
-            }
-            runThreadCores();
-        } else {
+             if(!coresInitialized) {
+                 initializeThreadCores();
+             }
+             runThreadCores();
+         } else {
             if(!coresInitialized) {
                 // Otherwise multithread
                 initializeThreadCores();

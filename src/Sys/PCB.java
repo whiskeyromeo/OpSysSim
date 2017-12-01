@@ -30,6 +30,7 @@ public class PCB implements Cloneable {
     private int memRequired;        // amount of memory required from the program file
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
+    private int loadTime;
 
     private int estimatedRunTime;
     private int nextBurst;
@@ -139,6 +140,7 @@ public class PCB implements Cloneable {
     public int getNextBurst() { return this.nextBurst; }
     public int getCriticalTime() { return this.criticalTime; }
     public int getIoRequests( ) { return this.ioRequests; }
+    public int getLoadTime() { return this.loadTime; }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
@@ -158,6 +160,7 @@ public class PCB implements Cloneable {
     public void setMemAllocated(int mem) { this.memAllocated = mem; }
     public void setNextBurst(int burst) { this.nextBurst = burst; }
     public void setCriticalTime(int time) { this.criticalTime = time;}
+    public void setLoadTime(int load) { this.loadTime = load; }
 
     public void incrementIoRequests() { this.ioRequests++; }
     public void incrementCriticalTime(int amount) { this.criticalTime += amount; }
@@ -180,7 +183,7 @@ public class PCB implements Cloneable {
     public void exit() {
         this.currentState = STATE.EXIT;
         this.memAllocated = 0;
-        this.completedTime = kernel.getSystemClock();
+        this.completedTime = Kernel.getStaticSystemClock();
     }
 
     /**
@@ -225,7 +228,7 @@ public class PCB implements Cloneable {
                 " - IO Req : " + this.ioRequests +
                 " - Mem : " + this.memAllocated +
                 " - Next : " + sanitizePCString() +
-                " - Arr time : " + this.arrivalTime + "";
+                " - Load time : " + this.loadTime + "";
         if(this.completedTime > -1) {
             output += " - Comp Time : " + this.completedTime;
         }
@@ -237,7 +240,8 @@ public class PCB implements Cloneable {
                 "\n\t PPID : " + this.ppid +
                 "\n\t Next Instruction : " + this.instructions.get(this.programCounter) +
                 "\n\t Next Burst : " + this.nextBurst +
-                "\n\t Arrival Time : " + this.arrivalTime +
+                "\n\t Load Time : " + this.loadTime +
+                "\n\t Last Scheduled Time : " + this.arrivalTime +
                 "\n\t State : " + this.currentState +
                 "\n\t IO Requests : " + this.ioRequests +
                 "\n\t Critical Time : " + this.criticalTime +

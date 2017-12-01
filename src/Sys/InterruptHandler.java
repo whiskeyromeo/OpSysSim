@@ -24,7 +24,7 @@ public class InterruptHandler {
             return;
         }
         deviceTime = r.nextInt(20) + 1;
-        if(deviceTime % 6 == 0) {
+        if(21 % deviceTime  == 0) {
             System.out.println("Setting device interrupt");
             deviceInterruptSignalled = true;
             serviceID = coreId;

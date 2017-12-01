@@ -71,7 +71,7 @@ public class Kernel {
         }
 
         if(!processesExist) {
-            //System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
+            System.out.format("iosize : %d, multSize == %d, runsize == %d, newSize = %d\n", ioSize, multiSize, runningSize, newSize);
             System.out.println("interrupt signalled");
             InterruptHandler.signalInterrupt();
         }
