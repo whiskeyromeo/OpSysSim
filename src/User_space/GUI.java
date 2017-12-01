@@ -132,6 +132,8 @@ public class GUI extends Application {
         controls = new HBox();
         controls.setSpacing(10);
         controls.getChildren().addAll(textInput, button);
+
+        //Set the text editor to the most previously submitted command
         controls.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.UP)) {
                 if(!prev.empty()) {
