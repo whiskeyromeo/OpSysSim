@@ -24,14 +24,14 @@ public class MemoryManager {
             return memoryManager;
         }
 
-        public static void allocateMemory(int amount) throws InvalidParameterException {
+        public static synchronized void allocateMemory(int amount) throws InvalidParameterException {
             if(amount > memory) {
                 throw new InvalidParameterException("Cannot allocate more memory than available in system");
             }
             memory -= amount;
         }
 
-        public static void deallocateMemory(int amount) {
+        public static synchronized void deallocateMemory(int amount) {
             if(memory+amount <= TOTAL_MEMORY)
                 memory += amount;
         }

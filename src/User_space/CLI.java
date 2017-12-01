@@ -183,7 +183,7 @@ public class CLI extends GUI {
         kernel.resetClock();
         kernel.resetProcessCounter();
         textArea.clear();
-        CPU.resetRunningList();
+        Core.resetRunningList();
 
     }
 

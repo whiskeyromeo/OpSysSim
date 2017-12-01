@@ -6,9 +6,11 @@ package Sys;
 public class Semaphore {
     private int numSignals = 0;
     private int boundLimit = 0;
+    public int id;
 
-    public Semaphore(int bound) {
+    public Semaphore(int bound, int id) {
         this.boundLimit = bound;
+        this.id = id;
     }
 
     public synchronized void lock() throws InterruptedException {

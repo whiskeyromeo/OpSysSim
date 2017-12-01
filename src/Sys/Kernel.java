@@ -12,6 +12,7 @@ import Sys.Scheduling.MultiLevel;
 public class Kernel {
 
     private CPU cpu; // Each Kernel should have at least one CPU
+
     private volatile static int processCounter = 1;     // Should be used to assign the pid for each process
 
     private MemoryManager memoryManager = MemoryManager.getInstance();
@@ -28,6 +29,7 @@ public class Kernel {
     protected Kernel() {
         this.systemClock = 0;
         this.cpu = new CPU(1);
+
 
     }
 
@@ -63,7 +65,7 @@ public class Kernel {
         int ioSize = ioScheduler.getIOQueueSize();
         int newSize = longTerm.getWaitingQueueSize();
         int multiSize = multiLevel.getReadyCount();
-        int runningSize = cpu.getRunningCount();
+        int runningSize = cpu.getRunningProcesses();
         if(ioSize == 0 && newSize == 0 && multiSize == 0 && runningSize == 0) {
             processesExist =  false;
         } else {

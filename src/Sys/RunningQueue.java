@@ -1,15 +1,16 @@
 package Sys;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @project OS_Simulator
  */
 public class RunningQueue {
-    public static ArrayList<PCB> runningList = new ArrayList<>();
+    public static CopyOnWriteArrayList<PCB> runningList = new CopyOnWriteArrayList<>();
 
 
-    public static void addToList(PCB process) {
+    public synchronized static void addToList(PCB process) {
         runningList.add(process);
     }
 
@@ -19,7 +20,7 @@ public class RunningQueue {
         }
     }
 
-    public static int getSize() {
+    public synchronized static int getSize() {
         return runningList.size();
     }
 }

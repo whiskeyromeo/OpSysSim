@@ -11,7 +11,7 @@ public class Page {
     public boolean validBit;
     public final char pageLetter;
 
-
+    // Each page represents a frame
     public Page(int processId, int pageNumber) {
         this.associatedpID = processId;
         this.pageNumber = pageNumber;

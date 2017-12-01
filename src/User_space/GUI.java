@@ -56,7 +56,7 @@ public class GUI extends Application {
     static IOScheduler ioScheduler = IOScheduler.getInstance();
     static Kernel kernel = Kernel.getInstance();
 
-    static CPU cpu = new CPU(1);
+    static Core cpu = new Core(1);
 
 
     //***************END SYSTEM INSTANCES ***************** //

@@ -14,18 +14,18 @@ public class InterruptHandler {
     public static boolean isBeingServiced = false;
     public static int serviceID = -1;
 
-    public static void signalInterrupt() {
+    public synchronized static void signalInterrupt() {
         interruptSignalled = true;
     }
 
 
-    public static void checkForDeviceInterrupt(int coreId) {
+    public synchronized static void checkForDeviceInterrupt(int coreId) {
         if(deviceInterruptSignalled) {
             return;
         }
         deviceTime = r.nextInt(20) + 1;
         if(21 % deviceTime  == 0) {
-            System.out.println("Setting device interrupt");
+            //System.out.println("Setting device interrupt");
             deviceInterruptSignalled = true;
             serviceID = coreId;
         } else {
@@ -35,13 +35,13 @@ public class InterruptHandler {
 
 
 
-    public static void serviceDeviceInterrupt() {
+    public synchronized static void serviceDeviceInterrupt() {
 
         if(deviceTime > 0) {
             //System.out.println("Decrementing device time");
             deviceTime--;
         } else {
-            System.out.println("Resetting device interrupt");
+            //System.out.println("Resetting device interrupt");
             serviceID = -1;
             deviceInterruptSignalled = false;
         }

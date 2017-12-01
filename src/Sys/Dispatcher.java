@@ -41,7 +41,7 @@ public class Dispatcher {
     }
 
 
-    public void removeCurrentProcess(PCB process) {
+    public synchronized void removeCurrentProcess(PCB process) {
         if(process.getCurrentState() == ProcessState.STATE.READY)
             processScheduler.scheduleProcess(process);
         else

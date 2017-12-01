@@ -51,7 +51,7 @@ public class MultiLevel {
         fcfsScheduler = new FCFS();
     }
 
-    public static MultiLevel getInstance() {
+    public synchronized static MultiLevel getInstance() {
         if(multilevel == null) {
             multilevel = new MultiLevel();
         }
@@ -191,7 +191,7 @@ public class MultiLevel {
         return readyList;
     }
 
-    public int updateWaitTime(int currentWait, int n, PCB process) {
+    public synchronized int updateWaitTime(int currentWait, int n, PCB process) {
         int procWait = Kernel.getStaticSystemClock() - process.getArrivalTime();
         int newWait = (((n-1)*currentWait)+procWait)/n;
         return newWait;
