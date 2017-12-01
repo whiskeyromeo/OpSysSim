@@ -317,6 +317,12 @@ public class CoreThread implements Runnable{
             //System.out.println("Process " + this.activeProcess.getPid() + " received message : " + message);
             output += "\n\t Received message : " + message;
         }
+        if(this.activeProcess.getChildren().size() > 0) {
+            output += "\n\t Shared variable : " + this.activeProcess.getSharedString();
+        }
+        if(this.activeProcess.getPpid() != -1) {
+            this.activeProcess.addToSharedString(this.activeProcess.getPid());
+        }
         //System.out.println(output);
         // SEND INFORMATION TO THE GUI
         updateGui(output);

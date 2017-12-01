@@ -31,7 +31,7 @@ public class PCB implements Cloneable {
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
     private int loadTime;
-    private String sharedString;
+    private SharedObject sharedString;
 
     private int estimatedRunTime;
     private int nextBurst;
@@ -143,6 +143,7 @@ public class PCB implements Cloneable {
     public int getCriticalTime() { return this.criticalTime; }
     public int getIoRequests( ) { return this.ioRequests; }
     public int getLoadTime() { return this.loadTime; }
+    public String getSharedString() { return this.sharedString.getSharedPiece(); }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
@@ -163,7 +164,7 @@ public class PCB implements Cloneable {
     public void setNextBurst(int burst) { this.nextBurst = burst; }
     public void setCriticalTime(int time) { this.criticalTime = time;}
     public void setLoadTime(int load) { this.loadTime = load; }
-
+    public void addToSharedString(int id) { this.sharedString.setSharedPiece(id); }
     public void incrementIoRequests() { this.ioRequests++; }
     public void incrementCriticalTime(int amount) { this.criticalTime += amount; }
     public void decrementEstimatedRunTime(int mem) { this.estimatedRunTime -= mem; }
@@ -180,7 +181,7 @@ public class PCB implements Cloneable {
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
         this.estimatedRunTime = estCycles;
-        this.sharedString = String.format("Personal String for process %d", this.pid);
+        this.sharedString = new SharedObject(this.pid);
     }
 
     public void exit() {
