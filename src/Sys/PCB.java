@@ -31,6 +31,7 @@ public class PCB implements Cloneable {
     private int memAllocated;       // amount of memory currently allocated to the process
     private int ioRequests;
     private int loadTime;
+    private String sharedString;
 
     private int estimatedRunTime;
     private int nextBurst;
@@ -105,6 +106,7 @@ public class PCB implements Cloneable {
             return this;
         }
         child.estimatedRunTime = simulator.calculateEstimatedCycles(child.instructions);
+        child.sharedString = this.sharedString;
         this.children.add(child.getPid());
         this.setCurrentState(STATE.READY);
         multiLevelScheduler.scheduleProcess(this);
@@ -178,6 +180,7 @@ public class PCB implements Cloneable {
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
         this.estimatedRunTime = estCycles;
+        this.sharedString = String.format("Personal String for process %d", this.pid);
     }
 
     public void exit() {
