@@ -37,6 +37,7 @@ public class PCB implements Cloneable {
     private int nextBurst;
     private int completedTime;      // Time the process exits
 
+    private int startPage;
 
     private ArrayList<String> instructions; // set of instructions to be executed from the file
     private ArrayList<Integer> children; // list of children of the process
@@ -260,5 +261,10 @@ public class PCB implements Cloneable {
         return output;
     }
 
+    public int getPage(int addr)
+    {
+        return addr < burstTime ?
+                this.startPage + (addr / 1) : -1;
+    }
 
 }
