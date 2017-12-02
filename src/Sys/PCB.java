@@ -130,39 +130,39 @@ public class PCB implements Cloneable {
     }
 
     // ***** GETTERS ******
-    public STATE getCurrentState() { return this.currentState; }
-    public int getArrivalTime() { return this.arrivalTime; }
-    public int getPid() { return this.pid; }
-    public int getPpid() { return this.ppid; }
-    public int getMemRequired() { return this.memRequired; }
-    public int getProgramCounter() { return this.programCounter; }
-    public int getMemAllocated() { return this.memAllocated; }
-    public int getEstimatedRunTime() { return this.estimatedRunTime; }
-    public int getNextBurst() { return this.nextBurst; }
-    public int getIoRequests( ) { return this.ioRequests; }
-    public String getSharedString() { return this.sharedString.getSharedPiece(); }
+    public synchronized STATE getCurrentState() { return this.currentState; }
+    public synchronized int getArrivalTime() { return this.arrivalTime; }
+    public synchronized int getPid() { return this.pid; }
+    public synchronized int getPpid() { return this.ppid; }
+    public synchronized int getMemRequired() { return this.memRequired; }
+    public synchronized int getProgramCounter() { return this.programCounter; }
+    public synchronized int getMemAllocated() { return this.memAllocated; }
+    public synchronized int getEstimatedRunTime() { return this.estimatedRunTime; }
+    public synchronized int getNextBurst() { return this.nextBurst; }
+    public synchronized int getIoRequests( ) { return this.ioRequests; }
+    public synchronized String getSharedString() { return this.sharedString.getSharedPiece(); }
 
     // TODO: REMOVE WHEN CPU IS FUNCTIONAL
     public int getBurstTime() {
         return this.burstTime;
     }
 
-    public ArrayList<String> getInstructions() { return instructions; }
-    public ArrayList<Integer> getChildren() { return children; }
-    public ArrayList<Register> getRegisters() { return registers; }
+    public synchronized ArrayList<String> getInstructions() { return instructions; }
+    public synchronized ArrayList<Integer> getChildren() { return children; }
+    public synchronized ArrayList<Register> getRegisters() { return registers; }
 
     // ******* SETTERS *******
-    public void setCurrentState(STATE newState) { this.currentState = newState; }
-    public void setArrivalTime( int arrival) { this.arrivalTime = arrival; }
-    public void setProgramCounter(int pc) { this.programCounter = pc; }
-    public void setBurstTime(int burstTime) { this.burstTime = burstTime; }
-    public void setMemAllocated(int mem) { this.memAllocated = mem; }
-    public void setNextBurst(int burst) { this.nextBurst = burst; }
-    public void setLoadTime(int load) { this.loadTime = load; }
-    public void addToSharedString(int id) { this.sharedString.setSharedPiece(id); }
-    public void incrementIoRequests() { this.ioRequests++; }
-    public void incrementCriticalTime(int amount) { this.criticalTime += amount; }
-    public void decrementEstimatedRunTime(int mem) { this.estimatedRunTime -= mem; }
+    public synchronized void setCurrentState(STATE newState) { this.currentState = newState; }
+    public synchronized void setArrivalTime( int arrival) { this.arrivalTime = arrival; }
+    public synchronized void setProgramCounter(int pc) { this.programCounter = pc; }
+    public synchronized void setBurstTime(int burstTime) { this.burstTime = burstTime; }
+    public synchronized void setMemAllocated(int mem) { this.memAllocated = mem; }
+    public synchronized void setNextBurst(int burst) { this.nextBurst = burst; }
+    public synchronized void setLoadTime(int load) { this.loadTime = load; }
+    public synchronized void addToSharedString(int id) { this.sharedString.setSharedPiece(id); }
+    public synchronized void incrementIoRequests() { this.ioRequests++; }
+    public synchronized void incrementCriticalTime(int amount) { this.criticalTime += amount; }
+    public synchronized void decrementEstimatedRunTime(int mem) { this.estimatedRunTime -= mem; }
 
 
     /**
@@ -171,7 +171,7 @@ public class PCB implements Cloneable {
      * @param instructionIndex --> The index of the next instruction to execute in the ArrayList
      * @param memNeeded --> memory required by the process
      */
-    public void initializeBlock(ArrayList<String> commands, int instructionIndex, int memNeeded, int estCycles ) {
+    public synchronized void initializeBlock(ArrayList<String> commands, int instructionIndex, int memNeeded, int estCycles ) {
         this.instructions = commands;
         this.programCounter = instructionIndex;
         this.memRequired = memNeeded;
@@ -179,7 +179,7 @@ public class PCB implements Cloneable {
         this.sharedString = new CommObject(this.pid);
     }
 
-    public void exit() {
+    public synchronized void exit() {
         this.currentState = STATE.EXIT;
         this.memAllocated = 0;
         this.completedTime = Kernel.getStaticSystemClock();

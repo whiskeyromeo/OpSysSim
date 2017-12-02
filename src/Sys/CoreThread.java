@@ -95,7 +95,7 @@ public class CoreThread implements Runnable{
     /**
      * Runs the core in a manner suited for multithreading
      */
-    public void runForSim() {
+    public synchronized void runForSim() {
         while(!InterruptHandler.interruptSignalled) {
             if(!isStarted) {
                 isStarted = true;
@@ -112,16 +112,7 @@ public class CoreThread implements Runnable{
             RunningQueue.removeFromList(this.activeProcess);
             System.out.println("Process : " + this.activeProcess.getPid() + " was removed from running queue on thread " + this.coreId );
             this.activeProcess = null;
-        } else if (this.activeProcess != null) {
-//            RunningQueue.removeFromList(this.activeProcess);
-//            this.activeProcess.setCurrentState(ProcessState.STATE.READY);
-//            multiLevel.scheduleProcess(this.activeProcess);
-//            this.activeProcess = null;
-            //this.activeProcess.setCurrentState(ProcessState.STATE.SUSPEND);
-            //System.out.println("run queue size : " + RunningQueue.getSize());
-        }
-        //updateTableVals();
-
+        } 
     }
 
     /**
@@ -260,6 +251,7 @@ public class CoreThread implements Runnable{
                 this.activeProcess.setCurrentState(ProcessState.STATE.READY);
                 multiLevel.scheduleProcess(this.activeProcess);
             } else {
+                RunningQueue.removeFromList(previousProcess);
                 System.out.println("Child : " + this.activeProcess.getPid() + " was created");
             }
         } catch(Throwable e) {
