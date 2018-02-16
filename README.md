@@ -1,7 +1,7 @@
 # OpSysSim
 
 
-![GUI pic](./gui-pic.png)
+![GUI pic](./gui_pic.png)
 
 This is a simulator meant to mimic the operation of a multithreaded Operating System. There are two points of entry,
 One via the JavaFX GUI accessible via the executable directory, or headless via the direct execution of the Simulator.java file. Execution of the Simulator.java file will simply execute whatever methods are called in main, currently this is just a set method with no user input. The GUI is fully interactive and is based off of a number of commands described below. 
